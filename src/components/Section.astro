@@ -1,0 +1,17 @@
+---
+/**
+ * Секция страницы
+ * @prop id - идентификатор для навигации
+ */
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+const classes = ['section', className].filter(Boolean).join(' ');
+---
+
+<div class={classes} id={id}>
+  <slot />
+</div>

@@ -1,0 +1,17 @@
+---
+/**
+ * Элемент навигации (заголовок секции)
+ * @prop id - уникальный идентификатор
+ * @prop label - текст ссылки в навигации
+ */
+interface Props {
+  id: string;
+  label: string;
+}
+
+const { id, label } = Astro.props;
+---
+
+<ids-nav-item id={id} label={label} class="ids__nav-item">
+  <slot />
+</ids-nav-item>

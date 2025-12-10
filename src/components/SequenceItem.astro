@@ -1,0 +1,15 @@
+---
+/**
+ * Элемент сетки Sequence
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const classes = ['ids__sequence-item', className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

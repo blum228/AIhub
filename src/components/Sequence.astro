@@ -1,0 +1,20 @@
+---
+/**
+ * Flex-сетка из одинаковых элементов
+ * @prop size - количество колонок: 'S' (6) | 'M' (4) | 'L' (3) | 'XL' (2)
+ * @prop gap - отступы между элементами: 'S' | 'M' | 'L'
+ */
+interface Props {
+  size?: 'S' | 'M' | 'L' | 'XL';
+  gap?: 'S' | 'M' | 'L';
+  class?: string;
+}
+
+const { size, gap, class: className } = Astro.props;
+const gapClass = gap ? `gap-${gap}` : undefined;
+const classes = ['ids__sequence', size, gapClass, className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

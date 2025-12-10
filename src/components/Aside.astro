@@ -1,0 +1,14 @@
+---
+/**
+ * Дополнительный текст (плашка)
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<aside class={className}>
+  <slot />
+</aside>

@@ -1,0 +1,31 @@
+---
+/**
+ * Цветовая плашка для демонстрации палитры
+ * @prop color - название цвета (text, link, hover, mark, code, accent, surface, background)
+ * @prop inverted - инвертировать цвет текста
+ */
+interface Props {
+  color: string;
+  inverted?: boolean;
+  class?: string;
+}
+
+const { color, inverted = false, class: className } = Astro.props;
+const bgColor = `rgba(var(--ids__${color}-RGB), 1)`;
+const textColor = inverted ? `rgba(var(--ids__background-RGB), 1)` : undefined;
+---
+
+<div 
+  class:list={['guide-color-plate', className]}
+  style={`background-color: ${bgColor}; ${textColor ? `color: ${textColor}` : ''}`}
+>
+  <p>{color}</p>
+</div>
+
+<style>
+  .guide-color-plate {
+    height: 6em;
+    font-size: 0.8em;
+    padding: 0.6em 0.8em;
+  }
+</style>

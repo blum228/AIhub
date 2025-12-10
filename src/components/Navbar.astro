@@ -1,0 +1,122 @@
+---
+/**
+ * Навигация по секциям страницы
+ * Автоматически собирает ссылки из элементов NavItem
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<ids-navbar class={className}></ids-navbar>
+
+<script>
+  class IdsNavbar extends HTMLElement {
+    static #items: NodeListOf<Element>;
+    static #instances: NodeListOf<Element>;
+    #listItems: HTMLLIElement[] = [];
+
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      IdsNavbar.#items = document.querySelectorAll('ids-nav-item, [data-nav-item]');
+      IdsNavbar.#instances = document.querySelectorAll('ids-navbar');
+      this.render();
+      IdsNavbar.updateCurrent();
+    }
+
+    static updateItems() {
+      this.#items = document.querySelectorAll('ids-nav-item, [data-nav-item]');
+      this.#instances = document.querySelectorAll('ids-navbar');
+      for (const instance of this.#instances) {
+        (instance as IdsNavbar).render();
+      }
+      this.updateCurrent();
+    }
+
+    static updateCurrent() {
+      if (!this.#items || this.#items.length === 0) return;
+      
+      let highestTopPositionIndex = 0;
+      for (let i = 0; i < this.#items.length; i++) {
+        const rect = this.#items[i].getBoundingClientRect();
+        const topPosition = (rect.top + rect.bottom) / 2;
+        if (topPosition < 0) {
+          highestTopPositionIndex = i;
+        }
+        if (topPosition >= 0 && topPosition < window.innerHeight / 2) {
+          highestTopPositionIndex = i;
+          break;
+        }
+      }
+      
+      const id = this.#items[highestTopPositionIndex].getAttribute('id');
+      const newHash = `#${id}`;
+      if (window.location.hash !== newHash) {
+        try {
+          history.replaceState({}, '', newHash);
+        } catch (e) {}
+      }
+
+      for (const instance of this.#instances) {
+        (instance as IdsNavbar).setCurrent(highestTopPositionIndex);
+      }
+    }
+
+    setCurrent(index: number) {
+      for (let i = 0; i < this.#listItems.length; i++) {
+        if (i === index) {
+          this.#listItems[i].classList.add('current');
+        } else {
+          this.#listItems[i].classList.remove('current');
+        }
+      }
+    }
+
+    render() {
+      this.innerHTML = '';
+      this.#listItems = [];
+      this.classList.add('ids__navbar');
+      
+      const ul = document.createElement('ul');
+      const items = document.querySelectorAll('ids-nav-item, [data-nav-item]');
+      
+      for (const item of items) {
+        const li = document.createElement('li');
+        this.#listItems.push(li);
+
+        const a = document.createElement('a');
+        a.href = `#${item.getAttribute('id')}`;
+        a.textContent = item.getAttribute('label') || item.getAttribute('data-label') || '';
+        li.appendChild(a);
+        ul.appendChild(li);
+      }
+      
+      this.appendChild(ul);
+    }
+  }
+
+  document.addEventListener('scroll', () => IdsNavbar.updateCurrent());
+
+  class IdsNavItem extends HTMLElement {
+    connectedCallback() {
+      this.classList.add('ids__nav-item');
+      IdsNavbar.updateItems();
+    }
+    
+    disconnectedCallback() {
+      IdsNavbar.updateItems();
+    }
+  }
+
+  if (!customElements.get('ids-navbar')) {
+    customElements.define('ids-navbar', IdsNavbar);
+  }
+  if (!customElements.get('ids-nav-item')) {
+    customElements.define('ids-nav-item', IdsNavItem);
+  }
+</script>

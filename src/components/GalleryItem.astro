@@ -1,0 +1,33 @@
+---
+/**
+ * Элемент галереи
+ * @prop src - путь к изображению
+ * @prop href - путь к полноразмерному изображению (по умолчанию = src)
+ * @prop alt - альтернативный текст
+ * @prop caption - подпись
+ * @prop width - ширина полноразмерного изображения (для PhotoSwipe)
+ * @prop height - высота полноразмерного изображения (для PhotoSwipe)
+ */
+interface Props {
+  src: string;
+  href?: string;
+  alt?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+}
+
+const { src, href, alt = '', caption, width, height } = Astro.props;
+const fullSrc = href || src;
+---
+
+<figure>
+  <a 
+    href={fullSrc}
+    data-pswp-width={width}
+    data-pswp-height={height}
+  >
+    <img src={src} alt={alt} />
+  </a>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

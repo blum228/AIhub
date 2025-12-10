@@ -1,0 +1,67 @@
+---
+/**
+ * Галерея изображений с PhotoSwipe lightbox
+ * Внутри размещаются GalleryItem компоненты
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const classes = ['ids__gallery', className].filter(Boolean).join(' ');
+---
+
+<div class={classes} data-gallery>
+  <slot />
+</div>
+
+<script is:inline src="/js/lib/photoswipe-lightbox.umd.min.js"></script>
+<script is:inline src="/js/lib/photoswipe.umd.min.js"></script>
+<script is:inline>
+  (function() {
+    function initGallery() {
+      if (typeof PhotoSwipeLightbox === 'undefined') return;
+      
+      var galleries = document.querySelectorAll('[data-gallery]');
+      if (!galleries.length) return;
+
+      galleries.forEach(function(gallery) {
+        if (gallery.dataset.pswpInit) return;
+        gallery.dataset.pswpInit = 'true';
+        
+        var lightbox = new PhotoSwipeLightbox({
+          gallery: gallery,
+          children: 'a',
+          pswpModule: PhotoSwipe
+        });
+
+        lightbox.on('uiRegister', function() {
+          lightbox.pswp.ui.registerElement({
+            name: 'caption',
+            order: 9,
+            isButton: false,
+            appendTo: 'root',
+            html: '',
+            onInit: function(el, pswp) {
+              el.className = 'pswp__caption';
+              pswp.on('change', function() {
+                var figcaption = pswp.currSlide.data.element && 
+                  pswp.currSlide.data.element.closest('figure') &&
+                  pswp.currSlide.data.element.closest('figure').querySelector('figcaption');
+                el.innerHTML = figcaption ? '<figcaption>' + figcaption.innerHTML + '</figcaption>' : '';
+              });
+            }
+          });
+        });
+
+        lightbox.init();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGallery);
+    } else {
+      initGallery();
+    }
+  })();
+</script>

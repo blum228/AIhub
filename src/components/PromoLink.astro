@@ -1,0 +1,15 @@
+---
+/**
+ * Псевдо-радиогруппа для скролл-навигации
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const classes = ['ids__promo-link', className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

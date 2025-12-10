@@ -1,0 +1,15 @@
+---
+/**
+ * Вертикальный отступ (спейсер)
+ * @prop size - размер: 'S' | 'M' | 'L' | 'XL' (по умолчанию без модификатора)
+ */
+interface Props {
+  size?: 'S' | 'M' | 'L' | 'XL';
+  class?: string;
+}
+
+const { size, class: className } = Astro.props;
+const classes = ['ids__space', size, className].filter(Boolean).join(' ');
+---
+
+<div class={classes}></div>

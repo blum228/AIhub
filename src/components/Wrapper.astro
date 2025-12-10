@@ -1,0 +1,17 @@
+---
+/**
+ * Обёртка-этаж страницы
+ * @prop size - ширина: 'L' | 'XL' | 'XXL' (по умолчанию стандартная)
+ */
+interface Props {
+  size?: 'L' | 'XL' | 'XXL';
+  class?: string;
+}
+
+const { size, class: className } = Astro.props;
+const classes = ['ids__wrapper', size, className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <slot />
+</div>

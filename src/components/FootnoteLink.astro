@@ -1,0 +1,15 @@
+---
+/**
+ * Ссылка на сноску (триггер)
+ * Отображает номер сноски в кружке
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<ids-footnote-link class={className}>
+  <slot />
+</ids-footnote-link>

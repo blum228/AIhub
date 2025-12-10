@@ -1,0 +1,47 @@
+---
+interface Props {
+  title?: string;
+  lang?: string;
+}
+
+const { title = 'Intuition Design System', lang = 'ru' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <link rel="icon" type="image/png" href="/images/favicon-inverted.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <slot name="head" />
+  </head>
+
+  <body class="ids">
+    <slot name="header">
+      <header></header>
+    </slot>
+
+    <main>
+      <slot />
+    </main>
+
+    <slot name="footer">
+      <footer>© 2025</footer>
+    </slot>
+
+    <slot name="scripts" />
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/colors.css';
+  @import '../styles/reset.css';
+  @import '../styles/settings.css';
+  @import '../styles/layout.css';
+  @import '../styles/ids.css';
+  @import '../styles/gallery.css';
+  @import '../styles/navbar.css';
+  @import '../styles/promo-block.css';
+  @import '../styles/footnotes.css';
+</style>

@@ -1,0 +1,163 @@
+---
+/**
+ * Галерея-слайдер с управлением движением курсора
+ * @prop aspectRatio - пропорции изображений (например: "1024/658")
+ * @prop href - ссылка (опционально)
+ * @prop linkText - текст ссылки
+ * @prop indicator - тип индикатора: 'pos' | 'dots' | 'dashes'
+ * @prop contained - использовать object-fit: contain вместо cover
+ */
+interface Props {
+  aspectRatio: string;
+  href?: string;
+  linkText?: string;
+  indicator?: 'pos' | 'dots' | 'dashes';
+  contained?: boolean;
+  class?: string;
+}
+
+const { 
+  aspectRatio, 
+  href, 
+  linkText,
+  indicator, 
+  contained = false,
+  class: className 
+} = Astro.props;
+
+const Tag = href ? 'figure' : 'div';
+const classes = [
+  'ids__inline-gallery', 
+  contained && 'img-contained',
+  className
+].filter(Boolean).join(' ');
+---
+
+<Tag 
+  class={classes} 
+  style={`--img-aspect-ratio: ${aspectRatio};`}
+  data-inline-gallery
+>
+  <slot />
+  
+  {href && (
+    <a href={href}>
+      {linkText && <strong>{linkText}</strong>}
+    </a>
+  )}
+  
+  {indicator === 'pos' && (
+    <figcaption class="ids__inline-gallery__pos" data-index="1" data-count="1"></figcaption>
+  )}
+  
+  {indicator === 'dots' && (
+    <figcaption class="ids__inline-gallery__dots"></figcaption>
+  )}
+  
+  {indicator === 'dashes' && (
+    <figcaption class="ids__inline-gallery__dashes"></figcaption>
+  )}
+</Tag>
+
+<script>
+  function initInlineGalleries() {
+    const galleries = document.querySelectorAll('[data-inline-gallery]');
+    
+    galleries.forEach((gallery) => {
+      const images = gallery.querySelectorAll(':scope > img') as NodeListOf<HTMLImageElement>;
+      if (images.length < 2) return;
+
+      const count = images.length;
+      let currentIndex = 0;
+
+      // Инициализация индикаторов
+      const posIndicator = gallery.querySelector('.ids__inline-gallery__pos');
+      const dotsContainer = gallery.querySelector('.ids__inline-gallery__dots');
+      const dashesContainer = gallery.querySelector('.ids__inline-gallery__dashes');
+
+      if (posIndicator) {
+        posIndicator.setAttribute('data-count', String(count));
+      }
+
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'ids__inline-gallery__dot' + (i === 0 ? ' ids__inline-gallery__dot-active' : '');
+          dot.style.setProperty('--index', String(i));
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      if (dashesContainer) {
+        dashesContainer.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const dash = document.createElement('div');
+          dash.className = 'ids__inline-gallery__dash' + (i === 0 ? ' ids__inline-gallery__dash-active' : '');
+          dashesContainer.appendChild(dash);
+        }
+      }
+
+      function showImage(index: number) {
+        images.forEach((img, i) => {
+          img.style.visibility = i === index ? 'visible' : 'hidden';
+        });
+        currentIndex = index;
+
+        // Обновление индикаторов
+        if (posIndicator) {
+          posIndicator.setAttribute('data-index', String(index + 1));
+        }
+
+        if (dotsContainer) {
+          const dots = dotsContainer.querySelectorAll('.ids__inline-gallery__dot');
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('ids__inline-gallery__dot-active', i === index);
+          });
+        }
+
+        if (dashesContainer) {
+          const dashes = dashesContainer.querySelectorAll('.ids__inline-gallery__dash');
+          dashes.forEach((dash, i) => {
+            dash.classList.toggle('ids__inline-gallery__dash-active', i === index);
+          });
+        }
+      }
+
+      // Обработка движения мыши
+      gallery.addEventListener('mousemove', (e: Event) => {
+        const mouseEvent = e as MouseEvent;
+        const rect = (gallery as HTMLElement).getBoundingClientRect();
+        const x = mouseEvent.clientX - rect.left;
+        const progress = x / rect.width;
+        const newIndex = Math.min(Math.floor(progress * count), count - 1);
+        if (newIndex !== currentIndex) {
+          showImage(newIndex);
+        }
+      });
+
+      // Touch-события
+      let touchStartX = 0;
+      gallery.addEventListener('touchstart', (e: Event) => {
+        touchStartX = (e as TouchEvent).touches[0].clientX;
+      });
+
+      gallery.addEventListener('touchmove', (e: Event) => {
+        const touchEvent = e as TouchEvent;
+        const touchX = touchEvent.touches[0].clientX;
+        const diff = touchX - touchStartX;
+        const rect = (gallery as HTMLElement).getBoundingClientRect();
+        const progress = (touchX - rect.left) / rect.width;
+        const newIndex = Math.min(Math.max(Math.floor(progress * count), 0), count - 1);
+        if (newIndex !== currentIndex) {
+          showImage(newIndex);
+        }
+      });
+
+      showImage(0);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initInlineGalleries);
+  initInlineGalleries();
+</script>
