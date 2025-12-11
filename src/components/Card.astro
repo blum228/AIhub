@@ -1,0 +1,109 @@
+---
+/**
+ * Базовый компонент карточки
+ * Единый стиль для всех карточек в системе
+ * 
+ * @prop variant - вариант: 'default' | 'surface' | 'elevated'
+ * @prop size - размер padding: 'compact' | 'default' | 'large'
+ * @prop interactive - добавляет hover-эффект с подъёмом
+ * @prop href - если указан, карточка становится ссылкой
+ */
+interface Props {
+  variant?: 'default' | 'surface' | 'elevated';
+  size?: 'compact' | 'default' | 'large';
+  interactive?: boolean;
+  href?: string;
+  class?: string;
+}
+
+const { 
+  variant = 'default', 
+  size = 'default',
+  interactive = false,
+  href,
+  class: className 
+} = Astro.props;
+
+const Tag = href ? 'a' : 'div';
+
+const classes = [
+  'ids__card',
+  `ids__card--${variant}`,
+  size !== 'default' && `ids__card--${size}`,
+  interactive && 'ids__card--interactive',
+  className
+].filter(Boolean).join(' ');
+---
+
+<Tag href={href} class={classes}>
+  <slot />
+</Tag>
+
+<style>
+  .ids__card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--ids__space-m);
+    background: var(--ids__bg-elevated);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-l);
+    transition: 
+      border-color var(--ids__transition-fast),
+      box-shadow var(--ids__transition-fast);
+  }
+
+  a.ids__card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.ids__card:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ids__card:hover {
+    border-color: var(--ids__border-strong);
+    box-shadow: var(--ids__shadow-m);
+  }
+
+  /* Variants */
+  .ids__card--surface {
+    background: var(--ids__bg-surface);
+  }
+
+  .ids__card--elevated {
+    background: var(--ids__bg-elevated);
+    box-shadow: var(--ids__shadow-s);
+  }
+
+  .ids__card--elevated:hover {
+    box-shadow: var(--ids__shadow-l);
+  }
+
+  /* Sizes */
+  .ids__card--compact {
+    padding: var(--ids__space-s);
+  }
+
+  .ids__card--large {
+    padding: var(--ids__space-l);
+  }
+
+  /* Interactive */
+  .ids__card--interactive {
+    cursor: pointer;
+    transition: 
+      border-color var(--ids__transition-fast),
+      box-shadow var(--ids__transition-fast),
+      transform var(--ids__transition-fast);
+  }
+
+  .ids__card--interactive:hover {
+    transform: translateY(-2px);
+  }
+
+  .ids__card--interactive:active {
+    transform: translateY(0);
+  }
+</style>

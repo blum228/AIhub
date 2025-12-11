@@ -1,0 +1,343 @@
+---
+/**
+ * Карточка AI-модели с продукт-фитом (смысловая сегментация)
+ * 
+ * Показывает:
+ * - Название + рейтинг
+ * - Tagline (позиционирование)
+ * - "Идеален для" (2-3 пункта из productFit)
+ * - Цена
+ * - CTA кнопки
+ */
+
+interface ModelData {
+  slug: string;
+  name: string;
+  logo?: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  description: string;
+  tagline?: string;
+  affiliateUrl: string;
+  productFit?: {
+    idealFor?: string[];
+    notFor?: string[];
+  };
+  primaryGoal?: string;
+}
+
+interface Props {
+  model: ModelData;
+  showCTA?: boolean;
+  compact?: boolean;
+  class?: string;
+}
+
+const { model, showCTA = true, compact = false, class: className } = Astro.props;
+
+// Цена
+const priceLabel = model.pricing === 'free'
+  ? 'Бесплатно'
+  : model.priceFrom 
+    ? `от $${model.priceFrom}/мес` 
+    : 'Freemium';
+
+// Позиционирование
+const positioning = model.tagline || model.description.slice(0, 60) + '...';
+
+// Продукт-фит (берём первые 2 пункта)
+const idealFor = model.productFit?.idealFor?.slice(0, 2) || [];
+
+// Иконка цели
+const goalIcons: Record<string, string> = {
+  flirt: '🔥',
+  roleplay: '🎭',
+  companion: '💬',
+  voice: '🎤',
+  visual: '📸',
+  experimental: '🧪',
+};
+const goalIcon = model.primaryGoal ? goalIcons[model.primaryGoal] || '' : '';
+
+const classes = ['semantic-card', compact && 'semantic-card--compact', className].filter(Boolean).join(' ');
+---
+
+<article class={classes}>
+  <a href={`/models/${model.slug}`} class="semantic-card__link">
+    <!-- Header: Logo + Name + Rating -->
+    <div class="semantic-card__header">
+      <div class="semantic-card__logo-wrap">
+        {model.logo ? (
+          <img src={model.logo} alt="" class="semantic-card__logo" loading="lazy" />
+        ) : (
+          <span class="semantic-card__logo semantic-card__logo--placeholder">{model.name.charAt(0)}</span>
+        )}
+      </div>
+      <div class="semantic-card__title-group">
+        <h3 class="semantic-card__name">
+          {goalIcon && <span class="semantic-card__goal-icon">{goalIcon}</span>}
+          {model.name}
+        </h3>
+        <span class="semantic-card__rating">★ {model.rating.toFixed(1)}</span>
+      </div>
+    </div>
+
+    <!-- Positioning -->
+    <p class="semantic-card__tagline">{positioning}</p>
+
+    <!-- Product Fit -->
+    {idealFor.length > 0 && (
+      <div class="semantic-card__fit">
+        <span class="semantic-card__fit-label">Идеален для:</span>
+        <ul class="semantic-card__fit-list">
+          {idealFor.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <!-- Footer: Price -->
+    <div class="semantic-card__footer">
+      <span class="semantic-card__price" data-pricing={model.pricing}>{priceLabel}</span>
+      <span class="semantic-card__arrow">→</span>
+    </div>
+  </a>
+
+  <!-- CTA Button -->
+  {showCTA && (
+    <div class="semantic-card__cta">
+      <a href={model.affiliateUrl} class="semantic-card__btn semantic-card__btn--primary" target="_blank" rel="noopener">
+        Попробовать →
+      </a>
+    </div>
+  )}
+</article>
+
+<style>
+  .semantic-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-l);
+    overflow: hidden;
+    transition: 
+      transform var(--ids__transition-fast),
+      box-shadow var(--ids__transition-fast);
+  }
+
+  .semantic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .semantic-card__link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: var(--ids__space-l);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .semantic-card__link:hover {
+    text-decoration: none;
+  }
+
+  /* Header */
+  .semantic-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ids__space-m);
+  }
+
+  .semantic-card__logo-wrap {
+    flex-shrink: 0;
+  }
+
+  .semantic-card__logo {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--ids__radius-m);
+    object-fit: cover;
+  }
+
+  .semantic-card__logo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--ids__font-size-h4);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .semantic-card__title-group {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--ids__space-s);
+  }
+
+  .semantic-card__name {
+    margin: 0;
+    font-size: var(--ids__font-size-h4);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+    line-height: var(--ids__line-height-snug);
+  }
+
+  .semantic-card__goal-icon {
+    margin-right: var(--ids__space-2xs);
+  }
+
+  .semantic-card__rating {
+    flex-shrink: 0;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-secondary);
+  }
+
+  /* Tagline */
+  .semantic-card__tagline {
+    margin: var(--ids__space-s) 0 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  /* Product Fit */
+  .semantic-card__fit {
+    margin-top: var(--ids__space-m);
+    padding-top: var(--ids__space-m);
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .semantic-card__fit-label {
+    display: block;
+    font-size: var(--ids__font-size-caption);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--ids__space-xs);
+  }
+
+  .semantic-card__fit-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .semantic-card__fit-list li {
+    position: relative;
+    padding-left: 1.2em;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  .semantic-card__fit-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--ids__accent);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .semantic-card__fit-list li + li {
+    margin-top: var(--ids__space-2xs);
+  }
+
+  /* Footer */
+  .semantic-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: var(--ids__space-m);
+  }
+
+  .semantic-card__price {
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  .semantic-card__price[data-pricing="free"] {
+    color: rgb(0, 140, 70);
+  }
+
+  .semantic-card__arrow {
+    color: var(--ids__text-muted);
+    transition: transform var(--ids__transition-fast), color var(--ids__transition-fast);
+  }
+
+  .semantic-card:hover .semantic-card__arrow {
+    transform: translateX(4px);
+    color: var(--ids__accent);
+  }
+
+  /* CTA Buttons */
+  .semantic-card__cta {
+    display: flex;
+    gap: var(--ids__space-xs);
+    padding: var(--ids__space-m);
+    padding-top: 0;
+  }
+
+  .semantic-card__btn {
+    flex: 1;
+    padding: var(--ids__space-s) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    text-align: center;
+    text-decoration: none;
+    border-radius: var(--ids__radius-s);
+    transition: 
+      background var(--ids__transition-fast),
+      color var(--ids__transition-fast);
+  }
+
+  .semantic-card__btn--secondary {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-page);
+  }
+
+  .semantic-card__btn--secondary:hover {
+    background: var(--ids__bg-surface-hover);
+    text-decoration: none;
+  }
+
+  .semantic-card__btn--primary {
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .semantic-card__btn--primary:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: var(--ids__bg-page);
+  }
+
+  /* Compact variant */
+  .semantic-card--compact .semantic-card__link {
+    padding: var(--ids__space-m);
+  }
+
+  .semantic-card--compact .semantic-card__logo {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .semantic-card--compact .semantic-card__fit {
+    display: none;
+  }
+
+  .semantic-card--compact .semantic-card__cta {
+    display: none;
+  }
+</style>

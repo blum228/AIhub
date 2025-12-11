@@ -1,0 +1,55 @@
+---
+/**
+ * Бейдж цены
+ * @prop pricing - тип: 'free' | 'freemium' | 'paid'
+ * @prop priceFrom - цена от (для freemium/paid)
+ */
+interface Props {
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  class?: string;
+}
+
+const { pricing, priceFrom, class: className } = Astro.props;
+
+const labels: Record<string, string> = {
+  free: 'Бесплатно',
+  freemium: priceFrom ? `От $${priceFrom}` : 'Freemium',
+  paid: priceFrom ? `От $${priceFrom}` : 'Платный',
+};
+
+const classes = [
+  'aigh__price-badge',
+  `aigh__price-badge--${pricing}`,
+  className
+].filter(Boolean).join(' ');
+---
+
+<span class={classes}>{labels[pricing]}</span>
+
+<style>
+  .aigh__price-badge {
+    display: inline-block;
+    padding: var(--ids__space-2xs) var(--ids__space-s);
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-semibold);
+    line-height: var(--ids__line-height-snug);
+    border-radius: var(--ids__radius-xs);
+    white-space: nowrap;
+  }
+
+  .aigh__price-badge--free {
+    color: rgb(0, 140, 70);
+    background-color: rgba(0, 180, 90, 0.12);
+  }
+
+  .aigh__price-badge--freemium {
+    color: rgb(var(--ids__link-RGB));
+    background-color: rgba(var(--ids__link-RGB), 0.1);
+  }
+
+  .aigh__price-badge--paid {
+    color: var(--ids__text-secondary);
+    background-color: var(--ids__bg-surface);
+  }
+</style>

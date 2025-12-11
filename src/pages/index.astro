@@ -1,405 +1,409 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Space from '../components/Space.astro';
+/**
+ * Главная страница AIGirlsHub
+ * Единственная точка входа: выбор цели → переход к сервисам
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
 import Wrapper from '../components/Wrapper.astro';
-import TextWidth from '../components/TextWidth.astro';
-import Section from '../components/Section.astro';
-import Sequence from '../components/Sequence.astro';
-import SequenceItem from '../components/SequenceItem.astro';
-import Aside from '../components/Aside.astro';
-import PromoLink from '../components/PromoLink.astro';
-import Rounded from '../components/Rounded.astro';
-import ColorPlate from '../components/ColorPlate.astro';
-import Navbar from '../components/Navbar.astro';
-import NavItem from '../components/NavItem.astro';
-import Gallery from '../components/Gallery.astro';
-import GalleryItem from '../components/GalleryItem.astro';
-import InlineGallery from '../components/InlineGallery.astro';
-import Sleepy from '../components/Sleepy.astro';
-import Footnote from '../components/Footnote.astro';
-import FootnoteLink from '../components/FootnoteLink.astro';
+import Space from '../components/Space.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import QuickPick from '../components/QuickPick.astro';
+
+// Получаем все модели для подсчёта
+const allModels = await getCollection('models');
+const models = allModels.map(entry => ({ 
+  slug: entry.id.replace('.yaml', ''), 
+  ...entry.data 
+}));
+
+// Группируем по целям для статистики
+const goalCounts = {
+  flirt: models.filter(m => m.primaryGoal === 'flirt' || m.secondaryGoals?.includes('flirt')).length,
+  roleplay: models.filter(m => m.primaryGoal === 'roleplay' || m.secondaryGoals?.includes('roleplay')).length,
+  companion: models.filter(m => m.primaryGoal === 'companion' || m.secondaryGoals?.includes('companion')).length,
+  voice: models.filter(m => m.primaryGoal === 'voice' || m.secondaryGoals?.includes('voice')).length,
+  visual: models.filter(m => m.primaryGoal === 'visual' || m.secondaryGoals?.includes('visual')).length,
+};
+
+// Цели пользователя — главная навигация
+const goals = [
+  {
+    id: 'flirt',
+    title: 'Флирт и NSFW',
+    description: 'Романтика, секс-чат, откровенные разговоры',
+    icon: '🔥',
+    count: goalCounts.flirt,
+    href: '/for/flirt',
+    color: 'red',
+  },
+  {
+    id: 'roleplay',
+    title: 'Ролевые игры',
+    description: 'Персонажи, сценарии, сюжеты',
+    icon: '🎭',
+    count: goalCounts.roleplay,
+    href: '/for/roleplay',
+    color: 'purple',
+  },
+  {
+    id: 'companion',
+    title: 'Поддержка',
+    description: 'Эмоциональная связь, дружба, разговоры',
+    icon: '💬',
+    count: goalCounts.companion,
+    href: '/for/companion',
+    color: 'blue',
+  },
+  {
+    id: 'voice',
+    title: 'Голос',
+    description: 'Звонки, голосовое общение',
+    icon: '🎤',
+    count: goalCounts.voice,
+    href: '/for/voice',
+    color: 'green',
+  },
+  {
+    id: 'visual',
+    title: 'Генерация фото',
+    description: 'Картинки, аватары, визуал',
+    icon: '📸',
+    count: goalCounts.visual,
+    href: '/for/visual',
+    color: 'orange',
+  },
+];
+
+// FAQ для SEO
+const faqItems = [
+  {
+    question: 'Что такое AI-девушка?',
+    answer: 'Виртуальный компаньон на базе нейросетей. Помнит разговоры, генерирует фото, звонит голосом.'
+  },
+  {
+    question: 'Это безопасно?',
+    answer: 'Да. Данные шифруются. Не делись личными данными (адрес, карта) с любым AI.'
+  },
+  {
+    question: 'Сколько стоит?',
+    answer: 'От 0 до $20/мес. Character.AI бесплатный. Replika, Candy.AI — freemium от $7/мес.'
+  },
+  {
+    question: 'Какую выбрать?',
+    answer: 'Бесплатно — Character.AI. Фото — Candy.AI. Голос — Replika. NSFW — Muah AI.'
+  }
+];
+
+// Schema.org
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'AIGirlsHub',
+  url: 'https://aigirlshub.ru',
+  description: 'Каталог лучших AI-девушек и виртуальных компаньонов'
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer }
+  }))
+};
 ---
 
-<BaseLayout title="Intuition Design System — Astro">
-  <Wrapper>
-    <Space size="XL" />
-    <TextWidth>
-      <NavItem id="intro" label="О дизайн-системе">
-        <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0">.ids</h1>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 318.52 148.95" style="width: 15em">
-          <path
-            style="fill: rgba(var(--ids__accent-RGB), 1)"
-            d="M87.51,42.44c-13.74,34.36-24.86,69.73-24.86,84.88,0,10.11,10.71,20.21,21.22,20.21,8.08,0,20.01-7.88,28.9-19.2l-13.95-10.91c-6.06,6.06-11.12,9.9-14.15,9.9-1.01,0-2.02-1.01-2.02-3.03,0-7.07,5.46-29.3,23.85-74.78l-19-7.07ZM40.42,128.34c0,9.9-9.9,20.21-20.21,20.21S0,138.44,0,128.34s10.11-20.21,20.21-20.21c10.71,0,20.21,10.71,20.21,20.21M125.51,17.18c0,8.49-8.49,17.18-17.18,17.18s-17.18-8.69-17.18-17.18S99.84,0,108.33,0s17.18,8.49,17.18,17.18M318.52,57.8c-7.68-11.72-20.61-21.42-33.75-21.42-17.99,0-34.36,16.98-34.36,31.73,0,26.27,38.6,33.75,38.6,47.9,0,6.06-8.49,12.33-16.57,12.33-10.11,0-17.79-8.08-23.85-16.17l-13.34,13.14c6.26,9.1,21.83,22.23,38.2,22.23,18.19,0,36.38-17.38,36.38-34.56,0-23.24-40.22-32.74-40.22-47.49,0-5.66,6.06-11.32,13.34-11.32,8.29,0,15.16,6.27,22.23,16.57l13.34-12.93ZM199.07,78.82c-15.16,29.31-38.4,48.51-45.47,48.51-3.03,0-5.05-3.03-5.05-6.06,0-15.16,19.2-64.67,31.33-64.67,8.09,0,16.17,13.14,19.2,22.23M204.13,66.09l9.09,11.72c-3.03-23.24-21.22-41.43-35.37-41.43-29.3,0-50.53,66.69-50.53,87.91,0,12.13,12.13,24.25,24.25,24.25,15.16,0,34.36-20.21,61.64-62.65l-15.97,12.53c-3.43,15.16-9.09,31.12-13.14,46.28l20.21,4.24c11.12-47.49,22.03-94.99,36.18-142.48l-20.21-4.45c-5.05,20.21-10.51,43.65-16.17,64.07"
-          />
-        </svg>
-      </NavItem>
-      <Space size="S" />
+<SiteLayout 
+  title="AIGirlsHub — Каталог AI-девушек 2025"
+  description="Найди идеальную AI-девушку. Обзоры и сравнения: Candy.AI, Character.AI, Replika."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
 
-      <p>Intuition Design System, IDS – дизайн-система для вёрстки лендингов, онлайн-изданий и любых цифровых продуктов для веба, в основе которых лежат нарративы.</p>
-      
-      <Navbar />
-      
-      <p>
-        Технически IDS – набор CSS-классов и JS-компонентов. Это не библиотека, а готовый шаблон вёрстки. Вы не подключаете IDS в проект как зависимость, не расширяете
-        классы, не переопределяете свойства. Вместо этого вы тупо копируете её исходный код, и меняете его как захочется.
-      </p>
-      
-      <Aside>
-        <p>Публичный репозиторий: <a href="https://github.com/intuition-tech/ids">github.com/intuition-tech/ids</a></p>
-        <p>Версия: 1.0 (Astro)</p>
-      </Aside>
-    </TextWidth>
+  <!-- Hero: Главный вопрос -->
+  <section class="hero">
+    <Wrapper>
+      <h1>Что ты ищешь?</h1>
+      <p class="hero__sub">Выбери цель — мы подберём AI-девушку</p>
+    </Wrapper>
+  </section>
+
+  <!-- УРОВЕНЬ 1: Выбор цели пользователя -->
+  <Wrapper>
+    <section class="goals">
+      <div class="goals__grid">
+        {goals.map(goal => (
+          <a href={goal.href} class={`goal-card goal-card--${goal.color}`}>
+            <span class="goal-card__icon">{goal.icon}</span>
+            <div class="goal-card__content">
+              <h3 class="goal-card__title">{goal.title}</h3>
+              <p class="goal-card__desc">{goal.description}</p>
+            </div>
+            <span class="goal-card__count">{goal.count}</span>
+          </a>
+        ))}
+      </div>
+    </section>
   </Wrapper>
 
-  <Section id="setup">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <NavItem id="setup" label="Настройка">
-          <h2>Настройка</h2>
-        </NavItem>
-        <p>Базовые параметры дизайн-системы задаются в файле <code>settings.css</code>.</p>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <Space size="L" />
 
-  <Section id="color">
-    <Wrapper>
-      <Space />
-      <TextWidth>
-        <h3>Цвет</h3>
-        <p>IDS хранит цветовую палитру в переменных. Именование цветов функциональное.</p>
-      </TextWidth>
-      
-      <Space />
-      <Sequence size="M" gap="S">
-        <SequenceItem>
-          <ColorPlate color="text" inverted />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="link" inverted />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="hover" inverted />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="mark" />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="code" inverted />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="accent" inverted />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="surface" />
-        </SequenceItem>
-        <SequenceItem>
-          <ColorPlate color="background" />
-        </SequenceItem>
-      </Sequence>
-    </Wrapper>
-  </Section>
+  <!-- QuickPick: быстрый выбор -->
+  <Wrapper>
+    <QuickPick />
+  </Wrapper>
 
-  <Section id="frame">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <NavItem id="frame" label="Каркас страницы">
-          <h2>Каркас страницы</h2>
-        </NavItem>
-        <p>
-          IDS не использует модульные сетки или колонки для организации пространства страницы. Всё проще: страница состоит из «этажей», они идут сверху вниз друг за другом.
-        </p>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <Space size="L" />
 
-  <Section id="wrappers">
-    <Wrapper>
-      <Space />
-      <TextWidth>
-        <h3>Обёртки</h3>
-        <p><code>&lt;Wrapper&gt;</code> – стандартный этаж c большими полями на десктопе.</p>
-        <p><code>&lt;Wrapper size="L"&gt;</code> – этаж с увеличенной шириной.</p>
-        <p><code>&lt;Wrapper size="XL"&gt;</code> – этаж на всю ширину с минимальными полями.</p>
-        <p><code>&lt;Wrapper size="XXL"&gt;</code> – этаж на всю ширину без полей.</p>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <!-- Превью сервисов -->
+  <Wrapper>
+    <section class="featured-services">
+      <p class="featured-services__text">
+        Candy.AI • Replika • Character.AI и ещё {models.length - 3} сервисов
+      </p>
+    </section>
+  </Wrapper>
 
-  <Section id="spacers">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <h3>Система вертикальных отступов</h3>
-        <p>Когда нужны заметные отступы – используются спейсеры.</p>
-      </TextWidth>
-      <Space size="M" />
-      <Sequence size="M" gap="S">
-        <SequenceItem>
-          <p><code>&lt;Space size="S"&gt;</code></p>
-          <Space size="S" class="demo-space" />
-        </SequenceItem>
-        <SequenceItem>
-          <p><code>&lt;Space size="M"&gt;</code></p>
-          <Space size="M" class="demo-space" />
-        </SequenceItem>
-        <SequenceItem>
-          <p><code>&lt;Space size="L"&gt;</code></p>
-          <Space size="L" class="demo-space" />
-        </SequenceItem>
-        <SequenceItem>
-          <p><code>&lt;Space size="XL"&gt;</code></p>
-          <Space size="XL" class="demo-space" />
-        </SequenceItem>
-      </Sequence>
-    </Wrapper>
-  </Section>
+  <Space size="L" />
 
-  <Section id="tags-style">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <NavItem id="tags-style" label="Стилизация тегов">
-          <h2>Стилизация тегов</h2>
-        </NavItem>
-        <p>IDS стилизует часто используемые теги внутри контейнера <code>.ids</code>.</p>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <!-- Ссылка на все сервисы -->
+  <Wrapper>
+    <div class="all-services">
+      <a href="/catalog" class="all-services__link">
+        Смотреть все {models.length} сервисов →
+      </a>
+    </div>
+  </Wrapper>
 
-  <Section id="headings">
-    <Wrapper>
-      <Space size="M" />
-      <TextWidth>
-        <h3>Заголовки</h3>
-        <code>h1</code>
-        <Space size="M" />
-        <h1>Главный заголовок страницы</h1>
-        <hr />
-        <code>h2</code>
-        <Space size="M" />
-        <h2>Заголовок второго уровня</h2>
-        <hr />
-        <code>h3</code>
-        <Space size="M" />
-        <h3>Заголовок третьего уровня</h3>
-        <hr />
-        <code>h4</code>
-        <Space size="M" />
-        <h4>Заголовок четвёртого уровня</h4>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <Space size="XL" />
 
-  <Section id="text">
-    <Wrapper>
-      <Space size="M" />
-      <TextWidth>
-        <h3>Текст</h3>
-        <code>p</code>
-        <p>Информации для принятия решения не хватает всегда, по определению. Когда информации достаточно, правильный ход можно как бы «вычислить».</p>
-        <code>p.loud</code>
-        <p class="loud">Дизайнеру стоит быть самостоятельным, разносторонним, мультидисциплинарным и сложным.</p>
-        <code>p.huge</code>
-        <p class="huge">Я передумал.</p>
-        <code>mark</code> <code>code</code>
-        <p>Используются, чтобы выделить <mark>важную мысль</mark> или <code>фрагмент кода</code>.</p>
-      </TextWidth>
-    </Wrapper>
-  </Section>
+  <!-- FAQ -->
+  <Wrapper>
+    <section class="faq">
+      <SectionTitle size="small">Частые вопросы</SectionTitle>
+      <div class="faq__list">
+        {faqItems.map((item, index) => (
+          <details class="faq__item" open={index < 2}>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </Wrapper>
 
-  <Section id="components">
-    <Wrapper>
-      <Space size="L" />
-      <NavItem id="components" label="Компоненты">
-        <h2>Компоненты</h2>
-      </NavItem>
-    </Wrapper>
-  </Section>
-
-  <Section id="sleepy">
-    <Wrapper>
-      <Space />
-      <TextWidth>
-        <h3><code>&lt;Sleepy&gt;</code></h3>
-        <p>Компонент для анимации появления элементов при скролле.</p>
-        <Space size="M" />
-      </TextWidth>
-      
-      <Sleepy class="icons-demo">
-        <div class="icon"><img src="/images/icons/icon1.png" alt="" /></div>
-        <div class="icon"><img src="/images/icons/icon2.png" alt="" /></div>
-        <div class="icon"><img src="/images/icons/icon3.png" alt="" /></div>
-        <div class="icon"><img src="/images/icons/icon4.png" alt="" /></div>
-        <div class="icon"><img src="/images/icons/icon5.png" alt="" /></div>
-        <div class="icon"><img src="/images/icons/icon6.png" alt="" /></div>
-      </Sleepy>
-    </Wrapper>
-  </Section>
-
-  <Section id="footnotes">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <h3><code>&lt;Footnote&gt;</code></h3>
-        <p>
-          <code>&lt;FootnoteLink&gt;</code> и <code>&lt;Footnote&gt;</code> — компоненты для создания всплывающих сносок с автоматической нумерацией.
-        </p>
-
-        <Space size="S" />
-        <p><strong>Пример использования:</strong></p>
-
-        <p>
-          Это простой текст с
-          <FootnoteLink>первой сноской</FootnoteLink>
-          и ещё одной
-          <FootnoteLink>второй сноской</FootnoteLink>
-          для демонстрации.
-        </p>
-
-        <Footnote>
-          <p>Это содержимое первой сноски. Оно может включать любую разметку: параграфы, ссылки, списки.</p>
-        </Footnote>
-
-        <Footnote>
-          <p>А это вторая сноска. Обратите внимание, что номер появляется автоматически.</p>
-        </Footnote>
-      </TextWidth>
-    </Wrapper>
-  </Section>
-
-  <Section id="gallery">
-    <Wrapper size="L">
-      <Space size="L" />
-      <TextWidth>
-        <h3><code>&lt;Gallery&gt;</code></h3>
-        <p>Галерея картинок, которые открываются и листаются в модальном окне.</p>
-      </TextWidth>
-      <Space size="XL" />
-      
-      <Gallery>
-        <GalleryItem 
-          src="/images/gallery/Photo by Jan van der Wolf_pexels-jan-van-der-wolf-11680885-11978833.jpg"
-          alt="Photo by Jan van der Wolf"
-          caption="Photo: Jan van der Wolf"
-        />
-        <GalleryItem 
-          src="/images/gallery/Photo by Mehmet Turgut  Kirkgoz_geometric-modern-architecture-16615613.jpg"
-          alt="Photo by Mehmet Turgut Kirkgoz"
-          caption="Photo: Mehmet Turgut Kirkgoz"
-        />
-        <GalleryItem 
-          src="/images/gallery/Photo by Jan van der Wolf_abstract-image-of-a-shadow-on-a-green-wall-and-blue-sky-11895895.jpg"
-          alt="Photo by Jan van der Wolf"
-          caption="Photo: Jan van der Wolf"
-        />
-        <GalleryItem 
-          src="/images/gallery/icon1.png"
-          alt="abstract geometry"
-        />
-        <GalleryItem 
-          src="/images/gallery/icon2.png"
-          alt="abstract geometry"
-        />
-        <GalleryItem 
-          src="/images/gallery/icon3.png"
-          alt="abstract geometry"
-        />
-      </Gallery>
-    </Wrapper>
-  </Section>
-
-  <Section id="inline-gallery">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <h3><code>&lt;InlineGallery&gt;</code></h3>
-        <p>Галерея, которая переключается горизонтальным движением курсора.</p>
-        <Space size="M" />
-        
-        <Sequence size="XL" gap="L">
-          <SequenceItem>
-            <InlineGallery aspectRatio="1024/658">
-              <img src="/images/inline-gallery/horse/img1.jpeg" alt="" />
-              <img src="/images/inline-gallery/horse/img2.jpeg" alt="" />
-              <img src="/images/inline-gallery/horse/img3.jpeg" alt="" />
-              <img src="/images/inline-gallery/horse/img4.jpeg" alt="" />
-              <img src="/images/inline-gallery/horse/img5.jpeg" alt="" />
-            </InlineGallery>
-          </SequenceItem>
-          <SequenceItem>
-            <InlineGallery aspectRatio="920/550" indicator="pos">
-              <img src="/images/inline-gallery/rocket/Rocket_v11_1.jpg" alt="" />
-              <img src="/images/inline-gallery/rocket/Rocket_v11_2.jpg" alt="" />
-              <img src="/images/inline-gallery/rocket/Rocket_v11_3.jpg" alt="" />
-              <img src="/images/inline-gallery/rocket/Rocket_v11_4.jpg" alt="" />
-              <img src="/images/inline-gallery/rocket/Rocket_v11_5.jpg" alt="" />
-            </InlineGallery>
-          </SequenceItem>
-        </Sequence>
-      </TextWidth>
-    </Wrapper>
-  </Section>
-
-  <Section id="rounded">
-    <Wrapper>
-      <Space size="L" />
-      <TextWidth>
-        <h4><code>&lt;Rounded&gt;</code></h4>
-        <p>Модификатор для скругления углов суперэллипсом.</p>
-        <Space size="S" />
-        
-        <Sequence size="L" gap="L">
-          <SequenceItem>
-            <Rounded>
-              <figure style="margin:0;padding:0">
-                <img src="/images/gallery/Photo by Jan van der Wolf_abstract-image-of-a-shadow-on-a-green-wall-and-blue-sky-11895895.jpg" alt="Photo by Jan van der Wolf" />
-              </figure>
-            </Rounded>
-          </SequenceItem>
-          <SequenceItem>
-            <Rounded radius="5em">
-              <figure style="margin:0;padding:0">
-                <img src="/images/gallery/Photo by Jan van der Wolf_pexels-jan-van-der-wolf-11680885-11986204.jpg" alt="Photo by Jan van der Wolf" />
-              </figure>
-            </Rounded>
-          </SequenceItem>
-        </Sequence>
-      </TextWidth>
-      <Space size="XL" />
-    </Wrapper>
-  </Section>
-</BaseLayout>
+  <Space size="XL" />
+</SiteLayout>
 
 <style>
-  .demo-space {
-    background-color: rgba(var(--ids__accent-RGB), 0.1);
+  /* ═══════════════════════════════════════════════════════════════
+     HERO — Минималистичный
+     ═══════════════════════════════════════════════════════════════ */
+  .hero {
+    padding: var(--ids__space-3xl) 0 var(--ids__space-xl);
+    text-align: center;
   }
-  
-  .icons-demo {
+
+  .hero h1 {
+    margin: 0;
+    font-size: var(--ids__font-size-hero);
+    font-weight: var(--ids__font-weight-heavy);
+    letter-spacing: -0.02em;
+    line-height: var(--ids__line-height-tight);
+  }
+
+  .hero__sub {
+    margin: var(--ids__space-xs) 0 0;
+    font-size: var(--ids__font-size-h3);
+    color: var(--ids__text-secondary);
+  }
+
+  @media (width < 900px) {
+    .hero h1 {
+      font-size: var(--ids__font-size-hero-mobile);
+    }
+  }
+
+  @media (width < 600px) {
+    .hero {
+      padding: var(--ids__space-2xl) 0 var(--ids__space-l);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     GOALS — Выбор цели (Уровень 1 сегментации)
+     ═══════════════════════════════════════════════════════════════ */
+  .goals__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ids__space-m);
+  }
+
+  @media (width < 900px) {
+    .goals__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (width < 500px) {
+    .goals__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .goal-card {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4em;
+    align-items: flex-start;
+    gap: var(--ids__space-m);
+    padding: var(--ids__space-l);
+    background: var(--ids__bg-surface);
+    border: 2px solid transparent;
+    border-radius: var(--ids__radius-l);
+    text-decoration: none;
+    color: inherit;
+    transition: 
+      border-color var(--ids__transition-fast),
+      transform var(--ids__transition-fast),
+      box-shadow var(--ids__transition-fast);
   }
-  
-  .icons-demo .icon {
-    width: 3.5em;
-    opacity: 1;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+
+  .goal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
-  
-  .icons-demo .icon:nth-child(1) { transition-delay: 0s; }
-  .icons-demo .icon:nth-child(2) { transition-delay: 0.1s; }
-  .icons-demo .icon:nth-child(3) { transition-delay: 0.2s; }
-  .icons-demo .icon:nth-child(4) { transition-delay: 0.3s; }
-  .icons-demo .icon:nth-child(5) { transition-delay: 0.4s; }
-  .icons-demo .icon:nth-child(6) { transition-delay: 0.5s; }
-  
-  .icons-demo.is-sleeping .icon {
-    opacity: 0;
-    transform: translateX(1em) rotate(7deg);
-    transition: opacity 0s ease, transform 0s ease;
+
+  .goal-card__icon {
+    font-size: 2em;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .goal-card__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .goal-card__title {
+    margin: 0;
+    font-size: var(--ids__font-size-h4);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+  }
+
+  .goal-card__desc {
+    margin: var(--ids__space-2xs) 0 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  .goal-card__count {
+    font-size: var(--ids__font-size-caption);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-muted);
+    background: var(--ids__bg-page);
+    padding: var(--ids__space-2xs) var(--ids__space-xs);
+    border-radius: var(--ids__radius-s);
+    flex-shrink: 0;
+  }
+
+  /* Цветовые акценты для карточек целей */
+  .goal-card--red:hover { border-color: #ef4444; }
+  .goal-card--purple:hover { border-color: #a855f7; }
+  .goal-card--blue:hover { border-color: #3b82f6; }
+  .goal-card--green:hover { border-color: #22c55e; }
+  .goal-card--orange:hover { border-color: #f97316; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     ALL SERVICES — Ссылка на каталог
+     ═══════════════════════════════════════════════════════════════ */
+  .all-services {
+    text-align: center;
+  }
+
+  .all-services__link {
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+
+  .all-services__link:hover {
+    text-decoration: underline;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     FEATURED SERVICES — Превью сервисов
+     ═══════════════════════════════════════════════════════════════ */
+  .featured-services {
+    text-align: center;
+  }
+
+  .featured-services__text {
+    margin: 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     FAQ
+     ═══════════════════════════════════════════════════════════════ */
+  /* SectionTitle handles h2 styling */
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-2xs);
+  }
+
+  .faq__item {
+    padding: var(--ids__space-s) var(--ids__space-m);
+    background: transparent;
+    border-radius: var(--ids__radius-s);
+    cursor: pointer;
+    transition: background var(--ids__transition-fast);
+  }
+
+  .faq__item:hover {
+    background: var(--ids__bg-surface);
+  }
+
+  .faq__item[open] {
+    background: var(--ids__bg-surface);
+  }
+
+  .faq__item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+    list-style: none;
+    padding: 0;
+  }
+
+  .faq__item summary::after {
+    content: '+';
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-normal);
+    color: var(--ids__text-muted);
+    transition: transform var(--ids__transition-fast);
+  }
+
+  .faq__item[open] summary::after {
+    content: '−';
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item p {
+    margin: var(--ids__space-s) 0 0;
+    font-size: var(--ids__font-size-small);
+    line-height: var(--ids__line-height-relaxed);
+    color: var(--ids__text-secondary);
   }
 </style>

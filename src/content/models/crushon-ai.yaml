@@ -1,0 +1,138 @@
+# CrushOn.AI — Character.AI без цензуры
+name: CrushOn.AI
+updatedAt: "2025-12-11"
+rating: 4.5
+pricing: freemium
+priceFrom: 5.99
+
+description: "Представь Character.AI, но без строгой модерации. Миллионы персонажей, ролевые игры и NSFW-контент для взрослых."
+tagline: "Character.AI + NSFW"
+
+# ═══════════════════════════════════════════════════════════════
+# СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
+# ═══════════════════════════════════════════════════════════════
+
+# Уровень 1: Главная цель
+primaryGoal: roleplay
+secondaryGoals:
+  - flirt
+
+# Уровень 2: Тип опыта
+experienceTypes:
+  - character-accurate  # Персонажи из аниме/фильмов
+  - kinky-rp           # NSFW ролеплей
+  - high-improv        # Быстрые респонсы
+  - lite-rp            # Лёгкие сценки
+
+# Уровень 3: Уникальные фичи
+advancedFeatures:
+  memoryType: short
+  personalityCustomization: true
+  customAvatar: false
+  voiceQuality: none
+  multimodal: false
+  responseSpeed: fast
+  eroticQuality: good          # Хороший NSFW
+  storyDepth: medium
+  censorship: none             # Без цензуры
+  nsfwSupport: full
+  roleTypes:
+    - anime
+    - fiction
+    - fantasy
+    - romantic
+  hasMarketplace: true         # Маркетплейс персонажей
+  hasGroupChats: false
+
+# Уровень 4: Продукт-фит
+productFit:
+  idealFor:
+    - "Любишь Character.AI, но хочешь NSFW"
+    - "Важна библиотека готовых персонажей"
+    - "Ищешь доступный NSFW-сервис"
+    - "Нравятся ролевые игры с персонажами из аниме"
+  notFor:
+    - "Нужна генерация фото"
+    - "Важно голосовое общение"
+    - "Ищешь глубокие эмоциональные отношения"
+  alternatives:
+    - slug: character-ai
+      reason: "Если не нужен NSFW — бесплатно"
+    - slug: candy-ai
+      reason: "Если нужна генерация фото"
+    - slug: muah-ai
+      reason: "Если нужен более hardcore NSFW"
+
+# ═══════════════════════════════════════════════════════════════
+# КОНТЕНТ
+# ═══════════════════════════════════════════════════════════════
+
+content: |
+  ## CrushOn.AI — то, чем должен был стать Character.AI
+
+  Если тебе нравится концепция Character.AI, но бесит цензура — CrushOn.AI решает эту проблему. Та же идея, но для взрослой аудитории.
+
+  ### Огромная библиотека персонажей
+
+  Как и в Character.AI, здесь миллионы готовых персонажей от сообщества. Аниме-девушки, оригинальные характеры, фандомные персонажи — всё на месте.
+
+  ### NSFW разрешён
+
+  Главное отличие от Character.AI — здесь можно. Откровенные разговоры, ролевые сценарии 18+ — без банов и предупреждений.
+
+  ### Создавай своих персонажей
+
+  Полноценный редактор для создания уникальных AI-девушек. Настраивай характер, историю, манеру общения.
+
+  ### Доступные цены
+
+  От $5.99/месяц — один из самых доступных вариантов на рынке для NSFW-контента.
+
+  ### Честно о минусах
+
+  Качество диалогов чуть ниже, чем у Character.AI. Нет генерации изображений. Русский язык не поддерживается.
+
+  ### Для кого
+
+  - Любишь Character.AI, но хочешь больше свободы
+  - Важна библиотека готовых персонажей
+  - Ищешь доступный NSFW-сервис
+  - Нравятся ролевые игры
+
+pros:
+  - Огромная библиотека персонажей
+  - NSFW без ограничений
+  - Доступная цена от $5.99
+  - Создание своих персонажей
+  - Активное сообщество
+
+cons:
+  - Качество диалогов чуть ниже топов
+  - Нет генерации изображений
+  - Нет русского языка
+  - Нет голосовых функций
+
+features:
+  voice: false
+  nsfw: true
+  russian: false
+  imageGen: false
+  roleplay: true
+  api: false
+
+tags:
+  - nsfw
+  - roleplay
+  - free
+  - marketplace
+  - character-accurate
+
+affiliateUrl: "https://crushon.ai/?ref=aigirlshub"
+websiteUrl: "https://crushon.ai"
+
+seo:
+  title: "CrushOn.AI — обзор 2025: Character.AI без цензуры"
+  description: "Полный разбор CrushOn.AI: как работает, чем отличается от Character.AI, стоит ли платить. Честный обзор."
+
+featured: false
+order: 7

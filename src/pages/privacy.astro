@@ -1,0 +1,120 @@
+---
+/**
+ * Политика конфиденциальности
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Wrapper from '../components/Wrapper.astro';
+import Space from '../components/Space.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Политика конфиденциальности' }
+];
+---
+
+<SiteLayout 
+  title="Политика конфиденциальности — AIGirlsHub"
+  description="Политика конфиденциальности сайта AIGirlsHub. Информация о сборе и обработке данных."
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    
+    <h1>Политика конфиденциальности</h1>
+    
+    <article class="legal-content">
+      <p class="legal-updated">Последнее обновление: январь 2025</p>
+
+      <h2>Какие данные мы собираем</h2>
+      <p>
+        AIGirlsHub — статический сайт. Мы не требуем регистрации и не собираем персональные данные напрямую.
+      </p>
+      <p>
+        Мы можем собирать анонимную статистику посещений через сервисы аналитики:
+      </p>
+      <ul>
+        <li>Страницы, которые вы посещаете</li>
+        <li>Время на сайте</li>
+        <li>Тип устройства и браузера</li>
+        <li>Страна (без точного местоположения)</li>
+      </ul>
+
+      <h2>Cookies</h2>
+      <p>
+        Мы используем минимальное количество cookies для работы сайта и аналитики. 
+        Вы можете отключить cookies в настройках браузера.
+      </p>
+
+      <h2>Сторонние сервисы</h2>
+      <p>
+        При переходе на сайты AI-сервисов по нашим ссылкам, вы попадаете под действие 
+        их политик конфиденциальности. Мы рекомендуем ознакомиться с ними перед регистрацией.
+      </p>
+
+      <h2>Партнёрские ссылки</h2>
+      <p>
+        Партнёрские программы могут использовать cookies для отслеживания переходов. 
+        Это стандартная практика в индустрии.
+      </p>
+
+      <h2>Безопасность</h2>
+      <p>
+        Сайт работает по протоколу HTTPS. Мы не храним конфиденциальные данные пользователей.
+      </p>
+
+      <h2>Ваши права</h2>
+      <p>
+        Вы имеете право:
+      </p>
+      <ul>
+        <li>Запросить информацию о собранных данных</li>
+        <li>Потребовать удаления данных</li>
+        <li>Отказаться от аналитики (через настройки браузера)</li>
+      </ul>
+
+      <h2>Изменения политики</h2>
+      <p>
+        Мы можем обновлять эту политику. Актуальная версия всегда доступна на этой странице.
+      </p>
+
+      <h2>Контакты</h2>
+      <p>
+        Вопросы по конфиденциальности: <strong>hello@aigirlshub.ru</strong>
+      </p>
+    </article>
+    
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5em;
+  }
+
+  .legal-updated {
+    font-size: 0.9em;
+    color: rgba(var(--ids__text-RGB), 0.5);
+    margin-bottom: 2em;
+  }
+
+  .legal-content {
+    max-width: 40em;
+    line-height: 1.7;
+  }
+
+  .legal-content h2 {
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+    font-size: 1.3em;
+  }
+
+  .legal-content ul {
+    margin: 1em 0;
+  }
+
+  .legal-content li {
+    margin-bottom: 0.4em;
+  }
+</style>

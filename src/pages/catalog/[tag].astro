@@ -1,0 +1,99 @@
+---
+/**
+ * Каталог с активным фильтром
+ * URL: /catalog/[tag]
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Wrapper from '../../components/Wrapper.astro';
+import Space from '../../components/Space.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CatalogFilters from '../../components/CatalogFilters.astro';
+import ModelGrid from '../../components/ModelGrid.astro';
+import EmptyState from '../../components/EmptyState.astro';
+
+// Конфигурация фильтров
+const filterConfig: Record<string, { title: string; description: string }> = {
+  free: { title: 'Бесплатные', description: 'AI-компаньоны с бесплатным доступом' },
+  russian: { title: 'На русском', description: 'AI-компаньоны с поддержкой русского языка' },
+  nsfw: { title: '18+', description: 'AI-компаньоны с контентом для взрослых' },
+  voice: { title: 'С голосом', description: 'AI-компаньоны с голосовым общением' },
+  'image-gen': { title: 'Генерация фото', description: 'AI-компаньоны с генерацией изображений' },
+};
+
+// Генерация статических путей
+export async function getStaticPaths() {
+  return ['free', 'russian', 'nsfw', 'voice', 'image-gen'].map(tag => ({
+    params: { tag },
+    props: { tag }
+  }));
+}
+
+const { tag } = Astro.props;
+const config = filterConfig[tag];
+
+// Получаем все модели
+const allModels = await getCollection('models');
+const sortedModels = allModels
+  .map(entry => ({ slug: entry.id.replace('.yaml', ''), ...entry.data }))
+  .sort((a, b) => b.rating - a.rating);
+
+// Фильтруем
+const tagToFeature: Record<string, string> = {
+  russian: 'russian',
+  nsfw: 'nsfw',
+  voice: 'voice',
+  'image-gen': 'imageGen',
+};
+
+const filteredModels = sortedModels.filter(model => {
+  if (tag === 'free') return model.pricing === 'free';
+  const featureKey = tagToFeature[tag];
+  return featureKey && model.features?.[featureKey as keyof typeof model.features];
+});
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Каталог', href: '/catalog' },
+  { label: config.title }
+];
+---
+
+<SiteLayout 
+  title={`${config.title} AI-девушки — AIGirlsHub`}
+  description={config.description}
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>Каталог</h1>
+    <p class="catalog__subtitle">{config.description}</p>
+  </Wrapper>
+
+  <!-- Фильтры -->
+  <CatalogFilters activeFilter={tag} totalCount={filteredModels.length} />
+
+  <Wrapper>
+    <Space size="M" />
+    {filteredModels.length > 0 ? (
+      <ModelGrid models={filteredModels} columns={3} />
+    ) : (
+      <EmptyState 
+        title="Пока пусто"
+        description="В этой категории ещё нет сервисов"
+        linkHref="/catalog"
+        linkText="Смотреть все"
+      />
+    )}
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  .catalog__subtitle {
+    margin: 0.3em 0 0;
+    font-size: 1.1em;
+    color: rgba(var(--ids__text-RGB), 0.5);
+  }
+</style>

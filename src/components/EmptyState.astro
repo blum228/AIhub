@@ -1,0 +1,69 @@
+---
+/**
+ * Empty state — когда нет результатов
+ */
+interface Props {
+  title?: string;
+  description?: string;
+  linkHref?: string;
+  linkText?: string;
+}
+
+const { 
+  title = 'Ничего не найдено',
+  description = 'Попробуйте изменить параметры поиска',
+  linkHref = '/catalog',
+  linkText = 'Смотреть все'
+} = Astro.props;
+---
+
+<div class="empty">
+  <div class="empty__icon">∅</div>
+  <h3 class="empty__title">{title}</h3>
+  <p class="empty__desc">{description}</p>
+  {linkHref && (
+    <a href={linkHref} class="empty__link">{linkText} →</a>
+  )}
+</div>
+
+<style>
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 4em 2em;
+  }
+
+  .empty__icon {
+    font-size: 3em;
+    color: rgba(var(--ids__text-RGB), 0.15);
+    margin-bottom: 0.5em;
+  }
+
+  .empty__title {
+    margin: 0 0 0.3em;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: rgba(var(--ids__text-RGB), 0.7);
+  }
+
+  .empty__desc {
+    margin: 0 0 1.5em;
+    font-size: 1em;
+    color: rgba(var(--ids__text-RGB), 0.5);
+    max-width: 20em;
+  }
+
+  .empty__link {
+    font-size: 0.95em;
+    font-weight: 500;
+    color: var(--ids__accent);
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .empty__link:hover {
+    opacity: 0.8;
+  }
+</style>

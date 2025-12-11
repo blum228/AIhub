@@ -1,0 +1,98 @@
+---
+/**
+ * Сетка карточек моделей
+ * Использует IDS Sequence для консистентности
+ */
+import ModelCard from './ModelCardSemantic.astro';
+
+interface ModelData {
+  slug: string;
+  name: string;
+  logo?: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  description: string;
+  tagline?: string;
+  affiliateUrl: string;
+  features?: {
+    voice?: boolean;
+    nsfw?: boolean;
+    russian?: boolean;
+    imageGen?: boolean;
+    roleplay?: boolean;
+    telegram?: boolean;
+  };
+  featured?: boolean;
+}
+
+interface Props {
+  models: ModelData[];
+  columns?: 2 | 3 | 4;
+  class?: string;
+}
+
+const { models, columns = 3, class: className } = Astro.props;
+
+const sizeMap: Record<number, string> = {
+  2: 'XL',
+  3: 'L',
+  4: '',
+};
+
+const classes = [
+  'aigh__model-grid',
+  `aigh__model-grid--cols-${columns}`,
+  className
+].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  {models.map(model => (
+    <div class="aigh__model-grid-item">
+      <ModelCard model={model} />
+    </div>
+  ))}
+</div>
+
+<style>
+  .aigh__model-grid {
+    display: grid;
+    gap: var(--ids__space-2xs);
+  }
+
+  .aigh__model-grid--cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aigh__model-grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .aigh__model-grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (width < 900px) {
+    .aigh__model-grid--cols-3,
+    .aigh__model-grid--cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (width < 600px) {
+    .aigh__model-grid--cols-2,
+    .aigh__model-grid--cols-3,
+    .aigh__model-grid--cols-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .aigh__model-grid-item {
+    display: flex;
+  }
+
+  .aigh__model-grid-item > :global(*) {
+    flex: 1;
+  }
+</style>

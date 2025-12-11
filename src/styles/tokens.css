@@ -1,0 +1,153 @@
+/**
+ * Design Tokens — единый источник правды для дизайн-системы
+ * Все значения должны использоваться через эти переменные
+ */
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════
+     ТИПОГРАФИКА
+     ═══════════════════════════════════════════════════════════════ */
+  
+  /* Размеры шрифтов */
+  --ids__font-size-hero: 4em;       /* Hero заголовок на главной */
+  --ids__font-size-h1: 2.4em;       /* Заголовок страницы */
+  --ids__font-size-h2: 1.6em;       /* Заголовок секции */
+  --ids__font-size-h3: 1.2em;       /* Заголовок карточки/блока */
+  --ids__font-size-h4: 1.05em;      /* Подзаголовок */
+  --ids__font-size-body: 1em;       /* Основной текст */
+  --ids__font-size-small: 0.9em;    /* Мелкий текст, описания */
+  --ids__font-size-caption: 0.85em; /* Подписи, метаданные */
+  --ids__font-size-micro: 0.75em;   /* Бейджи, теги */
+
+  /* Мобильные размеры */
+  --ids__font-size-hero-mobile: 2.4em;
+  --ids__font-size-h1-mobile: 1.8em;
+  --ids__font-size-h2-mobile: 1.4em;
+
+  /* Веса шрифтов */
+  --ids__font-weight-regular: 400;
+  --ids__font-weight-medium: 450;
+  --ids__font-weight-semibold: 500;
+  --ids__font-weight-bold: 600;
+  --ids__font-weight-heavy: 700;
+
+  /* Межстрочные интервалы */
+  --ids__line-height-tight: 1.1;
+  --ids__line-height-snug: 1.2;
+  --ids__line-height-normal: var(--ids__density);
+  --ids__line-height-relaxed: 1.5;
+
+  /* ═══════════════════════════════════════════════════════════════
+     ОТСТУПЫ (SPACING)
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__space-2xs: calc(var(--ids__density) * 0.25em);  /* 4px */
+  --ids__space-xs: calc(var(--ids__density) * 0.4em);    /* 6px */
+  --ids__space-s: calc(var(--ids__density) * 0.6em);     /* 10px */
+  --ids__space-m: calc(var(--ids__density) * 1em);       /* 16px */
+  --ids__space-l: calc(var(--ids__density) * 1.5em);     /* 24px */
+  --ids__space-xl: calc(var(--ids__density) * 2em);      /* 32px */
+  --ids__space-2xl: calc(var(--ids__density) * 3em);     /* 48px */
+  --ids__space-3xl: calc(var(--ids__density) * 4em);     /* 64px */
+
+  /* ═══════════════════════════════════════════════════════════════
+     РАДИУСЫ СКРУГЛЕНИЯ
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__radius-xs: 0.25em;   /* Бейджи, мелкие элементы */
+  --ids__radius-s: 0.4em;     /* Кнопки, инпуты */
+  --ids__radius-m: 0.6em;     /* Карточки, логотипы */
+  --ids__radius-l: 0.75em;    /* Большие карточки */
+  --ids__radius-xl: 1em;      /* Контейнеры, hero-логотипы */
+  --ids__radius-full: 100em;  /* Pills, круглые элементы */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ЦВЕТА ТЕКСТА (семантические)
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__text-primary: rgba(var(--ids__text-RGB), 1);
+  --ids__text-secondary: rgba(var(--ids__text-RGB), 0.7);
+  --ids__text-tertiary: rgba(var(--ids__text-RGB), 0.5);
+  --ids__text-muted: rgba(var(--ids__text-RGB), 0.35);
+
+  /* ═══════════════════════════════════════════════════════════════
+     АКЦЕНТНЫЕ ЦВЕТА
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__accent: rgb(var(--ids__accent-RGB));
+  --ids__accent-hover: rgba(var(--ids__accent-RGB), 0.85);
+  --ids__accent-subtle: rgba(var(--ids__accent-RGB), 0.1);
+  --ids__link: rgb(var(--ids__link-RGB));
+  --ids__link-hover: rgb(var(--ids__hover-RGB));
+  
+  /* Статусные цвета */
+  --ids__success: rgb(0, 140, 70);
+  --ids__warning: rgb(230, 160, 0);
+  --ids__error: rgb(220, 50, 50);
+
+  /* ═══════════════════════════════════════════════════════════════
+     ЦВЕТА ГРАНИЦ
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__border-subtle: rgba(var(--ids__text-RGB), 0.06);
+  --ids__border-default: rgba(var(--ids__text-RGB), 0.1);
+  --ids__border-strong: rgba(var(--ids__text-RGB), 0.15);
+  --ids__border-accent: rgba(var(--ids__accent-RGB), 0.3);
+
+  /* ═══════════════════════════════════════════════════════════════
+     ФОНЫ
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__bg-page: rgb(var(--ids__background-RGB));
+  --ids__bg-surface: rgba(var(--ids__surface-RGB), 0.4);
+  --ids__bg-surface-hover: rgba(var(--ids__surface-RGB), 0.6);
+  --ids__bg-elevated: rgb(var(--ids__background-RGB));
+  --ids__bg-accent-subtle: rgba(var(--ids__accent-RGB), 0.08);
+
+  /* ═══════════════════════════════════════════════════════════════
+     ТЕНИ
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__shadow-s: 0 2px 8px rgba(var(--ids__text-RGB), 0.04);
+  --ids__shadow-m: 0 4px 16px rgba(var(--ids__text-RGB), 0.06);
+  --ids__shadow-l: 0 8px 24px rgba(var(--ids__text-RGB), 0.08);
+  --ids__shadow-accent: 0 4px 12px rgba(var(--ids__accent-RGB), 0.25);
+
+  /* ═══════════════════════════════════════════════════════════════
+     РАЗМЕРЫ ЛОГОТИПОВ
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__logo-xs: 2em;    /* Inline, мелкие списки */
+  --ids__logo-s: 3em;     /* Карточки в сетке */
+  --ids__logo-m: 4em;     /* Карточки в списке */
+  --ids__logo-l: 5em;     /* Страница модели */
+  --ids__logo-xl: 6em;    /* Hero */
+
+  /* ═══════════════════════════════════════════════════════════════
+     BREAKPOINTS (для документации, в CSS используем значения)
+     ═══════════════════════════════════════════════════════════════ */
+  
+  /* 
+   * Mobile: < 600px
+   * Tablet: 600px - 899px  
+   * Desktop: >= 900px
+   * Wide: >= 1200px
+   */
+
+  /* ═══════════════════════════════════════════════════════════════
+     TRANSITIONS
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__transition-fast: 0.15s ease;
+  --ids__transition-normal: 0.2s ease;
+  --ids__transition-slow: 0.3s ease;
+
+  /* ═══════════════════════════════════════════════════════════════
+     Z-INDEX
+     ═══════════════════════════════════════════════════════════════ */
+  
+  --ids__z-dropdown: 50;
+  --ids__z-sticky: 100;
+  --ids__z-modal: 200;
+  --ids__z-tooltip: 300;
+}

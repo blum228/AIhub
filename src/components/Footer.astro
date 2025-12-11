@@ -1,0 +1,97 @@
+---
+/**
+ * Подвал сайта AIGirlsHub
+ * Минималистичный футер — одна строка
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const year = new Date().getFullYear();
+
+const links = [
+  { href: '/catalog', label: 'Каталог' },
+  { href: '/compare', label: 'Сравнения' },
+  { href: '/about', label: 'О проекте' },
+  { href: '/privacy', label: 'Политика' },
+];
+---
+
+<footer class:list={['footer', className]}>
+  <div class="footer__inner">
+    <nav class="footer__nav">
+      {links.map(link => (
+        <a href={link.href} class="footer__link">{link.label}</a>
+      ))}
+    </nav>
+    <div class="footer__meta">
+      <span class="footer__copy">© {year} AIGirlsHub</span>
+      <span class="footer__age">18+</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--ids__space-3xl);
+    padding: var(--ids__space-xl) 0;
+    border-top: 1px solid var(--ids__border-default);
+  }
+
+  .footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (width < 900px) {
+    .footer__inner {
+      width: 100%;
+      padding: 0 var(--ids__space-m);
+      flex-direction: column;
+      gap: var(--ids__space-m);
+    }
+  }
+
+  .footer__nav {
+    display: flex;
+    gap: var(--ids__space-l);
+    flex-wrap: wrap;
+  }
+
+  .footer__link {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-tertiary);
+    text-decoration: none;
+    transition: color var(--ids__transition-fast);
+  }
+
+  .footer__link:hover {
+    color: var(--ids__text-primary);
+    text-decoration: none;
+  }
+
+  .footer__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-m);
+  }
+
+  .footer__copy {
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__text-muted);
+  }
+
+  .footer__age {
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-semibold);
+    padding: var(--ids__space-2xs) var(--ids__space-s);
+    color: var(--ids__text-tertiary);
+    border: 1px solid var(--ids__border-default);
+    border-radius: var(--ids__radius-xs);
+  }
+</style>

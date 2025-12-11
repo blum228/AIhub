@@ -1,0 +1,188 @@
+---
+/**
+ * Hero-секция страницы модели
+ */
+import RatingStars from './RatingStars.astro';
+import PriceBadge from './PriceBadge.astro';
+import FeatureBadge from './FeatureBadge.astro';
+import CTAButton from './CTAButton.astro';
+import Space from './Space.astro';
+
+interface Props {
+  name: string;
+  logo?: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  description: string;
+  affiliateUrl: string;
+  features?: {
+    voice?: boolean;
+    nsfw?: boolean;
+    russian?: boolean;
+    imageGen?: boolean;
+    roleplay?: boolean;
+  };
+  class?: string;
+}
+
+const { 
+  name, 
+  logo, 
+  rating, 
+  pricing, 
+  priceFrom,
+  description, 
+  affiliateUrl,
+  features,
+  class: className 
+} = Astro.props;
+
+const classes = ['aigh__model-hero', className].filter(Boolean).join(' ');
+
+// Собираем активные фичи
+const activeFeatures: string[] = [];
+if (features?.voice) activeFeatures.push('voice');
+if (features?.nsfw) activeFeatures.push('nsfw');
+if (features?.russian) activeFeatures.push('russian');
+if (features?.imageGen) activeFeatures.push('image-gen');
+if (features?.roleplay) activeFeatures.push('roleplay');
+---
+
+<div class={classes}>
+  <div class="aigh__model-hero-left">
+    {logo ? (
+      <img src={logo} alt={name} class="aigh__model-hero-logo" />
+    ) : (
+      <div class="aigh__model-hero-logo aigh__model-hero-logo--placeholder">
+        {name.charAt(0)}
+      </div>
+    )}
+  </div>
+  
+  <div class="aigh__model-hero-right">
+    <div class="aigh__model-hero-header">
+      <h1 class="aigh__model-hero-name">{name}</h1>
+      <RatingStars rating={rating} />
+    </div>
+    
+    <p class="aigh__model-hero-desc">{description}</p>
+    
+    <div class="aigh__model-hero-meta">
+      <PriceBadge pricing={pricing} priceFrom={priceFrom} />
+      {activeFeatures.map(feature => (
+        <FeatureBadge type={feature as any} />
+      ))}
+    </div>
+    
+    <Space size="M" />
+    
+    <div class="aigh__model-hero-actions">
+      <CTAButton href={affiliateUrl} text="Перейти на сайт" size="L" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .aigh__model-hero {
+    display: flex;
+    gap: calc(var(--ids__density) * 1.5em);
+    align-items: flex-start;
+  }
+
+  @media (width < 600px) {
+    .aigh__model-hero {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  .aigh__model-hero-left {
+    flex-shrink: 0;
+  }
+
+  .aigh__model-hero-logo {
+    width: 6em;
+    height: 6em;
+    border-radius: 1em;
+    object-fit: cover;
+    box-shadow: 0 4px 20px rgba(var(--ids__text-RGB), 0.1);
+  }
+
+  .aigh__model-hero-logo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    font-weight: 600;
+    color: rgb(var(--ids__background-RGB));
+    background: linear-gradient(135deg, 
+      rgb(var(--ids__accent-RGB)), 
+      rgba(var(--ids__accent-RGB), 0.7)
+    );
+  }
+
+  .aigh__model-hero-right {
+    flex: 1;
+  }
+
+  .aigh__model-hero-header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    flex-wrap: wrap;
+    margin-bottom: 0.5em;
+  }
+
+  @media (width < 600px) {
+    .aigh__model-hero-header {
+      justify-content: center;
+    }
+  }
+
+  .aigh__model-hero-name {
+    margin: 0;
+    font-size: 2.2em;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  @media (width < 600px) {
+    .aigh__model-hero-name {
+      font-size: 1.8em;
+    }
+  }
+
+  .aigh__model-hero-desc {
+    margin: 0 0 1em 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: rgba(var(--ids__text-RGB), 0.7);
+    max-width: 35em;
+  }
+
+  .aigh__model-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+
+  @media (width < 600px) {
+    .aigh__model-hero-meta {
+      justify-content: center;
+    }
+  }
+
+  .aigh__model-hero-actions {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+  }
+
+  @media (width < 600px) {
+    .aigh__model-hero-actions {
+      justify-content: center;
+    }
+  }
+</style>

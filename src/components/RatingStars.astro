@@ -1,0 +1,92 @@
+---
+/**
+ * Звёздный рейтинг
+ * @prop rating - число от 0 до 5
+ * @prop showNumber - показывать число рядом
+ * @prop size - размер: 'S' | 'M' (default)
+ */
+interface Props {
+  rating: number;
+  showNumber?: boolean;
+  size?: 'S' | 'M';
+  class?: string;
+}
+
+const { rating, showNumber = true, size = 'M', class: className } = Astro.props;
+const classes = ['aigh__rating', size !== 'M' && size, className].filter(Boolean).join(' ');
+
+// Округляем до 0.5
+const roundedRating = Math.round(rating * 2) / 2;
+const fullStars = Math.floor(roundedRating);
+const hasHalf = roundedRating % 1 !== 0;
+const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+---
+
+<div class={classes} title={`Рейтинг: ${rating} из 5`}>
+  <span class="aigh__rating-stars" aria-hidden="true">
+    {Array(fullStars).fill(null).map(() => <span class="star full">★</span>)}
+    {hasHalf && <span class="star half">★</span>}
+    {Array(emptyStars).fill(null).map(() => <span class="star empty">★</span>)}
+  </span>
+  {showNumber && <span class="aigh__rating-number">{rating.toFixed(1)}</span>}
+</div>
+
+<style>
+  .aigh__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .aigh__rating-stars {
+    display: inline-flex;
+    gap: 0.05em;
+    font-size: 0.9em;
+    line-height: 1;
+  }
+
+  .star {
+    transition: transform 0.15s ease;
+  }
+
+  .star.full {
+    color: var(--ids__accent);
+  }
+
+  .star.half {
+    position: relative;
+    color: rgba(var(--ids__text-RGB), 0.15);
+  }
+
+  .star.half::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+    color: var(--ids__accent);
+  }
+
+  .star.empty {
+    color: rgba(var(--ids__text-RGB), 0.15);
+  }
+
+  .aigh__rating-number {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: rgba(var(--ids__text-RGB), 0.7);
+  }
+
+  /* Size S */
+  .aigh__rating.S {
+    gap: 0.25em;
+  }
+
+  .aigh__rating.S .aigh__rating-stars {
+    font-size: 0.75em;
+  }
+
+  .aigh__rating.S .aigh__rating-number {
+    font-size: 0.8em;
+  }
+</style>

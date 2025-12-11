@@ -1,0 +1,121 @@
+---
+/**
+ * Единый компонент фильтров для каталога
+ * Используется на /catalog и /catalog/[tag]
+ */
+import Wrapper from './Wrapper.astro';
+
+interface Props {
+  activeFilter?: string;
+  totalCount?: number;
+}
+
+const { activeFilter = 'all', totalCount } = Astro.props;
+
+// Конфигурация фильтров — единый источник правды
+const filters = [
+  { slug: 'all', title: 'Все', href: '/catalog' },
+  { slug: 'free', title: 'Бесплатные', href: '/catalog/free' },
+  { slug: 'russian', title: 'На русском', href: '/catalog/russian' },
+  { slug: 'nsfw', title: '18+', href: '/catalog/nsfw' },
+  { slug: 'voice', title: 'С голосом', href: '/catalog/voice' },
+  { slug: 'image-gen', title: 'Генерация фото', href: '/catalog/image-gen' },
+];
+---
+
+<div class="filters-bar">
+  <Wrapper>
+    <nav class="filters" aria-label="Фильтр по категории">
+      {filters.map(f => (
+        <a 
+          href={f.href} 
+          class:list={['filter', { 'filter--active': f.slug === activeFilter }]}
+          aria-current={f.slug === activeFilter ? 'page' : undefined}
+        >
+          {f.title}
+        </a>
+      ))}
+    </nav>
+    {totalCount !== undefined && (
+      <span class="filters-count">{totalCount} сервисов</span>
+    )}
+  </Wrapper>
+</div>
+
+<style>
+  .filters-bar {
+    position: sticky;
+    top: 3.5em;
+    z-index: var(--ids__z-dropdown);
+    margin-top: var(--ids__space-m);
+    padding: var(--ids__space-s) 0;
+    background: rgba(var(--ids__background-RGB), 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--ids__border-subtle);
+  }
+
+  .filters-bar :global(.ids__wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ids__space-m);
+  }
+
+  .filters {
+    display: flex;
+    gap: var(--ids__space-s);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter {
+    flex-shrink: 0;
+    padding: var(--ids__space-s) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-tertiary);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-full);
+    text-decoration: none;
+    transition: all var(--ids__transition-fast);
+  }
+
+  .filter:hover {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-surface-hover);
+    text-decoration: none;
+  }
+
+  .filter--active {
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .filter--active:hover {
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .filters-count {
+    flex-shrink: 0;
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__text-tertiary);
+  }
+
+  @media (width < 600px) {
+    .filters-bar :global(.ids__wrapper) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .filters-count {
+      margin-top: var(--ids__space-s);
+    }
+  }
+</style>

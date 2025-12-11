@@ -97,63 +97,71 @@
     font-weight: 600;
   }
 
+  /* H1 — главный заголовок, БОЛЬШОЙ */
   & h1 {
-    font-size: 3.6em;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: calc(var(--ids__density) / 1.3);
-    margin-bottom: 0.4em;
+    font-size: var(--ids__font-size-hero);
+    font-weight: var(--ids__font-weight-heavy);
+    letter-spacing: -0.02em;
+    line-height: var(--ids__line-height-tight);
+    margin-bottom: var(--ids__space-xs);
 
-    @media (width < 767px) {
-      font-size: 2.6em;
+    @media (width < 900px) {
+      font-size: var(--ids__font-size-hero-mobile);
     }
 
     &.S {
-      font-size: 2.4em;
-      font-weight: 650;
+      font-size: var(--ids__font-size-h1);
+      font-weight: var(--ids__font-weight-bold);
     }
     &.XS {
-      font-size: 1.5em;
-      font-weight: 600;
+      font-size: var(--ids__font-size-h2);
+      font-weight: var(--ids__font-weight-bold);
     }
   }
 
+  /* H2 — заголовок секции, компактный */
   & h2 {
-    font-size: 2.4em;
-    font-weight: 650;
-    line-height: calc(var(--ids__density) / 1.2);
-    margin-bottom: 0.5em;
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+    line-height: var(--ids__line-height-snug);
+    margin-bottom: var(--ids__space-s);
 
+    &.L {
+      font-size: var(--ids__font-size-h1);
+      font-weight: var(--ids__font-weight-bold);
+    }
     &.XS {
-      font-size: 1.5em;
-      font-weight: 600;
+      font-size: var(--ids__font-size-h3);
+      font-weight: var(--ids__font-weight-bold);
     }
   }
 
+  /* H3 — заголовок карточки/блока */
   & h3 {
-    font-size: 1.5em;
-    line-height: calc(var(--ids__density) / 1.1);
-    margin-bottom: 0.6em;
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+    line-height: var(--ids__line-height-normal);
+    margin-bottom: var(--ids__space-xs);
   }
 
   & h4 {
-    font-size: 1.1em;
-    line-height: var(--ids__density);
-    margin-bottom: 0.5em;
+    font-size: var(--ids__font-size-h4);
+    line-height: var(--ids__line-height-normal);
+    margin-bottom: var(--ids__space-xs);
   }
 
   & h5 {
-    font-size: 1em;
-    line-height: var(--ids__density);
-    margin-bottom: 0.5em;
+    font-size: var(--ids__font-size-body);
+    line-height: var(--ids__line-height-normal);
+    margin-bottom: var(--ids__space-xs);
   }
 
   & h6 {
-    font-size: 0.8em;
+    font-size: var(--ids__font-size-micro);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: var(--ids__density);
-    margin-bottom: 0.5em;
+    line-height: var(--ids__line-height-normal);
+    margin-bottom: var(--ids__space-xs);
   }
 
   & strong,

@@ -1,0 +1,362 @@
+---
+/**
+ * Страница цели пользователя (Уровень 1 сегментации)
+ * /for/flirt, /for/roleplay, /for/companion, etc.
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Wrapper from '../../components/Wrapper.astro';
+import Space from '../../components/Space.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ModelCardSemantic from '../../components/ModelCardSemantic.astro';
+import FeatureComparisonTable from '../../components/FeatureComparisonTable.astro';
+import CTAButton from '../../components/CTAButton.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+
+// Определяем все цели
+const goalsMeta = {
+  flirt: {
+    title: 'Флирт и NSFW',
+    subtitle: 'AI-девушки для романтики, секс-чата и откровенных разговоров',
+    description: 'Сервисы для взрослых: от мягкой романтики до hardcore NSFW. Выбери по своим предпочтениям.',
+    icon: '🔥',
+    experienceTypes: [
+      { id: 'slow-burn', label: 'Романтика', desc: 'Медленное развитие отношений' },
+      { id: 'explicit', label: 'Откровенно', desc: 'Прямые разговоры без цензуры' },
+      { id: 'gfe', label: 'GFE', desc: 'Girlfriend Experience — ощущение отношений' },
+      { id: 'fantasy', label: 'Фантазии', desc: 'Dom/Sub, фетиши, ролевые сценарии' },
+    ],
+  },
+  roleplay: {
+    title: 'Ролевые игры',
+    subtitle: 'AI-персонажи для сценариев, сюжетов и импровизации',
+    description: 'От лёгких сценок до глубоких сюжетных арок. Персонажи из аниме, фильмов или оригинальные.',
+    icon: '🎭',
+    experienceTypes: [
+      { id: 'character-accurate', label: 'Персонажи', desc: 'Точные образы из аниме/фильмов' },
+      { id: 'lite-rp', label: 'Лёгкий RP', desc: 'Спонтанные сценки' },
+      { id: 'structured-rp', label: 'Сюжетный', desc: 'Арки, мир, развитие' },
+      { id: 'high-improv', label: 'Импровизация', desc: 'Быстрые респонсы, ветвления' },
+    ],
+  },
+  companion: {
+    title: 'Эмоциональная поддержка',
+    subtitle: 'AI-компаньоны для разговоров, дружбы и поддержки',
+    description: 'Когда нужен кто-то, кто выслушает. Терапевтические беседы, ежедневное общение, борьба с одиночеством.',
+    icon: '💬',
+    experienceTypes: [
+      { id: 'therapy-lite', label: 'Поддержка', desc: 'Выслушивание, эмпатия' },
+      { id: 'daily-companion', label: 'Ежедневно', desc: 'Регулярное общение' },
+      { id: 'loneliness', label: 'Одиночество', desc: 'Борьба с изоляцией' },
+      { id: 'motivation', label: 'Мотивация', desc: 'Поддержка целей' },
+    ],
+  },
+  voice: {
+    title: 'Голосовое общение',
+    subtitle: 'AI-девушки с голосовыми звонками и сообщениями',
+    description: 'Не только текст — реальные разговоры голосом. Звонки, голосовые сообщения, AR.',
+    icon: '🎤',
+    experienceTypes: [
+      { id: 'calls', label: 'Звонки', desc: 'Реальные голосовые звонки' },
+      { id: 'voice-messages', label: 'Сообщения', desc: 'Голосовые сообщения' },
+      { id: 'ar', label: 'AR', desc: 'Дополненная реальность' },
+    ],
+  },
+  visual: {
+    title: 'Генерация фото',
+    subtitle: 'AI-девушки с генерацией изображений и аватаров',
+    description: 'Не только текст — картинки твоей AI-девушки. Кастомизация внешности, фото в разных образах.',
+    icon: '📸',
+    experienceTypes: [
+      { id: 'photo-gen', label: 'Фото', desc: 'Генерация изображений' },
+      { id: 'avatar', label: 'Аватары', desc: 'Кастомные аватары' },
+      { id: 'multimodal', label: 'Мультимодал', desc: 'Текст + фото + голос' },
+    ],
+  },
+};
+
+// Генерируем статические пути
+export function getStaticPaths() {
+  const goals = ['flirt', 'roleplay', 'companion', 'voice', 'visual'];
+  return goals.map(goal => ({ params: { goal } }));
+}
+
+const { goal } = Astro.params;
+const meta = goalsMeta[goal as keyof typeof goalsMeta];
+
+if (!meta) {
+  return Astro.redirect('/404');
+}
+
+// Получаем модели для этой цели
+const allModels = await getCollection('models');
+type GoalType = 'flirt' | 'roleplay' | 'companion' | 'voice' | 'visual';
+const goalTyped = goal as GoalType;
+const models = allModels
+  .map(entry => ({ slug: entry.id.replace('.yaml', ''), ...entry.data }))
+  .filter(m => m.primaryGoal === goalTyped || m.secondaryGoals?.includes(goalTyped))
+  .sort((a, b) => b.rating - a.rating);
+
+// Лучший выбор для этой цели
+const topPick = models[0];
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: meta.title }
+];
+---
+
+<SiteLayout 
+  title={`${meta.title} — AI-девушки | AIGirlsHub`}
+  description={meta.subtitle}
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    
+    <!-- Hero -->
+    <section class="goal-hero">
+      <span class="goal-hero__icon">{meta.icon}</span>
+      <h1>{meta.title}</h1>
+      <p class="goal-hero__subtitle">{meta.subtitle}</p>
+      <p class="goal-hero__desc">{meta.description}</p>
+    </section>
+  </Wrapper>
+
+  <Space size="L" />
+
+  <!-- Лучший выбор -->
+  {topPick && (
+    <Wrapper>
+      <section class="top-pick">
+        <div class="top-pick__badge">Лучший выбор</div>
+        <div class="top-pick__content">
+          <div class="top-pick__info">
+            <h2 class="top-pick__name">{topPick.name}</h2>
+            <p class="top-pick__tagline">{topPick.tagline || topPick.description}</p>
+            <div class="top-pick__meta">
+              <span class="top-pick__rating">★ {topPick.rating.toFixed(1)}</span>
+              <span class="top-pick__price">
+                {topPick.pricing === 'free' ? 'Бесплатно' : topPick.priceFrom ? `от $${topPick.priceFrom}/мес` : 'Freemium'}
+              </span>
+            </div>
+          </div>
+          <div class="top-pick__actions">
+            <CTAButton href={`/models/${topPick.slug}`} text="Подробнее" external={false} />
+            <CTAButton href={topPick.affiliateUrl} text="Попробовать →" variant="primary" />
+          </div>
+        </div>
+      </section>
+    </Wrapper>
+  )}
+
+  <Space size="L" />
+
+
+  <!-- Топ-4 сервиса для этой цели -->
+  <Wrapper>
+    <section class="goal-models">
+      <SectionTitle size="small" subtitle={`Топ-${Math.min(4, models.length)} из ${models.length}`}>Лучшие сервисы для {meta.title.toLowerCase()}</SectionTitle>
+      
+      <div class="goal-models__grid">
+        {models.slice(0, 4).map(model => (
+          <ModelCardSemantic model={model} showCTA={true} />
+        ))}
+      </div>
+      
+      {models.length > 4 && (
+        <div class="goal-models__more">
+          <a href="/catalog">Показать все {models.length} сервисов →</a>
+        </div>
+      )}
+    </section>
+  </Wrapper>
+
+  <Space size="L" />
+
+  <!-- Таблица сравнения для этой цели -->
+  <Wrapper>
+    <section class="goal-comparison">
+      <SectionTitle size="small" subtitle="Все фичи в одной таблице — выбирай осознанно">Сравнение сервисов</SectionTitle>
+      <FeatureComparisonTable models={models.slice(0, 3)} />
+      {models.length > 3 && (
+        <div class="goal-comparison__more">
+          <a href="/compare">Сравнить все →</a>
+        </div>
+      )}
+    </section>
+  </Wrapper>
+
+  <Space size="XL" />
+
+  <!-- CTA -->
+  <Wrapper>
+    <section class="goal-cta">
+      <p>Не нашёл подходящий?</p>
+      <CTAButton href="/catalog" text="Смотреть весь каталог" external={false} size="L" />
+    </section>
+  </Wrapper>
+
+  <Space size="XL" />
+</SiteLayout>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════
+     GOAL HERO
+     ═══════════════════════════════════════════════════════════════ */
+  .goal-hero {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .goal-hero__icon {
+    font-size: 3em;
+    display: block;
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .goal-hero h1 {
+    margin: 0;
+    font-size: var(--ids__font-size-hero-mobile);
+    font-weight: var(--ids__font-weight-heavy);
+  }
+
+  .goal-hero__subtitle {
+    margin: var(--ids__space-s) 0 0;
+    font-size: var(--ids__font-size-h3);
+    color: var(--ids__text-secondary);
+  }
+
+  .goal-hero__desc {
+    margin: var(--ids__space-m) 0 0;
+    color: var(--ids__text-tertiary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     TOP PICK
+     ═══════════════════════════════════════════════════════════════ */
+  .top-pick {
+    padding: var(--ids__space-xl);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-l);
+    border: 2px solid var(--ids__accent);
+  }
+
+  .top-pick__badge {
+    display: inline-block;
+    font-size: var(--ids__font-size-caption);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .top-pick__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--ids__space-xl);
+  }
+
+  .top-pick__info {
+    flex: 1;
+  }
+
+  .top-pick__name {
+    margin: 0;
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .top-pick__tagline {
+    margin: var(--ids__space-xs) 0 0;
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  .top-pick__meta {
+    display: flex;
+    gap: var(--ids__space-m);
+    margin-top: var(--ids__space-m);
+  }
+
+  .top-pick__rating {
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .top-pick__price {
+    color: var(--ids__text-tertiary);
+  }
+
+  .top-pick__actions {
+    display: flex;
+    gap: var(--ids__space-s);
+    flex-shrink: 0;
+  }
+
+  @media (width < 700px) {
+    .top-pick__content {
+      flex-direction: column;
+    }
+    
+    .top-pick__actions {
+      width: 100%;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     GOAL MODELS
+     ═══════════════════════════════════════════════════════════════ */
+
+  .goal-models__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--ids__space-m);
+  }
+
+  @media (width < 800px) {
+    .goal-models__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .goal-models__more {
+    margin-top: var(--ids__space-l);
+    text-align: center;
+  }
+
+  .goal-models__more a {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     GOAL COMPARISON
+     ═══════════════════════════════════════════════════════════════ */
+
+  .goal-comparison__more {
+    margin-top: var(--ids__space-l);
+    text-align: center;
+  }
+
+  .goal-comparison__more a {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     GOAL CTA
+     ═══════════════════════════════════════════════════════════════ */
+  .goal-cta {
+    text-align: center;
+  }
+
+  .goal-cta p {
+    margin: 0 0 var(--ids__space-m);
+    color: var(--ids__text-secondary);
+  }
+</style>

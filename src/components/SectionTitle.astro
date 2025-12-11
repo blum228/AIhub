@@ -1,0 +1,81 @@
+---
+/**
+ * Заголовок секции — унифицированный компонент
+ * Используется для всех заголовков секций на страницах
+ * 
+ * @prop size - размер: 'default' | 'large' | 'small'
+ * @prop align - выравнивание: 'left' | 'center'
+ * @prop subtitle - подзаголовок (опционально)
+ */
+interface Props {
+  size?: 'default' | 'large' | 'small';
+  align?: 'left' | 'center';
+  subtitle?: string;
+  class?: string;
+}
+
+const { 
+  size = 'default', 
+  align = 'left',
+  subtitle,
+  class: className 
+} = Astro.props;
+
+const classes = [
+  'section-title',
+  size !== 'default' && `section-title--${size}`,
+  align !== 'left' && `section-title--${align}`,
+  className
+].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <h2 class="section-title__heading">
+    <slot />
+  </h2>
+  {subtitle && (
+    <p class="section-title__subtitle">{subtitle}</p>
+  )}
+</div>
+
+<style>
+  .section-title {
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .section-title__heading {
+    margin: 0;
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+    line-height: var(--ids__line-height-snug);
+    color: var(--ids__text-primary);
+  }
+
+  .section-title__subtitle {
+    margin: var(--ids__space-2xs) 0 0;
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  /* Size variants */
+  .section-title--large .section-title__heading {
+    font-size: var(--ids__font-size-h1);
+  }
+
+  .section-title--small .section-title__heading {
+    font-size: var(--ids__font-size-h3);
+  }
+
+  /* Alignment */
+  .section-title--center {
+    text-align: center;
+  }
+
+  /* Mobile */
+  @media (width < 900px) {
+    .section-title--large .section-title__heading {
+      font-size: var(--ids__font-size-h1-mobile);
+    }
+  }
+</style>

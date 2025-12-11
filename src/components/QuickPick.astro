@@ -1,0 +1,112 @@
+---
+/**
+ * QuickPick — быстрый выбор по критериям
+ * Показывает топ-рекомендации для частых запросов
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const quickPicks = [
+  {
+    label: 'Бесплатно',
+    model: 'Character.AI',
+    href: '/models/character-ai',
+    icon: '💸',
+  },
+  {
+    label: 'Генерация фото',
+    model: 'Candy.AI',
+    href: '/models/candy-ai',
+    icon: '📸',
+  },
+  {
+    label: 'На русском',
+    model: 'Replika',
+    href: '/models/replika',
+    icon: '🇷🇺',
+  },
+];
+---
+
+<section class:list={['quick-pick', className]}>
+  <p class="quick-pick__title">Быстрый выбор:</p>
+  <div class="quick-pick__items">
+    {quickPicks.map(pick => (
+      <a href={pick.href} class="quick-pick__item">
+        <span class="quick-pick__icon">{pick.icon}</span>
+        <span class="quick-pick__label">{pick.label}</span>
+        <span class="quick-pick__model">→ {pick.model}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .quick-pick {
+    text-align: center;
+  }
+
+  .quick-pick__title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .quick-pick__items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ids__space-s);
+  }
+
+  .quick-pick__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
+    padding: var(--ids__space-xs) var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-full);
+    font-size: var(--ids__font-size-small);
+    text-decoration: none;
+    color: var(--ids__text-primary);
+    transition: 
+      border-color var(--ids__transition-fast),
+      background var(--ids__transition-fast);
+  }
+
+  .quick-pick__item:hover {
+    border-color: var(--ids__accent);
+    background: var(--ids__bg-surface-hover);
+    text-decoration: none;
+  }
+
+  .quick-pick__icon {
+    font-size: 1em;
+  }
+
+  .quick-pick__label {
+    color: var(--ids__text-secondary);
+  }
+
+  .quick-pick__model {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+
+  @media (width < 500px) {
+    .quick-pick__items {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .quick-pick__item {
+      justify-content: center;
+    }
+  }
+</style>

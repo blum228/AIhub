@@ -1,0 +1,113 @@
+---
+/**
+ * Страница "О проекте"
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Wrapper from '../components/Wrapper.astro';
+import Space from '../components/Space.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CTAButton from '../components/CTAButton.astro';
+
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'О проекте' }
+];
+---
+
+<SiteLayout 
+  title="О проекте AIGirlsHub"
+  description="AIGirlsHub — независимый каталог AI-девушек и виртуальных компаньонов. Честные обзоры, сравнения и рейтинги."
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    
+    <h1>О проекте</h1>
+    
+    <article class="about-content">
+      <p class="about-lead">
+        <strong>AIGirlsHub</strong> — независимый каталог AI-девушек и виртуальных компаньонов. 
+        Мы тестируем сервисы, пишем честные обзоры и помогаем выбрать подходящий вариант.
+      </p>
+
+      <h2>Зачем мы это делаем</h2>
+      <p>
+        Рынок AI-компаньонов растёт, но найти объективную информацию сложно. 
+        Официальные сайты хвалят себя, отзывы часто проплачены, а сравнивать сервисы самому — долго и дорого.
+      </p>
+      <p>
+        Мы решили эту проблему. Тестируем каждый сервис лично, платим за подписки из своего кармана, 
+        описываем реальный опыт. Без воды и рекламных лозунгов.
+      </p>
+
+      <h2>Наш подход</h2>
+      <ul>
+        <li><strong>Честность</strong> — пишем о минусах так же подробно, как о плюсах</li>
+        <li><strong>Практичность</strong> — фокус на том, что важно при выборе</li>
+        <li><strong>Актуальность</strong> — обновляем обзоры при изменениях в сервисах</li>
+        <li><strong>Независимость</strong> — не продаём места в рейтингах</li>
+      </ul>
+
+      <h2>Как мы зарабатываем</h2>
+      <p>
+        Часть ссылок на сайте — партнёрские. Если ты перейдёшь по ссылке и оформишь подписку, 
+        мы получим комиссию. Это не влияет на наши оценки — мы рекомендуем только то, что сами бы использовали.
+      </p>
+      <p>
+        Подробнее — в <a href="/disclaimer">дисклеймере</a>.
+      </p>
+
+      <h2>Контакты</h2>
+      <p>
+        Вопросы, предложения, сотрудничество:<br>
+        <strong>Email:</strong> hello@aigirlshub.ru
+      </p>
+      <p>
+        Нашли ошибку или неточность? Напиши — исправим.
+      </p>
+    </article>
+    
+    <Space size="L" />
+    
+    <div class="about-cta">
+      <CTAButton href="/catalog" text="Смотреть каталог" external={false} />
+    </div>
+    
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5em;
+  }
+
+  .about-lead {
+    font-size: 1.15em;
+    line-height: 1.6;
+    color: rgba(var(--ids__text-RGB), 0.8);
+    max-width: 40em;
+  }
+
+  .about-content {
+    max-width: 40em;
+    line-height: 1.7;
+  }
+
+  .about-content h2 {
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+  }
+
+  .about-content ul {
+    margin: 1em 0;
+  }
+
+  .about-content li {
+    margin-bottom: 0.5em;
+  }
+
+  .about-cta {
+    display: flex;
+  }
+</style>

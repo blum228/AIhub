@@ -1,0 +1,386 @@
+---
+/**
+ * Шапка сайта AIGirlsHub
+ * Sticky header с dropdown для целей и бургер-меню на мобильных
+ */
+import Logo from './Logo.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Цели пользователя для dropdown
+const goals = [
+  { id: 'flirt', href: '/for/flirt', label: 'Флирт и NSFW', icon: '🔥' },
+  { id: 'roleplay', href: '/for/roleplay', label: 'Ролевые игры', icon: '🎭' },
+  { id: 'companion', href: '/for/companion', label: 'Поддержка', icon: '💬' },
+  { id: 'voice', href: '/for/voice', label: 'Голос', icon: '🎤' },
+  { id: 'visual', href: '/for/visual', label: 'Генерация фото', icon: '📸' },
+];
+
+// Основные пункты навигации
+const navItems = [
+  { href: '/catalog', label: 'Все сервисы' },
+  { href: '/compare', label: 'Сравнения' },
+];
+
+const currentPath = Astro.url.pathname;
+const isGoalPage = currentPath.startsWith('/for/');
+---
+
+<header class:list={['header', className]}>
+  <div class="header__inner">
+    <Logo />
+    
+    <!-- Desktop nav -->
+    <nav class="header__nav header__nav--desktop">
+      <!-- Dropdown: Выбрать AI -->
+      <div class="header__dropdown">
+        <button 
+          class:list={['header__dropdown-trigger', { 'header__dropdown-trigger--active': isGoalPage }]}
+          aria-expanded="false"
+          aria-haspopup="true"
+        >
+          Выбрать AI
+          <svg class="header__dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="header__dropdown-menu" aria-hidden="true">
+          {goals.map(goal => (
+            <a 
+              href={goal.href} 
+              class:list={['header__dropdown-item', { 'header__dropdown-item--active': currentPath === goal.href }]}
+            >
+              <span class="header__dropdown-icon">{goal.icon}</span>
+              {goal.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Mobile burger -->
+    <button class="header__burger" aria-label="Меню" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile nav -->
+  <nav class="header__nav header__nav--mobile" aria-hidden="true">
+    <!-- Цели -->
+    <div class="header__mobile-section">
+      <span class="header__mobile-label">Выбрать AI</span>
+      {goals.map(goal => (
+        <a 
+          href={goal.href} 
+          class:list={['header__link', { 'header__link--active': currentPath === goal.href }]}
+        >
+          <span class="header__link-icon">{goal.icon}</span>
+          {goal.label}
+        </a>
+      ))}
+    </div>
+    <!-- Остальные пункты -->
+    <div class="header__mobile-section">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Burger menu
+  const burger = document.querySelector('.header__burger');
+  const mobileNav = document.querySelector('.header__nav--mobile');
+  const header = document.querySelector('.header');
+
+  burger?.addEventListener('click', () => {
+    const isOpen = burger.getAttribute('aria-expanded') === 'true';
+    burger.setAttribute('aria-expanded', String(!isOpen));
+    mobileNav?.setAttribute('aria-hidden', String(isOpen));
+    header?.classList.toggle('header--open', !isOpen);
+  });
+
+  // Desktop dropdown
+  const dropdownTrigger = document.querySelector('.header__dropdown-trigger');
+  const dropdownMenu = document.querySelector('.header__dropdown-menu');
+  const dropdown = document.querySelector('.header__dropdown');
+
+  dropdownTrigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dropdownTrigger.getAttribute('aria-expanded') === 'true';
+    dropdownTrigger.setAttribute('aria-expanded', String(!isOpen));
+    dropdownMenu?.setAttribute('aria-hidden', String(isOpen));
+    dropdown?.classList.toggle('header__dropdown--open', !isOpen);
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!dropdown?.contains(e.target as Node)) {
+      dropdownTrigger?.setAttribute('aria-expanded', 'false');
+      dropdownMenu?.setAttribute('aria-hidden', 'true');
+      dropdown?.classList.remove('header__dropdown--open');
+    }
+  });
+
+  // Close dropdown on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dropdownTrigger?.setAttribute('aria-expanded', 'false');
+      dropdownMenu?.setAttribute('aria-hidden', 'true');
+      dropdown?.classList.remove('header__dropdown--open');
+    }
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--ids__z-sticky);
+    background: rgba(var(--ids__background-RGB), 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--ids__border-subtle);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--ids__space-s) 0;
+  }
+
+  @media (width < 900px) {
+    .header__inner {
+      width: 100%;
+      padding: var(--ids__space-s) var(--ids__space-m);
+    }
+  }
+
+  /* Desktop nav */
+  .header__nav--desktop {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-l);
+  }
+
+  @media (width < 600px) {
+    .header__nav--desktop {
+      display: none;
+    }
+  }
+
+  /* Dropdown */
+  .header__dropdown {
+    position: relative;
+  }
+
+  .header__dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-2xs);
+    padding: var(--ids__space-xs) var(--ids__space-s);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--ids__radius-s);
+    cursor: pointer;
+    transition: all var(--ids__transition-fast);
+  }
+
+  .header__dropdown-trigger:hover {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-surface);
+  }
+
+  .header__dropdown-trigger--active {
+    color: var(--ids__text-primary);
+  }
+
+  .header__dropdown--open .header__dropdown-trigger {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-surface);
+    border-color: var(--ids__border-subtle);
+  }
+
+  .header__dropdown-arrow {
+    transition: transform var(--ids__transition-fast);
+  }
+
+  .header__dropdown--open .header__dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .header__dropdown-menu {
+    position: absolute;
+    top: calc(100% + var(--ids__space-xs));
+    left: 0;
+    min-width: 200px;
+    padding: var(--ids__space-xs);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-m);
+    box-shadow: var(--ids__shadow-l);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all var(--ids__transition-fast);
+  }
+
+  .header__dropdown-menu[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .header__dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-s);
+    padding: var(--ids__space-s) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    text-decoration: none;
+    border-radius: var(--ids__radius-s);
+    transition: all var(--ids__transition-fast);
+  }
+
+  .header__dropdown-item:hover {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-page);
+    text-decoration: none;
+  }
+
+  .header__dropdown-item--active {
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-page);
+    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  .header__dropdown-icon {
+    font-size: 1.1em;
+  }
+
+  /* Mobile nav */
+  .header__nav--mobile {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 var(--ids__space-m) var(--ids__space-m);
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .header__nav--mobile[aria-hidden="false"] {
+    display: flex;
+  }
+
+  .header__mobile-section {
+    padding: var(--ids__space-s) 0;
+    border-bottom: 1px solid var(--ids__border-subtle);
+  }
+
+  .header__mobile-section:last-child {
+    border-bottom: none;
+  }
+
+  .header__mobile-label {
+    display: block;
+    padding: var(--ids__space-xs) 0;
+    font-size: var(--ids__font-size-caption);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .header__nav--mobile .header__link {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-s);
+    padding: var(--ids__space-s) 0;
+  }
+
+  .header__link-icon {
+    font-size: 1.1em;
+  }
+
+  /* Links */
+  .header__link {
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-secondary);
+    text-decoration: none;
+    transition: color var(--ids__transition-fast);
+  }
+
+  .header__link:hover {
+    color: var(--ids__text-primary);
+    text-decoration: none;
+  }
+
+  .header__link--active {
+    color: var(--ids__text-primary);
+    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  /* Burger */
+  .header__burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .header__burger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--ids__text-primary);
+    transition: transform var(--ids__transition-normal), opacity var(--ids__transition-normal);
+  }
+
+  .header--open .header__burger span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .header--open .header__burger span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  @media (width < 600px) {
+    .header__burger {
+      display: flex;
+    }
+  }
+</style>

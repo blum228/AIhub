@@ -1,0 +1,222 @@
+---
+/**
+ * Индекс всех сравнений
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Wrapper from '../../components/Wrapper.astro';
+import Space from '../../components/Space.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+// Получаем все сравнения
+const comparisons = await getCollection('comparisons');
+
+// Получаем модели для отображения логотипов
+const allModels = await getCollection('models');
+
+interface ModelData {
+  name: string;
+  logo?: string;
+}
+
+const modelsMap = new Map<string, ModelData>(
+  allModels.map(m => [m.id.replace('.yaml', ''), m.data as ModelData])
+);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Сравнения' }
+];
+---
+
+<SiteLayout 
+  title="Сравнения AI-девушек — AIGirlsHub"
+  description="Сравнения популярных AI-девушек: Candy.AI vs Character.AI, Replika vs Candy.AI и другие. Выбери лучший сервис."
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    
+    <h1>Сравнения AI-девушек</h1>
+    <p class="compare-desc">Не можешь выбрать между двумя сервисами? Мы сравнили их за тебя.</p>
+    
+    <Space size="L" />
+    
+    <h2 class="compare-section-title">Популярные сравнения</h2>
+    
+    <div class="compare-grid">
+      {comparisons.map(comp => {
+        const modelA = modelsMap.get(comp.data.modelA);
+        const modelB = modelsMap.get(comp.data.modelB);
+        
+        return (
+          <a href={`/compare/${comp.slug}`} class="compare-card">
+            <div class="compare-card__vs">
+              <div class="compare-card__model">
+                {modelA?.logo ? (
+                  <img src={modelA.logo} alt="" class="compare-card__logo" />
+                ) : (
+                  <span class="compare-card__logo compare-card__logo--placeholder">
+                    {modelA?.name?.charAt(0) || '?'}
+                  </span>
+                )}
+                <span class="compare-card__name">{modelA?.name || comp.data.modelA}</span>
+              </div>
+              <span class="compare-card__vs-text">vs</span>
+              <div class="compare-card__model">
+                {modelB?.logo ? (
+                  <img src={modelB.logo} alt="" class="compare-card__logo" />
+                ) : (
+                  <span class="compare-card__logo compare-card__logo--placeholder">
+                    {modelB?.name?.charAt(0) || '?'}
+                  </span>
+                )}
+                <span class="compare-card__name">{modelB?.name || comp.data.modelB}</span>
+              </div>
+            </div>
+            <p class="compare-card__verdict">{comp.data.verdict}</p>
+            <span class="compare-card__action">Читать сравнение →</span>
+          </a>
+        );
+      })}
+    </div>
+    
+    <Space size="XL" />
+    
+    <!-- CTA -->
+    <div class="compare-cta">
+      <p class="compare-cta__text">Не нашёл нужное сравнение?</p>
+      <a href="/catalog" class="compare-cta__link">Смотреть все сервисы в каталоге →</a>
+    </div>
+    
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--ids__space-xs);
+  }
+
+  .compare-section-title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+  }
+
+  .compare-desc {
+    font-size: var(--ids__font-size-h3);
+    color: var(--ids__text-tertiary);
+  }
+
+  .compare-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-m);
+  }
+
+  .compare-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--ids__space-l);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-l);
+    text-decoration: none;
+    color: inherit;
+    transition: 
+      border-color var(--ids__transition-fast), 
+      box-shadow var(--ids__transition-fast);
+  }
+
+  .compare-card:hover {
+    border-color: var(--ids__border-strong);
+    box-shadow: var(--ids__shadow-l);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .compare-card__vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ids__space-l);
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .compare-card__model {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ids__space-s);
+  }
+
+  .compare-card__logo {
+    width: var(--ids__logo-s);
+    height: var(--ids__logo-s);
+    border-radius: var(--ids__radius-m);
+    object-fit: cover;
+  }
+
+  .compare-card__logo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .compare-card__name {
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+  }
+
+  .compare-card__vs-text {
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-heavy);
+    color: var(--ids__text-muted);
+  }
+
+  .compare-card__verdict {
+    margin: 0;
+    font-size: var(--ids__font-size-small);
+    line-height: var(--ids__line-height-relaxed);
+    color: var(--ids__text-secondary);
+    text-align: center;
+  }
+
+  .compare-card__action {
+    margin-top: var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+    text-align: center;
+  }
+
+  .compare-card:hover .compare-card__action {
+    text-decoration: underline;
+  }
+
+  /* CTA */
+  .compare-cta {
+    text-align: center;
+    padding: var(--ids__space-xl);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-l);
+  }
+
+  .compare-cta__text {
+    margin: 0 0 var(--ids__space-s);
+    color: var(--ids__text-tertiary);
+  }
+
+  .compare-cta__link {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+</style>

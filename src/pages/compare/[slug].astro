@@ -1,0 +1,253 @@
+---
+/**
+ * Динамическая страница сравнения двух моделей
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Wrapper from '../../components/Wrapper.astro';
+import Space from '../../components/Space.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CompareHero from '../../components/CompareHero.astro';
+import CompareTable from '../../components/CompareTable.astro';
+import VerdictBox from '../../components/VerdictBox.astro';
+import CTAButton from '../../components/CTAButton.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+
+// Генерация статических путей
+export async function getStaticPaths() {
+  const comparisons = await getCollection('comparisons');
+  
+  return comparisons.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Получаем модели для сравнения
+const allModels = await getCollection('models');
+
+const findModel = (slug: string) => {
+  const model = allModels.find(m => m.id.replace('.yaml', '') === slug);
+  if (!model) return null;
+  return { slug: model.id.replace('.yaml', ''), ...model.data };
+};
+
+const modelA = findModel(entry.data.modelA);
+const modelB = findModel(entry.data.modelB);
+
+if (!modelA || !modelB) {
+  return Astro.redirect('/catalog');
+}
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Сравнения', href: '/compare' },
+  { label: entry.data.title }
+];
+
+// Другие сравнения (динамически из коллекции)
+const allComparisons = await getCollection('comparisons');
+const otherComparisons = allComparisons
+  .filter(c => c.slug !== entry.slug)
+  .slice(0, 3)
+  .map(c => ({
+    slug: c.slug,
+    title: c.data.title,
+    modelA: findModel(c.data.modelA)?.name || c.data.modelA,
+    modelB: findModel(c.data.modelB)?.name || c.data.modelB,
+  }));
+
+// SEO
+const seoTitle = entry.data.seo?.title || entry.data.title;
+const seoDescription = entry.data.seo?.description || `Сравнение ${modelA.name} и ${modelB.name}: функции, цены, плюсы и минусы.`;
+
+// Schema.org
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: entry.data.title,
+  description: seoDescription,
+  datePublished: entry.data.publishedAt?.toISOString(),
+  author: {
+    '@type': 'Organization',
+    name: 'AIGirlsHub'
+  },
+  about: [
+    { '@type': 'Product', name: modelA.name },
+    { '@type': 'Product', name: modelB.name }
+  ]
+};
+---
+
+<SiteLayout 
+  title={seoTitle}
+  description={seoDescription}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" />
+
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    
+    <h1 class="compare-title">{entry.data.title}</h1>
+    
+    <Space size="L" />
+    
+    <!-- Hero с двумя моделями -->
+    <CompareHero modelA={modelA} modelB={modelB} />
+    
+    <Space size="XL" />
+    
+    <!-- Вердикт -->
+    <VerdictBox 
+      verdict={entry.data.verdict} 
+      winner={entry.data.winner}
+      modelAName={modelA.name}
+      modelBName={modelB.name}
+    />
+    
+    <Space size="XL" />
+    
+    <!-- Таблица сравнения -->
+    <SectionTitle>Сравнительная таблица</SectionTitle>
+    <CompareTable modelA={modelA} modelB={modelB} />
+    
+    <Space size="XL" />
+    
+    <!-- Контент статьи -->
+    <article class="compare-content">
+      <Content />
+    </article>
+    
+    <Space size="XL" />
+    
+    <!-- CTA -->
+    <div class="compare-cta">
+      <div class="compare-cta-item">
+        <span class="compare-cta-label">Попробовать {modelA.name}</span>
+        <CTAButton href={modelA.affiliateUrl} text="Перейти →" />
+      </div>
+      <div class="compare-cta-item">
+        <span class="compare-cta-label">Попробовать {modelB.name}</span>
+        <CTAButton href={modelB.affiliateUrl} text="Перейти →" />
+      </div>
+    </div>
+    
+    <Space size="L" />
+    
+    <!-- Другие сравнения -->
+    {otherComparisons.length > 0 && (
+      <div class="compare-more">
+        <h3 class="compare-more-title">Другие сравнения</h3>
+        <div class="compare-more-links">
+          {otherComparisons.map(comp => (
+            <a href={`/compare/${comp.slug}`}>{comp.modelA} vs {comp.modelB}</a>
+          ))}
+        </div>
+        <a href="/compare" class="compare-more-catalog">Все сравнения →</a>
+      </div>
+    )}
+    
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  .compare-title {
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+
+  .compare-content {
+    max-width: 45em;
+    line-height: 1.7;
+  }
+
+  .compare-content :global(h2) {
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+  }
+
+  .compare-content :global(h3) {
+    margin-top: 1.4em;
+    margin-bottom: 0.4em;
+  }
+
+  .compare-content :global(table) {
+    width: 100%;
+    margin: 1.5em 0;
+  }
+
+  .compare-content :global(hr) {
+    margin: 2em 0;
+    border: none;
+    border-top: 1px solid rgba(var(--ids__text-RGB), 0.1);
+  }
+
+  .compare-cta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--ids__density) * 1em);
+  }
+
+  @media (width < 550px) {
+    .compare-cta {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .compare-cta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8em;
+    padding: calc(var(--ids__density) * 1.2em);
+    background-color: rgba(var(--ids__surface-RGB), 0.5);
+    border-radius: 0.5em;
+    text-align: center;
+  }
+
+  .compare-cta-label {
+    font-size: 0.95em;
+    font-weight: 500;
+    color: rgba(var(--ids__text-RGB), 0.7);
+  }
+
+  .compare-more {
+    text-align: center;
+    padding: calc(var(--ids__density) * 1.5em);
+    background-color: rgba(var(--ids__surface-RGB), 0.3);
+    border-radius: 0.5em;
+  }
+
+  .compare-more-title {
+    margin: 0 0 1em 0;
+    font-size: 1em;
+    font-weight: 600;
+    color: rgba(var(--ids__text-RGB), 0.7);
+  }
+
+  .compare-more-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5em;
+    flex-wrap: wrap;
+    margin-bottom: 1.5em;
+  }
+
+  .compare-more-links a {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: rgb(var(--ids__link-RGB));
+  }
+
+  .compare-more-catalog {
+    font-size: 0.85em;
+    color: rgba(var(--ids__text-RGB), 0.5);
+  }
+</style>

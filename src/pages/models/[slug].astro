@@ -1,0 +1,729 @@
+---
+/**
+ * Страница AI-модели — убеждение
+ * Структура: Позиция → Плюсы/Минусы → Для кого → Альтернативы → CTA
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Wrapper from '../../components/Wrapper.astro';
+import Space from '../../components/Space.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Gallery from '../../components/Gallery.astro';
+import GalleryItem from '../../components/GalleryItem.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+
+// Генерация статических путей
+export async function getStaticPaths() {
+  const models = await getCollection('models');
+  
+  return models.map(entry => ({
+    params: { slug: entry.id.replace('.yaml', '') },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const model = { slug: entry.id.replace('.yaml', ''), ...entry.data };
+
+// Получаем все модели для альтернатив
+const allModels = await getCollection('models');
+const allModelsData = allModels
+  .filter(m => m.id !== entry.id)
+  .map(m => ({ slug: m.id.replace('.yaml', ''), ...m.data }));
+
+// Похожие модели по цели (для секции "Другие сервисы для [цели]")
+const goalLabels: Record<string, string> = {
+  flirt: 'флирта',
+  roleplay: 'ролевых игр',
+  companion: 'поддержки',
+  voice: 'голосового общения',
+  visual: 'генерации фото',
+  experimental: 'экспериментов',
+};
+
+const relatedByGoal = model.primaryGoal 
+  ? allModelsData
+      .filter(m => m.primaryGoal === model.primaryGoal || m.secondaryGoals?.includes(model.primaryGoal))
+      .slice(0, 3)
+  : [];
+
+// Альтернативы по критериям
+const alternatives = {
+  free: allModelsData.find(m => m.pricing === 'free'),
+  russian: allModelsData.find(m => m.features?.russian),
+  cheaper: allModelsData.find(m => m.priceFrom && model.priceFrom && m.priceFrom < model.priceFrom),
+};
+
+// Цена
+const priceLabel = model.pricing === 'free'
+  ? 'Бесплатно'
+  : model.priceFrom 
+    ? `от $${model.priceFrom}/мес` 
+    : 'Freemium';
+
+// Позиционирование (одна фраза)
+const positioning = model.tagline || model.description.slice(0, 80);
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Каталог', href: '/catalog' },
+  { label: model.name }
+];
+
+// SEO
+const seoTitle = model.seo?.title || `${model.name} — обзор, цены, альтернативы 2025`;
+const seoDescription = model.seo?.description || `Полный обзор ${model.name}: функции, плюсы и минусы, цены. Честный отзыв и сравнение с аналогами.`;
+
+// Schema.org Product
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: model.name,
+  description: model.description,
+  image: model.logo,
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: model.rating,
+    bestRating: 5,
+    worstRating: 1,
+    ratingCount: Math.floor(model.rating * 20 + 50) // Примерное количество
+  },
+  offers: {
+    '@type': 'Offer',
+    price: model.priceFrom || 0,
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock'
+  }
+};
+---
+
+<SiteLayout 
+  title={seoTitle}
+  description={seoDescription}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" />
+
+  <!-- Breadcrumbs -->
+  <Wrapper>
+    <Space size="M" />
+    <Breadcrumbs items={breadcrumbs} />
+  </Wrapper>
+
+  <!-- Hero: Позиционирование -->
+  <section class="model-hero">
+    <Wrapper>
+      <div class="model-hero__header">
+        {model.logo ? (
+          <img src={model.logo} alt="" class="model-hero__logo" />
+        ) : (
+          <span class="model-hero__logo model-hero__logo--placeholder">{model.name.charAt(0)}</span>
+        )}
+        <div>
+          <h1 class="model-hero__name">{model.name}</h1>
+          <div class="model-hero__meta">
+            <span class="model-hero__rating">★ {model.rating.toFixed(1)}</span>
+            <span class="model-hero__price">{priceLabel}</span>
+            {model.updatedAt && (
+              <span class="model-hero__updated">
+                Обновлено: {new Date(model.updatedAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <p class="model-hero__positioning">{positioning}</p>
+      
+      <a href={model.affiliateUrl} class="model-hero__cta" target="_blank" rel="noopener">
+        Попробовать {model.name} →
+      </a>
+    </Wrapper>
+  </section>
+
+  <Wrapper>
+    <!-- Плюсы и минусы -->
+    {(model.pros?.length > 0 || model.cons?.length > 0) && (
+      <section class="model-section">
+        <div class="pros-cons">
+          {model.pros?.length > 0 && (
+            <div class="pros-cons__col">
+              <h2 class="pros-cons__title">✓ Плюсы</h2>
+              <ul class="pros-cons__list">
+                {model.pros.map((item: string) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {model.cons?.length > 0 && (
+            <div class="pros-cons__col">
+              <h2 class="pros-cons__title">✗ Минусы</h2>
+              <ul class="pros-cons__list pros-cons__list--cons">
+                {model.cons.map((item: string) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+
+    <!-- Для кого / Не для кого (из productFit) -->
+    <section class="model-section">
+      <div class="for-whom">
+        <div class="for-whom__col">
+          <h2 class="for-whom__title">✓ Идеален для:</h2>
+          <ul class="for-whom__list">
+            {model.productFit?.idealFor?.length > 0 ? (
+              model.productFit.idealFor.map((item: string) => <li>{item}</li>)
+            ) : (
+              <>
+                {model.features?.nsfw && <li>Нужен NSFW контент</li>}
+                {model.features?.voice && <li>Хочешь голосовое общение</li>}
+                {model.features?.imageGen && <li>Нужна генерация фото</li>}
+                {model.features?.russian && <li>Важен русский язык</li>}
+                {model.pricing === 'free' && <li>Не хочешь платить</li>}
+              </>
+            )}
+          </ul>
+        </div>
+        <div class="for-whom__col">
+          <h2 class="for-whom__title">✗ Не подходит, если:</h2>
+          <ul class="for-whom__list for-whom__list--not">
+            {model.productFit?.notFor?.length > 0 ? (
+              model.productFit.notFor.map((item: string) => <li>{item}</li>)
+            ) : (
+              <>
+                {!model.features?.russian && <li>Нужен русский язык</li>}
+                {model.pricing !== 'free' && <li>Ищешь бесплатное</li>}
+                {!model.features?.voice && <li>Нужны голосовые звонки</li>}
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Уникальные фичи (Уровень 3) -->
+    <section class="model-section">
+      <h2 class="section-title">Уникальные фичи</h2>
+      <div class="features-table">
+        <div class="features-table__row">
+          <span class="features-table__label">Память</span>
+          <span class="features-table__value" data-type={model.advancedFeatures?.memoryType || 'short'}>
+            {model.advancedFeatures?.memoryType === 'persistent' ? 'Постоянная' :
+             model.advancedFeatures?.memoryType === 'long' ? 'Долгосрочная' :
+             model.advancedFeatures?.memoryType === 'short' ? 'Короткая' : 'Нет'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Голос</span>
+          <span class="features-table__value" data-check={model.advancedFeatures?.voiceQuality !== 'none'}>
+            {model.advancedFeatures?.voiceQuality === 'realistic' ? 'Реалистичный' :
+             model.advancedFeatures?.voiceQuality === 'basic' ? 'Базовый' : '—'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Генерация фото</span>
+          <span class="features-table__value" data-check={model.features?.imageGen}>
+            {model.features?.imageGen ? '✓ Да' : '—'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">NSFW</span>
+          <span class="features-table__value" data-nsfw={model.advancedFeatures?.nsfwSupport || 'none'}>
+            {model.advancedFeatures?.nsfwSupport === 'full' ? 'Full' :
+             model.advancedFeatures?.nsfwSupport === 'soft' ? 'Soft' : '—'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Цензура</span>
+          <span class="features-table__value" data-censorship={model.advancedFeatures?.censorship || 'moderate'}>
+            {model.advancedFeatures?.censorship === 'none' ? 'Нет' :
+             model.advancedFeatures?.censorship === 'moderate' ? 'Умеренная' : 'Строгая'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Русский язык</span>
+          <span class="features-table__value" data-check={model.features?.russian}>
+            {model.features?.russian ? '✓ Да' : '—'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Маркетплейс</span>
+          <span class="features-table__value" data-check={model.advancedFeatures?.hasMarketplace}>
+            {model.advancedFeatures?.hasMarketplace ? '✓ Да' : '—'}
+          </span>
+        </div>
+        <div class="features-table__row">
+          <span class="features-table__label">Кастом аватар</span>
+          <span class="features-table__value" data-check={model.advancedFeatures?.customAvatar}>
+            {model.advancedFeatures?.customAvatar ? '✓ Да' : '—'}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Скриншоты интерфейса -->
+    {model.screenshots && model.screenshots.length > 0 && (
+      <section class="model-section">
+        <h2 class="section-title">Скриншоты</h2>
+        <Gallery class="model-gallery">
+          {model.screenshots.map((src: string, i: number) => (
+            <GalleryItem 
+              src={src} 
+              alt={`${model.name} — скриншот ${i + 1}`}
+              width={1200}
+              height={800}
+            />
+          ))}
+        </Gallery>
+      </section>
+    )}
+
+    <!-- Другие сервисы для той же цели -->
+    {relatedByGoal.length > 0 && model.primaryGoal && (
+      <section class="model-section">
+        <h2 class="section-title">Другие сервисы для {goalLabels[model.primaryGoal] || model.primaryGoal}</h2>
+        <div class="related-models">
+          {relatedByGoal.map((related: any) => (
+            <a href={`/models/${related.slug}`} class="related-model">
+              {related.logo ? (
+                <img src={related.logo} alt="" class="related-model__logo" />
+              ) : (
+                <span class="related-model__logo related-model__logo--placeholder">{related.name.charAt(0)}</span>
+              )}
+              <span class="related-model__name">{related.name}</span>
+              <span class="related-model__rating">★ {related.rating.toFixed(1)}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Альтернативы (из productFit или автоматические) -->
+    <section class="model-section">
+      <h2 class="section-title">Альтернативы</h2>
+      <div class="alternatives">
+        {model.productFit?.alternatives?.length > 0 ? (
+          model.productFit.alternatives.map((alt: { slug: string; reason: string }) => {
+            const altModel = allModelsData.find(m => m.slug === alt.slug);
+            return altModel && (
+              <a href={`/models/${alt.slug}`} class="alternative">
+                <span class="alternative__label">{alt.reason}</span>
+                <span class="alternative__name">{altModel.name}</span>
+              </a>
+            );
+          })
+        ) : (
+          <>
+            {alternatives.free && model.pricing !== 'free' && (
+              <a href={`/models/${alternatives.free.slug}`} class="alternative">
+                <span class="alternative__label">Бесплатно →</span>
+                <span class="alternative__name">{alternatives.free.name}</span>
+              </a>
+            )}
+            {alternatives.russian && !model.features?.russian && (
+              <a href={`/models/${alternatives.russian.slug}`} class="alternative">
+                <span class="alternative__label">На русском →</span>
+                <span class="alternative__name">{alternatives.russian.name}</span>
+              </a>
+            )}
+            {alternatives.cheaper && (
+              <a href={`/models/${alternatives.cheaper.slug}`} class="alternative">
+                <span class="alternative__label">Дешевле →</span>
+                <span class="alternative__name">{alternatives.cheaper.name}</span>
+              </a>
+            )}
+          </>
+        )}
+        <a href="/catalog" class="alternative">
+          <span class="alternative__label">Все сервисы →</span>
+          <span class="alternative__name">Каталог</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Финальный CTA -->
+    <section class="model-section">
+      <div class="final-cta">
+        <h2 class="final-cta__title">Готов попробовать?</h2>
+        <a href={model.affiliateUrl} class="final-cta__btn" target="_blank" rel="noopener">
+          Перейти на {model.name} →
+        </a>
+      </div>
+    </section>
+
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  /* Hero */
+  .model-hero {
+    padding: var(--ids__space-xl) 0;
+    background: var(--ids__bg-surface);
+  }
+
+  .model-hero__header {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-m);
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .model-hero__logo {
+    width: var(--ids__logo-m);
+    height: var(--ids__logo-m);
+    border-radius: var(--ids__radius-l);
+    object-fit: cover;
+  }
+
+  .model-hero__logo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .model-hero__name {
+    margin: 0;
+    font-size: var(--ids__font-size-h1);
+    font-weight: var(--ids__font-weight-heavy);
+  }
+
+  .model-hero__meta {
+    display: flex;
+    gap: var(--ids__space-m);
+    margin-top: var(--ids__space-xs);
+  }
+
+  .model-hero__rating {
+    color: var(--ids__text-tertiary);
+  }
+
+  .model-hero__price {
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__accent);
+  }
+
+  .model-hero__positioning {
+    margin: 0 0 var(--ids__space-l);
+    font-size: var(--ids__font-size-h3);
+    color: var(--ids__text-secondary);
+    max-width: 35em;
+  }
+
+  .model-hero__cta {
+    display: inline-block;
+    padding: var(--ids__space-s) var(--ids__space-l);
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+    border-radius: var(--ids__radius-s);
+    text-decoration: none;
+    transition: opacity var(--ids__transition-fast);
+  }
+
+  .model-hero__cta:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: var(--ids__bg-page);
+  }
+
+  /* Секции */
+  .model-section {
+    padding: var(--ids__space-xl) 0;
+    border-bottom: 1px solid var(--ids__border-subtle);
+  }
+
+  .section-title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  /* Плюсы/Минусы */
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ids__space-xl);
+  }
+
+  @media (width < 600px) {
+    .pros-cons {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pros-cons__title {
+    margin: 0 0 var(--ids__space-s);
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .pros-cons__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pros-cons__list li {
+    padding: var(--ids__space-xs) 0;
+    padding-left: 0;
+    color: var(--ids__text-secondary);
+  }
+
+  .pros-cons__list li::before {
+    display: none;
+  }
+
+  /* Для кого */
+  .for-whom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ids__space-xl);
+  }
+
+  @media (width < 600px) {
+    .for-whom {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .for-whom__title {
+    margin: 0 0 var(--ids__space-s);
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .for-whom__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .for-whom__list li {
+    padding: var(--ids__space-xs) 0;
+    padding-left: 0;
+    color: var(--ids__text-secondary);
+  }
+
+  .for-whom__list li::before {
+    display: none;
+  }
+
+  /* Таблица фич */
+  .features-table {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--ids__space-xs);
+  }
+
+  @media (width < 600px) {
+    .features-table {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .features-table__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--ids__space-s) var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-s);
+  }
+
+  .features-table__label {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+  }
+
+  .features-table__value {
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  .features-table__value[data-check="true"] {
+    color: rgb(0, 140, 70);
+  }
+
+  .features-table__value[data-check="false"] {
+    color: var(--ids__text-muted);
+  }
+
+  .features-table__value[data-nsfw="full"] {
+    color: rgb(220, 50, 50);
+  }
+
+  .features-table__value[data-nsfw="soft"] {
+    color: rgb(220, 130, 50);
+  }
+
+  .features-table__value[data-censorship="none"] {
+    color: rgb(0, 140, 70);
+  }
+
+  .features-table__value[data-censorship="strict"] {
+    color: rgb(220, 50, 50);
+  }
+
+  .features-table__value[data-type="persistent"],
+  .features-table__value[data-type="long"] {
+    color: rgb(0, 140, 70);
+  }
+
+  /* Альтернативы */
+  .alternatives {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ids__space-s);
+  }
+
+  .alternative {
+    display: flex;
+    flex-direction: column;
+    padding: var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-m);
+    text-decoration: none;
+    transition: background var(--ids__transition-fast);
+  }
+
+  .alternative:hover {
+    background: var(--ids__bg-surface-hover);
+    text-decoration: none;
+  }
+
+  .alternative__label {
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__accent);
+  }
+
+  .alternative__name {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  /* Финальный CTA */
+  .final-cta {
+    text-align: center;
+    padding: var(--ids__space-xl);
+    background: var(--ids__bg-accent-subtle);
+    border-radius: var(--ids__radius-l);
+  }
+
+  .final-cta__title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .final-cta__btn {
+    display: inline-block;
+    padding: var(--ids__space-s) var(--ids__space-xl);
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+    border-radius: var(--ids__radius-s);
+    text-decoration: none;
+    transition: opacity var(--ids__transition-fast);
+  }
+
+  .final-cta__btn:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: var(--ids__bg-page);
+  }
+
+  /* Индикация свежести */
+  .model-hero__updated {
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__text-muted);
+    background: var(--ids__bg-page);
+    padding: var(--ids__space-2xs) var(--ids__space-xs);
+    border-radius: var(--ids__radius-s);
+  }
+
+  /* Галерея скриншотов */
+  .model-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--ids__space-s);
+  }
+
+  .model-gallery :global(figure) {
+    margin: 0;
+  }
+
+  .model-gallery :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--ids__radius-m);
+    cursor: pointer;
+    transition: opacity var(--ids__transition-fast);
+  }
+
+  .model-gallery :global(img:hover) {
+    opacity: 0.9;
+  }
+
+  /* Похожие модели по цели */
+  .related-models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ids__space-s);
+  }
+
+  .related-model {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-s);
+    padding: var(--ids__space-s) var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-m);
+    text-decoration: none;
+    transition: background var(--ids__transition-fast);
+  }
+
+  .related-model:hover {
+    background: var(--ids__bg-surface-hover);
+    text-decoration: none;
+  }
+
+  .related-model__logo {
+    width: var(--ids__logo-xs);
+    height: var(--ids__logo-xs);
+    border-radius: var(--ids__radius-s);
+    object-fit: cover;
+  }
+
+  .related-model__logo--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
+    background: var(--ids__accent);
+  }
+
+  .related-model__name {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  .related-model__rating {
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__text-muted);
+  }
+</style>

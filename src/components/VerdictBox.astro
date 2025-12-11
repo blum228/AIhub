@@ -1,0 +1,79 @@
+---
+/**
+ * Блок с вердиктом сравнения
+ */
+interface Props {
+  verdict: string;
+  winner?: 'a' | 'b' | 'tie';
+  modelAName?: string;
+  modelBName?: string;
+  class?: string;
+}
+
+const { verdict, winner, modelAName, modelBName, class: className } = Astro.props;
+const classes = ['aigh__verdict', className].filter(Boolean).join(' ');
+
+const winnerText = winner === 'a' ? `Победитель: ${modelAName}` 
+  : winner === 'b' ? `Победитель: ${modelBName}` 
+  : 'Ничья — зависит от ваших целей';
+---
+
+<div class={classes}>
+  <div class="aigh__verdict-header">
+    <span class="aigh__verdict-icon">⚖️</span>
+    <h3 class="aigh__verdict-title">Вердикт</h3>
+  </div>
+  <p class="aigh__verdict-text">{verdict}</p>
+  {winner && (
+    <p class="aigh__verdict-winner" data-winner={winner}>{winnerText}</p>
+  )}
+</div>
+
+<style>
+  .aigh__verdict {
+    padding: calc(var(--ids__density) * 1.2em);
+    background: linear-gradient(135deg, 
+      rgba(var(--ids__accent-RGB), 0.08), 
+      rgba(var(--ids__accent-RGB), 0.02)
+    );
+    border-left: 4px solid var(--ids__accent);
+    border-radius: 0 0.5em 0.5em 0;
+  }
+
+  .aigh__verdict-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.8em;
+  }
+
+  .aigh__verdict-icon {
+    font-size: 1.3em;
+  }
+
+  .aigh__verdict-title {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: rgb(var(--ids__text-RGB));
+  }
+
+  .aigh__verdict-text {
+    margin: 0;
+    font-size: 1.05em;
+    line-height: 1.5;
+    color: rgba(var(--ids__text-RGB), 0.85);
+  }
+
+  .aigh__verdict-winner {
+    margin: 0.8em 0 0 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: rgba(var(--ids__text-RGB), 0.6);
+  }
+
+  .aigh__verdict-winner[data-winner="a"],
+  .aigh__verdict-winner[data-winner="b"] {
+    color: var(--ids__accent);
+  }
+</style>

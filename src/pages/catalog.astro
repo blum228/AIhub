@@ -1,0 +1,110 @@
+---
+/**
+ * Каталог всех AI-девушек
+ * Простой список с фильтрами по фичам (цели — на главной и в header)
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Wrapper from '../components/Wrapper.astro';
+import Space from '../components/Space.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ModelCardSemantic from '../components/ModelCardSemantic.astro';
+import CatalogFilters from '../components/CatalogFilters.astro';
+
+// Получаем все модели
+const allModels = await getCollection('models');
+
+// Преобразуем в удобный формат
+const models = allModels
+  .map(entry => ({ slug: entry.id.replace('.yaml', ''), ...entry.data }))
+  .sort((a, b) => b.rating - a.rating);
+
+
+// Breadcrumbs
+const breadcrumbs = [
+  { label: 'Главная', href: '/' },
+  { label: 'Все сервисы' }
+];
+---
+
+<SiteLayout 
+  title="Все AI-девушки — AIGirlsHub"
+  description="Полный каталог AI-девушек и виртуальных компаньонов. Сравните рейтинги, цены и функции лучших AI-сервисов."
+>
+  <Wrapper>
+    <Space size="L" />
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>Все сервисы</h1>
+    <p class="catalog__subtitle">{models.length} AI-девушек • по рейтингу</p>
+  </Wrapper>
+
+  <!-- Фильтры по фичам -->
+  <CatalogFilters activeFilter="all" totalCount={models.length} />
+
+  <Wrapper>
+    <Space size="M" />
+    
+    <!-- Все сервисы -->
+    <div class="catalog-grid" id="catalog-grid">
+      {models.map(model => (
+        <ModelCardSemantic model={model} showCTA={false} />
+      ))}
+    </div>
+    
+    <Space size="L" />
+
+    <!-- CTA к сравнениям -->
+    <div class="catalog-cta">
+      <p>Не можешь выбрать?</p>
+      <a href="/compare" class="catalog-cta__link">Смотреть сравнения →</a>
+    </div>
+    
+    <Space size="XL" />
+  </Wrapper>
+</SiteLayout>
+
+<style>
+  .catalog__subtitle {
+    margin: var(--ids__space-xs) 0 0;
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-tertiary);
+  }
+
+  /* Сетка карточек */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ids__space-m);
+  }
+
+  @media (width < 1000px) {
+    .catalog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (width < 600px) {
+    .catalog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* CTA */
+  .catalog-cta {
+    text-align: center;
+    padding: var(--ids__space-l);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-m);
+  }
+
+  .catalog-cta p {
+    margin: 0 0 var(--ids__space-xs);
+    color: var(--ids__text-tertiary);
+  }
+
+  .catalog-cta__link {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__accent);
+  }
+
+</style>

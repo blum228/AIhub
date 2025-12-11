@@ -1,0 +1,65 @@
+---
+/**
+ * Бейдж фичи
+ * @prop type - тип фичи
+ * @prop compact - компактный режим (только иконка)
+ */
+interface Props {
+  type: 'voice' | 'nsfw' | 'russian' | 'image-gen' | 'roleplay' | 'api' | 'free';
+  compact?: boolean;
+  class?: string;
+}
+
+const { type, compact = false, class: className } = Astro.props;
+
+const features: Record<string, { icon: string; label: string }> = {
+  voice: { icon: '🎤', label: 'Голос' },
+  nsfw: { icon: '🔞', label: 'NSFW' },
+  russian: { icon: '🇷🇺', label: 'Русский' },
+  'image-gen': { icon: '🖼', label: 'Картинки' },
+  roleplay: { icon: '🎭', label: 'Ролевые' },
+  api: { icon: '⚡', label: 'API' },
+  free: { icon: '✨', label: 'Бесплатно' },
+};
+
+const feature = features[type];
+const classes = ['aigh__feature-badge', compact && 'compact', className].filter(Boolean).join(' ');
+---
+
+{feature && (
+  <span class={classes} title={feature.label}>
+    <span class="aigh__feature-icon">{feature.icon}</span>
+    {!compact && <span class="aigh__feature-label">{feature.label}</span>}
+  </span>
+)}
+
+<style>
+  .aigh__feature-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ids__space-2xs);
+    padding: var(--ids__space-2xs) var(--ids__space-s);
+    font-size: var(--ids__font-size-micro);
+    line-height: var(--ids__line-height-snug);
+    background-color: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-xs);
+    white-space: nowrap;
+  }
+
+  .aigh__feature-icon {
+    font-size: var(--ids__font-size-small);
+  }
+
+  .aigh__feature-label {
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-secondary);
+  }
+
+  .aigh__feature-badge.compact {
+    padding: var(--ids__space-2xs);
+  }
+
+  .aigh__feature-badge.compact .aigh__feature-icon {
+    font-size: var(--ids__font-size-body);
+  }
+</style>

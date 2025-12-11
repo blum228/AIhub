@@ -1,0 +1,332 @@
+---
+/**
+ * Таблица сравнения фич (Уровень 3 сегментации)
+ * 
+ * Показывает галочки по уникальным фичам:
+ * - Память
+ * - Генерация фото
+ * - NSFW
+ * - Голос
+ * - Цензура
+ * - Цена
+ */
+
+interface ModelData {
+  slug: string;
+  name: string;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  primaryGoal?: string;
+  advancedFeatures?: {
+    memoryType?: 'none' | 'short' | 'long' | 'persistent';
+    voiceQuality?: 'none' | 'basic' | 'realistic';
+    multimodal?: boolean;
+    eroticQuality?: 'none' | 'basic' | 'good' | 'excellent';
+    censorship?: 'strict' | 'moderate' | 'none';
+    nsfwSupport?: 'none' | 'soft' | 'full';
+    hasMarketplace?: boolean;
+    customAvatar?: boolean;
+  };
+  features?: {
+    imageGen?: boolean;
+    russian?: boolean;
+  };
+}
+
+interface Props {
+  models: ModelData[];
+  compact?: boolean;
+  class?: string;
+}
+
+const { models, compact = false, class: className } = Astro.props;
+
+// Лейблы для значений
+const memoryLabels: Record<string, string> = {
+  none: '—',
+  short: 'Короткая',
+  long: 'Долгая',
+  persistent: 'Постоянная',
+};
+
+const voiceLabels: Record<string, string> = {
+  none: '—',
+  basic: 'Базовый',
+  realistic: 'Реалистичный',
+};
+
+const nsfwLabels: Record<string, string> = {
+  none: '—',
+  soft: 'Soft',
+  full: 'Full',
+};
+
+const censorshipLabels: Record<string, string> = {
+  strict: 'Строгая',
+  moderate: 'Умеренная',
+  none: 'Нет',
+};
+
+const goalLabels: Record<string, string> = {
+  flirt: 'Флирт',
+  roleplay: 'Ролеплей',
+  companion: 'Поддержка',
+  voice: 'Голос',
+  visual: 'Визуал',
+  experimental: 'Эксперим.',
+};
+
+// Функция для получения цены
+function getPrice(model: ModelData): string {
+  if (model.pricing === 'free') return 'Бесплатно';
+  if (model.priceFrom) return `$${model.priceFrom}`;
+  return 'Freemium';
+}
+
+// Функция для галочки/крестика
+function getCheck(value: boolean | undefined): string {
+  return value ? '✓' : '—';
+}
+
+const classes = ['comparison-table', compact && 'comparison-table--compact', className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+  <table>
+    <thead>
+      <tr>
+        <th class="comparison-table__feature-col">Фича</th>
+        {models.map(model => (
+          <th class="comparison-table__model-col">
+            <a href={`/models/${model.slug}`}>{model.name}</a>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Цель -->
+      <tr>
+        <td class="comparison-table__feature">Цель</td>
+        {models.map(model => (
+          <td class="comparison-table__value">
+            {model.primaryGoal ? goalLabels[model.primaryGoal] || model.primaryGoal : '—'}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Цена -->
+      <tr>
+        <td class="comparison-table__feature">Цена</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-pricing={model.pricing}>
+            {getPrice(model)}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Память -->
+      <tr>
+        <td class="comparison-table__feature">Память</td>
+        {models.map(model => (
+          <td class="comparison-table__value">
+            {memoryLabels[model.advancedFeatures?.memoryType || 'short']}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Генерация фото -->
+      <tr>
+        <td class="comparison-table__feature">Генерация фото</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-check={model.features?.imageGen ? 'yes' : 'no'}>
+            {getCheck(model.features?.imageGen)}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Голос -->
+      <tr>
+        <td class="comparison-table__feature">Голос</td>
+        {models.map(model => (
+          <td class="comparison-table__value">
+            {voiceLabels[model.advancedFeatures?.voiceQuality || 'none']}
+          </td>
+        ))}
+      </tr>
+
+      <!-- NSFW -->
+      <tr>
+        <td class="comparison-table__feature">NSFW</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-nsfw={model.advancedFeatures?.nsfwSupport || 'none'}>
+            {nsfwLabels[model.advancedFeatures?.nsfwSupport || 'none']}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Цензура -->
+      <tr>
+        <td class="comparison-table__feature">Цензура</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-censorship={model.advancedFeatures?.censorship || 'moderate'}>
+            {censorshipLabels[model.advancedFeatures?.censorship || 'moderate']}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Русский -->
+      <tr>
+        <td class="comparison-table__feature">Русский язык</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-check={model.features?.russian ? 'yes' : 'no'}>
+            {getCheck(model.features?.russian)}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Маркетплейс -->
+      <tr>
+        <td class="comparison-table__feature">Маркетплейс</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-check={model.advancedFeatures?.hasMarketplace ? 'yes' : 'no'}>
+            {getCheck(model.advancedFeatures?.hasMarketplace)}
+          </td>
+        ))}
+      </tr>
+
+      <!-- Кастом аватар -->
+      <tr>
+        <td class="comparison-table__feature">Кастом аватар</td>
+        {models.map(model => (
+          <td class="comparison-table__value" data-check={model.advancedFeatures?.customAvatar ? 'yes' : 'no'}>
+            {getCheck(model.advancedFeatures?.customAvatar)}
+          </td>
+        ))}
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .comparison-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--ids__font-size-small);
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--ids__space-s) var(--ids__space-m);
+    text-align: left;
+    border-bottom: 1px solid var(--ids__border-subtle);
+  }
+
+  .comparison-table thead th {
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-surface);
+    position: sticky;
+    top: 0;
+  }
+
+  .comparison-table__feature-col {
+    width: 140px;
+    min-width: 140px;
+  }
+
+  .comparison-table__model-col {
+    min-width: 100px;
+    text-align: center !important;
+  }
+
+  .comparison-table__model-col a {
+    color: var(--ids__text-primary);
+    text-decoration: none;
+  }
+
+  .comparison-table__model-col a:hover {
+    color: var(--ids__accent);
+  }
+
+  .comparison-table__feature {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-secondary);
+  }
+
+  .comparison-table__value {
+    text-align: center;
+    color: var(--ids__text-primary);
+  }
+
+  /* Цветовая индикация */
+  .comparison-table__value[data-pricing="free"] {
+    color: rgb(0, 140, 70);
+    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  .comparison-table__value[data-check="yes"] {
+    color: rgb(0, 140, 70);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .comparison-table__value[data-check="no"] {
+    color: var(--ids__text-muted);
+  }
+
+  .comparison-table__value[data-nsfw="full"] {
+    color: rgb(220, 50, 50);
+    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  .comparison-table__value[data-nsfw="soft"] {
+    color: rgb(220, 130, 50);
+  }
+
+  .comparison-table__value[data-censorship="none"] {
+    color: rgb(0, 140, 70);
+  }
+
+  .comparison-table__value[data-censorship="strict"] {
+    color: rgb(220, 50, 50);
+  }
+
+  /* Hover на строках */
+  .comparison-table tbody tr:hover {
+    background: var(--ids__bg-surface);
+  }
+
+  /* Compact variant */
+  .comparison-table--compact th,
+  .comparison-table--compact td {
+    padding: var(--ids__space-xs) var(--ids__space-s);
+  }
+
+  .comparison-table--compact .comparison-table__feature-col {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  /* Mobile */
+  @media (width < 600px) {
+    .comparison-table th,
+    .comparison-table td {
+      padding: var(--ids__space-xs) var(--ids__space-s);
+      font-size: var(--ids__font-size-caption);
+    }
+
+    .comparison-table__feature-col {
+      width: 100px;
+      min-width: 100px;
+    }
+
+    .comparison-table__model-col {
+      min-width: 80px;
+    }
+  }
+</style>

@@ -1,17 +1,17 @@
 .ids__space {
-  height: calc(var(--ids__density) * 0.7em);
+  height: var(--ids__space-s);
 
   &.S {
-    height: calc(var(--ids__density) * 0.7em);
+    height: var(--ids__space-s);
   }
   &.M {
-    height: calc(var(--ids__density) * 1.4em);
+    height: var(--ids__space-m);
   }
   &.L {
-    height: calc(var(--ids__density) * 2.4em);
+    height: var(--ids__space-xl);
   }
   &.XL {
-    height: calc(var(--ids__density) * 4em);
+    height: var(--ids__space-3xl);
   }
 }
 

@@ -1,0 +1,49 @@
+---
+/**
+ * Страница 404 — Not Found
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Wrapper from '../components/Wrapper.astro';
+import Space from '../components/Space.astro';
+import CTAButton from '../components/CTAButton.astro';
+---
+
+<SiteLayout title="Страница не найдена — AIGirlsHub">
+  <Space size="XL" />
+  <Wrapper>
+    <div class="error-page">
+      <h1>404</h1>
+      <p>Страница не найдена</p>
+      <Space size="L" />
+      <div class="error-page__actions">
+        <CTAButton href="/" text="На главную" variant="primary" />
+        <CTAButton href="/catalog" text="Каталог" variant="secondary" />
+      </div>
+    </div>
+  </Wrapper>
+  <Space size="XL" />
+</SiteLayout>
+
+<style>
+.error-page {
+  text-align: center;
+  padding: var(--ids__space-xl) 0;
+}
+.error-page h1 {
+  margin: 0;
+  font-size: 8rem;
+  font-weight: var(--ids__font-weight-heavy);
+  color: var(--ids__text-muted);
+  line-height: 1;
+}
+.error-page p {
+  margin: var(--ids__space-m) 0 0;
+  font-size: var(--ids__font-size-h3);
+  color: var(--ids__text-secondary);
+}
+.error-page__actions {
+  display: flex;
+  gap: var(--ids__space-m);
+  justify-content: center;
+}
+</style>
