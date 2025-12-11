@@ -1,7 +1,7 @@
 ---
 /**
  * Шапка сайта AIGirlsHub
- * Sticky header с dropdown для целей и бургер-меню на мобильных
+ * Минималистичный sticky header в стиле IDS
  */
 import Logo from './Logo.astro';
 import { url } from '../utils/url';
@@ -12,54 +12,19 @@ interface Props {
 
 const { class: className } = Astro.props;
 
-// Мотивации пользователя для dropdown
-const motivations = [
-  { id: 'intimacy', href: url('/for/intimacy'), label: 'Интим', icon: '❤️' },
-  { id: 'escapism', href: url('/for/escapism'), label: 'Эскапизм', icon: '🎭' },
-  { id: 'connection', href: url('/for/connection'), label: 'Связь', icon: '🤝' },
-];
-
-// Основные пункты навигации
 const navItems = [
-  { href: url('/catalog'), label: 'Все сервисы' },
+  { href: url('/catalog'), label: 'Каталог' },
   { href: url('/compare'), label: 'Сравнения' },
 ];
 
 const currentPath = Astro.url.pathname;
-const isGoalPage = currentPath.startsWith('/for/');
 ---
 
 <header class:list={['header', className]}>
   <div class="header__inner">
     <Logo />
     
-    <!-- Desktop nav -->
-    <nav class="header__nav header__nav--desktop">
-      <!-- Dropdown: Выбрать AI -->
-      <div class="header__dropdown">
-        <button 
-          class:list={['header__dropdown-trigger', { 'header__dropdown-trigger--active': isGoalPage }]}
-          aria-expanded="false"
-          aria-haspopup="true"
-        >
-          Выбрать AI
-          <svg class="header__dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <div class="header__dropdown-menu" aria-hidden="true">
-          {motivations.map(motivation => (
-            <a 
-              href={motivation.href} 
-              class:list={['header__dropdown-item', { 'header__dropdown-item--active': currentPath === motivation.href }]}
-            >
-              <span class="header__dropdown-icon">{motivation.icon}</span>
-              {motivation.label}
-            </a>
-          ))}
-        </div>
-      </div>
-
+    <nav class="header__nav">
       {navItems.map(item => (
         <a 
           href={item.href} 
@@ -79,35 +44,18 @@ const isGoalPage = currentPath.startsWith('/for/');
 
   <!-- Mobile nav -->
   <nav class="header__nav header__nav--mobile" aria-hidden="true">
-    <!-- Мотивации -->
-    <div class="header__mobile-section">
-      <span class="header__mobile-label">Выбрать AI</span>
-      {motivations.map(motivation => (
-        <a 
-          href={motivation.href} 
-          class:list={['header__link', { 'header__link--active': currentPath === motivation.href }]}
-        >
-          <span class="header__link-icon">{motivation.icon}</span>
-          {motivation.label}
-        </a>
-      ))}
-    </div>
-    <!-- Остальные пункты -->
-    <div class="header__mobile-section">
-      {navItems.map(item => (
-        <a 
-          href={item.href} 
-          class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
-        >
-          {item.label}
-        </a>
-      ))}
-    </div>
+    {navItems.map(item => (
+      <a 
+        href={item.href} 
+        class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
+      >
+        {item.label}
+      </a>
+    ))}
   </nav>
 </header>
 
 <script>
-  // Burger menu
   const burger = document.querySelector('.header__burger');
   const mobileNav = document.querySelector('.header__nav--mobile');
   const header = document.querySelector('.header');
@@ -117,37 +65,6 @@ const isGoalPage = currentPath.startsWith('/for/');
     burger.setAttribute('aria-expanded', String(!isOpen));
     mobileNav?.setAttribute('aria-hidden', String(isOpen));
     header?.classList.toggle('header--open', !isOpen);
-  });
-
-  // Desktop dropdown
-  const dropdownTrigger = document.querySelector('.header__dropdown-trigger');
-  const dropdownMenu = document.querySelector('.header__dropdown-menu');
-  const dropdown = document.querySelector('.header__dropdown');
-
-  dropdownTrigger?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = dropdownTrigger.getAttribute('aria-expanded') === 'true';
-    dropdownTrigger.setAttribute('aria-expanded', String(!isOpen));
-    dropdownMenu?.setAttribute('aria-hidden', String(isOpen));
-    dropdown?.classList.toggle('header__dropdown--open', !isOpen);
-  });
-
-  // Close dropdown on outside click
-  document.addEventListener('click', (e) => {
-    if (!dropdown?.contains(e.target as Node)) {
-      dropdownTrigger?.setAttribute('aria-expanded', 'false');
-      dropdownMenu?.setAttribute('aria-hidden', 'true');
-      dropdown?.classList.remove('header__dropdown--open');
-    }
-  });
-
-  // Close dropdown on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      dropdownTrigger?.setAttribute('aria-expanded', 'false');
-      dropdownMenu?.setAttribute('aria-hidden', 'true');
-      dropdown?.classList.remove('header__dropdown--open');
-    }
   });
 </script>
 
@@ -169,169 +86,30 @@ const isGoalPage = currentPath.startsWith('/for/');
     width: 70%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: var(--ids__space-s) 0;
+    padding: 8px 0;
   }
 
   @media (width < 900px) {
     .header__inner {
       width: 100%;
-      padding: var(--ids__space-s) var(--ids__space-m);
+      padding: 8px var(--ids__space-s);
     }
   }
 
-  /* Desktop nav */
-  .header__nav--desktop {
+  .header__nav {
     display: flex;
     align-items: center;
-    gap: var(--ids__space-l);
+    gap: var(--ids__space-m);
   }
 
   @media (width < 600px) {
-    .header__nav--desktop {
+    .header__nav:not(.header__nav--mobile) {
       display: none;
     }
   }
 
-  /* Dropdown */
-  .header__dropdown {
-    position: relative;
-  }
-
-  .header__dropdown-trigger {
-    display: flex;
-    align-items: center;
-    gap: var(--ids__space-2xs);
-    padding: var(--ids__space-xs) var(--ids__space-s);
-    font-size: var(--ids__font-size-small);
-    font-weight: var(--ids__font-weight-semibold);
-    color: var(--ids__text-secondary);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--ids__radius-s);
-    cursor: pointer;
-    transition: all var(--ids__transition-fast);
-  }
-
-  .header__dropdown-trigger:hover {
-    color: var(--ids__text-primary);
-    background: var(--ids__bg-surface);
-  }
-
-  .header__dropdown-trigger--active {
-    color: var(--ids__text-primary);
-  }
-
-  .header__dropdown--open .header__dropdown-trigger {
-    color: var(--ids__text-primary);
-    background: var(--ids__bg-surface);
-    border-color: var(--ids__border-subtle);
-  }
-
-  .header__dropdown-arrow {
-    transition: transform var(--ids__transition-fast);
-  }
-
-  .header__dropdown--open .header__dropdown-arrow {
-    transform: rotate(180deg);
-  }
-
-  .header__dropdown-menu {
-    position: absolute;
-    top: calc(100% + var(--ids__space-xs));
-    left: 0;
-    min-width: 200px;
-    padding: var(--ids__space-xs);
-    background: var(--ids__bg-surface);
-    border: 1px solid var(--ids__border-subtle);
-    border-radius: var(--ids__radius-m);
-    box-shadow: var(--ids__shadow-l);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
-    transition: all var(--ids__transition-fast);
-  }
-
-  .header__dropdown-menu[aria-hidden="false"] {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
-  .header__dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: var(--ids__space-s);
-    padding: var(--ids__space-s) var(--ids__space-m);
-    font-size: var(--ids__font-size-small);
-    color: var(--ids__text-secondary);
-    text-decoration: none;
-    border-radius: var(--ids__radius-s);
-    transition: all var(--ids__transition-fast);
-  }
-
-  .header__dropdown-item:hover {
-    color: var(--ids__text-primary);
-    background: var(--ids__bg-page);
-    text-decoration: none;
-  }
-
-  .header__dropdown-item--active {
-    color: var(--ids__text-primary);
-    background: var(--ids__bg-page);
-    font-weight: var(--ids__font-weight-semibold);
-  }
-
-  .header__dropdown-icon {
-    font-size: 1.1em;
-  }
-
-  /* Mobile nav */
-  .header__nav--mobile {
-    display: none;
-    flex-direction: column;
-    gap: 0;
-    padding: 0 var(--ids__space-m) var(--ids__space-m);
-    border-top: 1px solid var(--ids__border-subtle);
-  }
-
-  .header__nav--mobile[aria-hidden="false"] {
-    display: flex;
-  }
-
-  .header__mobile-section {
-    padding: var(--ids__space-s) 0;
-    border-bottom: 1px solid var(--ids__border-subtle);
-  }
-
-  .header__mobile-section:last-child {
-    border-bottom: none;
-  }
-
-  .header__mobile-label {
-    display: block;
-    padding: var(--ids__space-xs) 0;
-    font-size: var(--ids__font-size-caption);
-    font-weight: var(--ids__font-weight-bold);
-    color: var(--ids__text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .header__nav--mobile .header__link {
-    display: flex;
-    align-items: center;
-    gap: var(--ids__space-s);
-    padding: var(--ids__space-s) 0;
-  }
-
-  .header__link-icon {
-    font-size: 1.1em;
-  }
-
-  /* Links */
   .header__link {
     font-size: var(--ids__font-size-small);
-    font-weight: var(--ids__font-weight-medium);
     color: var(--ids__text-secondary);
     text-decoration: none;
     transition: color var(--ids__transition-fast);
@@ -344,7 +122,19 @@ const isGoalPage = currentPath.startsWith('/for/');
 
   .header__link--active {
     color: var(--ids__text-primary);
-    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  /* Mobile nav */
+  .header__nav--mobile {
+    display: none;
+    flex-direction: column;
+    gap: var(--ids__space-xs);
+    padding: var(--ids__space-s) var(--ids__space-m);
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .header__nav--mobile[aria-hidden="false"] {
+    display: flex;
   }
 
   /* Burger */
@@ -366,7 +156,7 @@ const isGoalPage = currentPath.startsWith('/for/');
     width: 100%;
     height: 2px;
     background: var(--ids__text-primary);
-    transition: transform var(--ids__transition-normal), opacity var(--ids__transition-normal);
+    transition: transform var(--ids__transition-normal);
   }
 
   .header--open .header__burger span:first-child {

@@ -139,7 +139,10 @@
   }
 }
 
-header,
+header {
+  padding: 0;
+}
+
 footer {
-  padding: calc(var(--ids__density) * 1em);
+  padding: calc(var(--ids__density) * 0.5em) 0;
 }

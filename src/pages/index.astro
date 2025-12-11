@@ -1,79 +1,76 @@
 ---
 /**
  * Главная страница AIGirlsHub
- * Единственная точка входа: выбор цели → переход к сервисам
+ * 
+ * СИСТЕМА ОТСТУПОВ:
+ * - section + section = margin-top на секции (большой ритм)
+ * - внутри секции: заголовок → контент (малый ритм через margin-bottom)
  */
 import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Wrapper from '../components/Wrapper.astro';
-import Space from '../components/Space.astro';
-import SectionTitle from '../components/SectionTitle.astro';
-import QuickPick from '../components/QuickPick.astro';
 import { url } from '../utils/url';
 
-// Получаем все модели для подсчёта
+// Получаем модели
 const allModels = await getCollection('models');
 const models = allModels.map(entry => ({ 
   slug: entry.id.replace('.yaml', ''), 
   ...entry.data 
 }));
 
-// Группируем по мотивациям для статистики
+// Группируем по мотивациям
 const motivationCounts = {
   intimacy: models.filter(m => m.motivation === 'intimacy' || m.motivationSupport?.includes('intimacy')).length,
   escapism: models.filter(m => m.motivation === 'escapism' || m.motivationSupport?.includes('escapism')).length,
   connection: models.filter(m => m.motivation === 'connection' || m.motivationSupport?.includes('connection')).length,
 };
 
-// Мотивации пользователя — главная навигация
+// Мотивации с SVG иконками
 const motivations = [
   {
     id: 'intimacy',
     title: 'Интим',
-    description: 'Флирт, романтика, NSFW-контент',
-    icon: url('/images/icons/intimacy.svg'),
+    description: 'Флирт, романтика, NSFW',
     count: motivationCounts.intimacy,
     href: url('/for/intimacy'),
-    color: 'red',
+    icon: url('/images/icons/intimacy.svg'),
   },
   {
     id: 'escapism',
     title: 'Эскапизм',
-    description: 'Ролевые игры, персонажи, фантазии',
-    icon: url('/images/icons/escapism.svg'),
+    description: 'Ролевые игры, фантазии',
     count: motivationCounts.escapism,
     href: url('/for/escapism'),
-    color: 'purple',
+    icon: url('/images/icons/escapism.svg'),
   },
   {
     id: 'connection',
     title: 'Связь',
-    description: 'Поддержка, дружба, разговоры',
-    icon: url('/images/icons/connection.svg'),
+    description: 'Поддержка, дружба',
     count: motivationCounts.connection,
     href: url('/for/connection'),
-    color: 'blue',
+    icon: url('/images/icons/connection.svg'),
   },
 ];
 
-// FAQ для SEO
+// FAQ
 const faqItems = [
-  {
-    question: 'Что такое AI-девушка?',
-    answer: 'Виртуальный компаньон на базе нейросетей. Помнит разговоры, генерирует фото, звонит голосом.'
+  { 
+    q: 'Что такое AI-девушка?', 
+    a: 'Виртуальный компаньон на базе нейросетей. Она умеет общаться, запоминать контекст, поддерживать разговор и адаптироваться под твои предпочтения.' 
   },
-  {
-    question: 'Это безопасно?',
-    answer: 'Да. Данные шифруются. Не делись личными данными (адрес, карта) с любым AI.'
+  { 
+    q: 'Это безопасно?', 
+    a: 'Да. Все сервисы в каталоге используют шифрование данных. Мы проверяем политику конфиденциальности каждого сервиса.' 
   },
-  {
-    question: 'Сколько стоит?',
-    answer: 'От 0 до $20/мес. Character.AI бесплатный. Replika, Candy.AI — freemium от $7/мес.'
+  { 
+    q: 'Сколько это стоит?', 
+    a: 'От $0 до $20/мес. Многие сервисы предлагают бесплатный тариф с ограничениями или пробный период.' 
   },
-  {
-    question: 'Какую выбрать?',
-    answer: 'Бесплатно — Character.AI. Фото — Candy.AI. Голос — Replika. NSFW — Muah AI.'
-  }
+  { 
+    q: 'Можно ли общаться на русском?', 
+    a: 'Большинство AI понимают русский язык. В карточке каждого сервиса указано, есть ли полноценная поддержка русского.' 
+  },
 ];
 
 // Schema.org
@@ -82,338 +79,243 @@ const schema = {
   '@type': 'WebSite',
   name: 'AIGirlsHub',
   url: 'https://aigirlshub.ru',
-  description: 'Каталог лучших AI-девушек и виртуальных компаньонов'
-};
-
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqItems.map(item => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: { '@type': 'Answer', text: item.answer }
-  }))
 };
 ---
 
 <SiteLayout 
   title="AIGirlsHub — Каталог AI-девушек 2025"
-  description="Найди идеальную AI-девушку. Обзоры и сравнения: Candy.AI, Character.AI, Replika."
+  description="Найди идеальную AI-девушку. Обзоры, рейтинги и сравнения лучших AI-компаньонов."
 >
-  <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" />
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" is:inline />
 
-  <!-- Hero: Главный вопрос -->
-  <section class="hero">
-    <Wrapper>
-      <h1>Что ты ищешь?</h1>
-      <p class="hero__sub">Выбери цель — мы подберём AI-девушку</p>
-    </Wrapper>
-  </section>
-
-  <!-- УРОВЕНЬ 1: Выбор мотивации пользователя -->
-  <Wrapper>
-    <section class="goals">
-      <div class="goals__grid">
-        {motivations.map((motivation) => (
-          <a href={motivation.href} class={`goal-card goal-card--${motivation.color}`}>
-            <div class="goal-card__icon-wrapper">
-              <img src={motivation.icon} alt={motivation.title} class="goal-card__icon" />
-            </div>
-            <div class="goal-card__content">
-              <h3 class="goal-card__title">{motivation.title}</h3>
-              <p class="goal-card__desc">{motivation.description}</p>
-            </div>
-            <span class="goal-card__count">{motivation.count}</span>
-          </a>
-        ))}
-      </div>
+  <div class="page">
+    
+    <!-- HERO -->
+    <section class="hero">
+      <Wrapper>
+        <p class="hero__huge">Каталог AI-девушек</p>
+        <p class="hero__sub">{models.length} сервисов · обзоры · сравнения</p>
+      </Wrapper>
     </section>
-  </Wrapper>
 
-  <Space size="L" />
-
-  <!-- QuickPick: быстрый выбор -->
-  <Wrapper>
-    <QuickPick />
-  </Wrapper>
-
-  <Space size="L" />
-
-  <!-- Превью сервисов -->
-  <Wrapper>
-    <section class="featured-services">
-      <p class="featured-services__text">
-        Candy.AI • Replika • Character.AI и ещё {models.length - 3} сервисов
-      </p>
+    <!-- GOALS -->
+    <section id="goals" class="section">
+      <Wrapper>
+        <h2>Что ищешь?</h2>
+        
+        <nav class="goals">
+          {motivations.map((m) => (
+            <a href={m.href} class="goal">
+              <img src={m.icon} alt="" class="goal__icon" />
+              <span class="goal__title">{m.title}</span>
+              <span class="goal__desc">{m.description}</span>
+              <span class="goal__count">{m.count} сервисов</span>
+            </a>
+          ))}
+        </nav>
+      </Wrapper>
     </section>
-  </Wrapper>
 
-  <Space size="L" />
-
-  <!-- Ссылка на все сервисы -->
-  <Wrapper>
-    <div class="all-services">
-      <a href={url('/catalog')} class="all-services__link">
-        Смотреть все {models.length} сервисов →
-      </a>
-    </div>
-  </Wrapper>
-
-  <Space size="XL" />
-
-  <!-- FAQ -->
-  <Wrapper>
-    <section class="faq">
-      <SectionTitle size="small">Частые вопросы</SectionTitle>
-      <div class="faq__list">
-        {faqItems.map((item, index) => (
-          <details class="faq__item" open={index < 2}>
-            <summary>{item.question}</summary>
-            <p>{item.answer}</p>
-          </details>
-        ))}
-      </div>
+    <!-- FAQ -->
+    <section class="section">
+      <Wrapper>
+        <h2>Частые вопросы</h2>
+        
+        <div class="faq-list">
+          {faqItems.map((item, index) => (
+            <details class="faq-item" open={index === 0}>
+              <summary class="faq-item__q">{item.q}</summary>
+              <p class="faq-item__a">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </Wrapper>
     </section>
-  </Wrapper>
 
-  <Space size="XL" />
+  </div>
 </SiteLayout>
 
+
 <style>
-  /* ═══════════════════════════════════════════════════════════════
-     HERO — Минималистичный
-     ═══════════════════════════════════════════════════════════════ */
-  .hero {
-    padding: var(--ids__space-3xl) 0 var(--ids__space-xl);
-    text-align: center;
+  /* РИТМ: section margin-top создаёт вертикальный ритм */
+  
+  .page {
+    padding-bottom: var(--ids__space-l);
   }
 
-  .hero h1 {
-    margin: 0;
-    font-size: var(--ids__font-size-hero);
-    font-weight: var(--ids__font-weight-heavy);
-    letter-spacing: -0.02em;
-    line-height: var(--ids__line-height-tight);
+  .section {
+    margin-top: var(--ids__space-xl);
+  }
+
+  .section h2 {
+    margin-bottom: var(--ids__space-2xs);
+  }
+
+  .section__lead {
+    color: var(--ids__text-secondary);
+    margin-bottom: var(--ids__space-m);
+  }
+
+  /* HERO — IDS style */
+  .hero {
+    margin-top: var(--ids__space-xl);
+  }
+
+  .hero__huge {
+    font-size: 3em;
+    line-height: 1.1;
+    font-weight: 600;
+    margin-bottom: var(--ids__space-xs);
+  }
+
+  @media (width < 768px) {
+    .hero__huge {
+      font-size: 2em;
+    }
   }
 
   .hero__sub {
-    margin: var(--ids__space-xs) 0 0;
-    font-size: var(--ids__font-size-h3);
+    font-size: var(--ids__font-size-body);
     color: var(--ids__text-secondary);
+    margin-bottom: 0;
   }
 
-  @media (width < 900px) {
-    .hero h1 {
-      font-size: var(--ids__font-size-hero-mobile);
-    }
-  }
-
-  @media (width < 600px) {
-    .hero {
-      padding: var(--ids__space-2xl) 0 var(--ids__space-l);
-    }
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     GOALS — Выбор цели (Уровень 1 сегментации)
-     ═══════════════════════════════════════════════════════════════ */
-  .goals__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--ids__space-l);
-  }
-
-  @media (width < 900px) {
-    .goals__grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--ids__space-m);
-    }
-  }
-
-  @media (width < 600px) {
-    .goals__grid {
-      grid-template-columns: 1fr;
-      gap: var(--ids__space-m);
-    }
-  }
-
-  .goal-card {
+  /* GOALS */
+  .goals {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--ids__space-m);
-    padding: var(--ids__space-l);
-    background: var(--ids__bg-surface);
-    border: 1px solid var(--ids__border-subtle);
-    border-radius: var(--ids__radius-l);
-    text-decoration: none;
-    color: inherit;
-    text-align: center;
-    transition: 
-      border-color var(--ids__transition-normal),
-      background var(--ids__transition-normal),
-      transform var(--ids__transition-normal),
-      box-shadow var(--ids__transition-normal);
+    gap: 0;
+    margin-top: var(--ids__space-m);
   }
 
-  .goal-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--ids__border-default);
-    background: var(--ids__bg-surface-hover);
-    box-shadow: var(--ids__shadow-m);
-  }
-
-  .goal-card__icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3em;
-    height: 3em;
-    border-radius: var(--ids__radius-m);
-    background: var(--ids__bg-page);
-    color: #000;
-    transition: 
-      background var(--ids__transition-normal),
-      color var(--ids__transition-normal);
-  }
-
-  .goal-card__icon {
-    width: 1.5em;
-    height: 1.5em;
-    display: block;
-  }
-
-  .goal-card:hover .goal-card__icon-wrapper {
-    background: var(--ids__accent-subtle);
-  }
-
-  .goal-card__content {
+  .goal {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--ids__space-xs);
+    padding: var(--ids__space-m);
+    border: 1px solid var(--ids__border-default);
+    border-right: 0;
+    text-decoration: none;
+    color: inherit;
+    transition: 
+      background var(--ids__transition-fast),
+      border-color var(--ids__transition-fast);
   }
 
-  .goal-card__title {
-    margin: 0;
+  .goal:first-child {
+    border-radius: var(--ids__radius-l) 0 0 var(--ids__radius-l);
+  }
+
+  .goal:last-child {
+    border-radius: 0 var(--ids__radius-l) var(--ids__radius-l) 0;
+    border-right: 1px solid var(--ids__border-default);
+  }
+
+  .goal:hover {
+    background: var(--ids__bg-surface);
+    border-color: var(--ids__border-strong);
+    text-decoration: none;
+  }
+
+  .goal:hover + .goal {
+    border-left-color: var(--ids__border-strong);
+  }
+
+  .goal__icon {
+    width: 1.5em;
+    height: 1.5em;
+    margin-bottom: var(--ids__space-s);
+    opacity: 0.5;
+  }
+
+  .goal__title {
     font-size: var(--ids__font-size-h3);
     font-weight: var(--ids__font-weight-bold);
-    color: var(--ids__text-primary);
+    margin-bottom: var(--ids__space-2xs);
   }
 
-  .goal-card__desc {
-    margin: 0;
+  .goal__desc {
     font-size: var(--ids__font-size-small);
     color: var(--ids__text-secondary);
-    line-height: var(--ids__line-height-relaxed);
   }
 
-  .goal-card__count {
-    font-size: var(--ids__font-size-caption);
-    font-weight: var(--ids__font-weight-bold);
+  .goal__count {
+    font-size: var(--ids__font-size-micro);
     color: var(--ids__text-muted);
-    background: var(--ids__bg-page);
-    padding: var(--ids__space-2xs) var(--ids__space-xs);
-    border-radius: var(--ids__radius-full);
-    flex-shrink: 0;
+    margin-top: auto;
+    padding-top: var(--ids__space-s);
   }
 
-  /* Цветовые акценты для карточек целей */
-  .goal-card--red:hover .goal-card__icon-wrapper { background: rgba(239, 68, 68, 0.1); }
-  .goal-card--purple:hover .goal-card__icon-wrapper { background: rgba(168, 85, 247, 0.1); }
-  .goal-card--blue:hover .goal-card__icon-wrapper { background: rgba(59, 130, 246, 0.1); }
-  .goal-card--green:hover .goal-card__icon-wrapper { background: rgba(34, 197, 94, 0.1); }
-  .goal-card--orange:hover .goal-card__icon-wrapper { background: rgba(249, 115, 22, 0.1); }
+  @media (width < 768px) {
+    .goals {
+      flex-direction: column;
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     ALL SERVICES — Ссылка на каталог
-     ═══════════════════════════════════════════════════════════════ */
-  .all-services {
-    text-align: center;
+    .goal {
+      border-right: 1px solid var(--ids__border-default);
+      border-bottom: 0;
+    }
+
+    .goal:first-child {
+      border-radius: var(--ids__radius-l) var(--ids__radius-l) 0 0;
+    }
+
+    .goal:last-child {
+      border-radius: 0 0 var(--ids__radius-l) var(--ids__radius-l);
+      border-bottom: 1px solid var(--ids__border-default);
+    }
+
+    .goal:hover + .goal {
+      border-top-color: var(--ids__border-strong);
+    }
   }
 
-  .all-services__link {
-    font-size: var(--ids__font-size-body);
-    font-weight: var(--ids__font-weight-semibold);
-    color: var(--ids__accent);
-  }
-
-  .all-services__link:hover {
-    text-decoration: underline;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     FEATURED SERVICES — Превью сервисов
-     ═══════════════════════════════════════════════════════════════ */
-  .featured-services {
-    text-align: center;
-  }
-
-  .featured-services__text {
-    margin: 0;
-    font-size: var(--ids__font-size-small);
-    color: var(--ids__text-muted);
-    letter-spacing: 0.02em;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     FAQ
-     ═══════════════════════════════════════════════════════════════ */
-  /* SectionTitle handles h2 styling */
-
-  .faq__list {
+  /* FAQ */
+  .faq-list {
     display: flex;
     flex-direction: column;
     gap: var(--ids__space-2xs);
+    margin-top: var(--ids__space-m);
   }
 
-  .faq__item {
+  .faq-item {
     padding: var(--ids__space-s) var(--ids__space-m);
-    background: transparent;
+    background: var(--ids__bg-surface);
     border-radius: var(--ids__radius-s);
     cursor: pointer;
-    transition: background var(--ids__transition-fast);
   }
 
-  .faq__item:hover {
-    background: var(--ids__bg-surface);
+  .faq-item[open] {
+    background: var(--ids__bg-surface-hover);
   }
 
-  .faq__item[open] {
-    background: var(--ids__bg-surface);
-  }
-
-  .faq__item summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .faq-item__q {
+    font-size: var(--ids__font-size-small);
     font-weight: var(--ids__font-weight-semibold);
-    color: var(--ids__text-primary);
     list-style: none;
-    padding: 0;
   }
 
-  .faq__item summary::after {
-    content: '+';
-    font-size: var(--ids__font-size-h3);
-    font-weight: var(--ids__font-weight-normal);
-    color: var(--ids__text-muted);
-    transition: transform var(--ids__transition-fast);
-  }
-
-  .faq__item[open] summary::after {
-    content: '−';
-  }
-
-  .faq__item summary::-webkit-details-marker {
+  .faq-item__q::-webkit-details-marker {
     display: none;
   }
 
-  .faq__item p {
-    margin: var(--ids__space-s) 0 0;
-    font-size: var(--ids__font-size-small);
-    line-height: var(--ids__line-height-relaxed);
-    color: var(--ids__text-secondary);
+  .faq-item__q::before {
+    content: '+';
+    display: inline-block;
+    width: 1.2em;
+    color: var(--ids__text-muted);
   }
+
+  .faq-item[open] .faq-item__q::before {
+    content: '−';
+  }
+
+  .faq-item__a {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+    margin-top: var(--ids__space-xs);
+    margin-bottom: 0;
+    padding-left: 1.2em;
+  }
+
 </style>
