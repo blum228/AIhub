@@ -11,11 +11,16 @@ tagline: "Миллионы персонажей бесплатно"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: roleplay
-secondaryGoals:
+# Уровень 1: Мотивация
+motivation: escapism
+motivationSupport:
+  - connection
+  - intimacy
+
+# Уровень 1.5: Форматы
+formats:
+  - text
   - voice
-  - companion
 
 # Уровень 2: Тип опыта
 experienceTypes:

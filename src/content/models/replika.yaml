@@ -12,11 +12,16 @@ tagline: "Эмоциональная связь + русский язык"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: companion
-secondaryGoals:
+# Уровень 1: Мотивация
+motivation: connection
+motivationSupport:
+  - intimacy
+
+# Уровень 1.5: Форматы
+formats:
+  - text
   - voice
-  - flirt
+  - visual
 
 # Уровень 2: Тип опыта
 experienceTypes:

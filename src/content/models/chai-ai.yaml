@@ -12,10 +12,13 @@ tagline: "Tinder для AI-персонажей"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: experimental
-secondaryGoals:
-  - roleplay
+# Уровень 1: Мотивация
+motivation: escapism
+motivationSupport: []
+
+# Уровень 1.5: Форматы
+formats:
+  - text
 
 # Уровень 2: Тип опыта
 experienceTypes:

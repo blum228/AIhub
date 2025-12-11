@@ -12,10 +12,14 @@ tagline: "Глубокая романтика + NSFW"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: flirt
-secondaryGoals:
-  - companion
+# Уровень 1: Мотивация
+motivation: intimacy
+motivationSupport:
+  - connection
+
+# Уровень 1.5: Форматы
+formats:
+  - text
 
 # Уровень 2: Тип опыта
 experienceTypes:

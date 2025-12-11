@@ -17,61 +17,41 @@ const models = allModels.map(entry => ({
   ...entry.data 
 }));
 
-// Группируем по целям для статистики
-const goalCounts = {
-  flirt: models.filter(m => m.primaryGoal === 'flirt' || m.secondaryGoals?.includes('flirt')).length,
-  roleplay: models.filter(m => m.primaryGoal === 'roleplay' || m.secondaryGoals?.includes('roleplay')).length,
-  companion: models.filter(m => m.primaryGoal === 'companion' || m.secondaryGoals?.includes('companion')).length,
-  voice: models.filter(m => m.primaryGoal === 'voice' || m.secondaryGoals?.includes('voice')).length,
-  visual: models.filter(m => m.primaryGoal === 'visual' || m.secondaryGoals?.includes('visual')).length,
+// Группируем по мотивациям для статистики
+const motivationCounts = {
+  intimacy: models.filter(m => m.motivation === 'intimacy' || m.motivationSupport?.includes('intimacy')).length,
+  escapism: models.filter(m => m.motivation === 'escapism' || m.motivationSupport?.includes('escapism')).length,
+  connection: models.filter(m => m.motivation === 'connection' || m.motivationSupport?.includes('connection')).length,
 };
 
-// Цели пользователя — главная навигация
-const goals = [
+// Мотивации пользователя — главная навигация
+const motivations = [
   {
-    id: 'flirt',
-    title: 'Флирт и NSFW',
-    description: 'Романтика, секс-чат, откровенные разговоры',
-    icon: '🔥',
-    count: goalCounts.flirt,
-    href: '/for/flirt',
+    id: 'intimacy',
+    title: 'Интим',
+    description: 'Флирт, романтика, NSFW-контент',
+    icon: '/images/icons/intimacy.svg',
+    count: motivationCounts.intimacy,
+    href: '/for/intimacy',
     color: 'red',
   },
   {
-    id: 'roleplay',
-    title: 'Ролевые игры',
-    description: 'Персонажи, сценарии, сюжеты',
-    icon: '🎭',
-    count: goalCounts.roleplay,
-    href: '/for/roleplay',
+    id: 'escapism',
+    title: 'Эскапизм',
+    description: 'Ролевые игры, персонажи, фантазии',
+    icon: '/images/icons/escapism.svg',
+    count: motivationCounts.escapism,
+    href: '/for/escapism',
     color: 'purple',
   },
   {
-    id: 'companion',
-    title: 'Поддержка',
-    description: 'Эмоциональная связь, дружба, разговоры',
-    icon: '💬',
-    count: goalCounts.companion,
-    href: '/for/companion',
+    id: 'connection',
+    title: 'Связь',
+    description: 'Поддержка, дружба, разговоры',
+    icon: '/images/icons/connection.svg',
+    count: motivationCounts.connection,
+    href: '/for/connection',
     color: 'blue',
-  },
-  {
-    id: 'voice',
-    title: 'Голос',
-    description: 'Звонки, голосовое общение',
-    icon: '🎤',
-    count: goalCounts.voice,
-    href: '/for/voice',
-    color: 'green',
-  },
-  {
-    id: 'visual',
-    title: 'Генерация фото',
-    description: 'Картинки, аватары, визуал',
-    icon: '📸',
-    count: goalCounts.visual,
-    href: '/for/visual',
-    color: 'orange',
   },
 ];
 
@@ -130,18 +110,20 @@ const faqSchema = {
     </Wrapper>
   </section>
 
-  <!-- УРОВЕНЬ 1: Выбор цели пользователя -->
+  <!-- УРОВЕНЬ 1: Выбор мотивации пользователя -->
   <Wrapper>
     <section class="goals">
       <div class="goals__grid">
-        {goals.map(goal => (
-          <a href={goal.href} class={`goal-card goal-card--${goal.color}`}>
-            <span class="goal-card__icon">{goal.icon}</span>
-            <div class="goal-card__content">
-              <h3 class="goal-card__title">{goal.title}</h3>
-              <p class="goal-card__desc">{goal.description}</p>
+        {motivations.map((motivation) => (
+          <a href={motivation.href} class={`goal-card goal-card--${motivation.color}`}>
+            <div class="goal-card__icon-wrapper">
+              <img src={motivation.icon} alt={motivation.title} class="goal-card__icon" />
             </div>
-            <span class="goal-card__count">{goal.count}</span>
+            <div class="goal-card__content">
+              <h3 class="goal-card__title">{motivation.title}</h3>
+              <p class="goal-card__desc">{motivation.description}</p>
+            </div>
+            <span class="goal-card__count">{motivation.count}</span>
           </a>
         ))}
       </div>
@@ -238,62 +220,89 @@ const faqSchema = {
   .goals__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--ids__space-m);
+    gap: var(--ids__space-l);
   }
 
   @media (width < 900px) {
     .goals__grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: var(--ids__space-m);
     }
   }
 
-  @media (width < 500px) {
+  @media (width < 600px) {
     .goals__grid {
       grid-template-columns: 1fr;
+      gap: var(--ids__space-m);
     }
   }
 
   .goal-card {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     gap: var(--ids__space-m);
     padding: var(--ids__space-l);
     background: var(--ids__bg-surface);
-    border: 2px solid transparent;
+    border: 1px solid var(--ids__border-subtle);
     border-radius: var(--ids__radius-l);
     text-decoration: none;
     color: inherit;
+    text-align: center;
     transition: 
-      border-color var(--ids__transition-fast),
-      transform var(--ids__transition-fast),
-      box-shadow var(--ids__transition-fast);
+      border-color var(--ids__transition-normal),
+      background var(--ids__transition-normal),
+      transform var(--ids__transition-normal),
+      box-shadow var(--ids__transition-normal);
   }
 
   .goal-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    border-color: var(--ids__border-default);
+    background: var(--ids__bg-surface-hover);
+    box-shadow: var(--ids__shadow-m);
+  }
+
+  .goal-card__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3em;
+    height: 3em;
+    border-radius: var(--ids__radius-m);
+    background: var(--ids__bg-page);
+    color: #000;
+    transition: 
+      background var(--ids__transition-normal),
+      color var(--ids__transition-normal);
   }
 
   .goal-card__icon {
-    font-size: 2em;
-    line-height: 1;
-    flex-shrink: 0;
+    width: 1.5em;
+    height: 1.5em;
+    display: block;
+  }
+
+  .goal-card:hover .goal-card__icon-wrapper {
+    background: var(--ids__accent-subtle);
   }
 
   .goal-card__content {
     flex: 1;
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-xs);
   }
 
   .goal-card__title {
     margin: 0;
-    font-size: var(--ids__font-size-h4);
+    font-size: var(--ids__font-size-h3);
     font-weight: var(--ids__font-weight-bold);
     color: var(--ids__text-primary);
   }
 
   .goal-card__desc {
-    margin: var(--ids__space-2xs) 0 0;
+    margin: 0;
     font-size: var(--ids__font-size-small);
     color: var(--ids__text-secondary);
     line-height: var(--ids__line-height-relaxed);
@@ -305,16 +314,16 @@ const faqSchema = {
     color: var(--ids__text-muted);
     background: var(--ids__bg-page);
     padding: var(--ids__space-2xs) var(--ids__space-xs);
-    border-radius: var(--ids__radius-s);
+    border-radius: var(--ids__radius-full);
     flex-shrink: 0;
   }
 
   /* Цветовые акценты для карточек целей */
-  .goal-card--red:hover { border-color: #ef4444; }
-  .goal-card--purple:hover { border-color: #a855f7; }
-  .goal-card--blue:hover { border-color: #3b82f6; }
-  .goal-card--green:hover { border-color: #22c55e; }
-  .goal-card--orange:hover { border-color: #f97316; }
+  .goal-card--red:hover .goal-card__icon-wrapper { background: rgba(239, 68, 68, 0.1); }
+  .goal-card--purple:hover .goal-card__icon-wrapper { background: rgba(168, 85, 247, 0.1); }
+  .goal-card--blue:hover .goal-card__icon-wrapper { background: rgba(59, 130, 246, 0.1); }
+  .goal-card--green:hover .goal-card__icon-wrapper { background: rgba(34, 197, 94, 0.1); }
+  .goal-card--orange:hover .goal-card__icon-wrapper { background: rgba(249, 115, 22, 0.1); }
 
   /* ═══════════════════════════════════════════════════════════════
      ALL SERVICES — Ссылка на каталог

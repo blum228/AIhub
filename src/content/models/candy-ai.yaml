@@ -12,11 +12,15 @@ tagline: "Генерация фото + глубокие отношения"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: visual
-secondaryGoals:
-  - flirt
-  - companion
+# Уровень 1: Мотивация
+motivation: intimacy
+motivationSupport:
+  - connection
+
+# Уровень 1.5: Форматы
+formats:
+  - text
+  - visual
 
 # Уровень 2: Тип опыта
 experienceTypes:

@@ -1,7 +1,7 @@
 ---
 /**
- * Страница цели пользователя (Уровень 1 сегментации)
- * /for/flirt, /for/roleplay, /for/companion, etc.
+ * Страница мотивации пользователя (Уровень 1 сегментации)
+ * /for/intimacy, /for/escapism, /for/connection
  */
 import { getCollection } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
@@ -13,88 +13,48 @@ import FeatureComparisonTable from '../../components/FeatureComparisonTable.astr
 import CTAButton from '../../components/CTAButton.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
 
-// Определяем все цели
-const goalsMeta = {
-  flirt: {
-    title: 'Флирт и NSFW',
+// Определяем все мотивации
+const motivationsMeta = {
+  intimacy: {
+    title: 'Интим',
     subtitle: 'AI-девушки для романтики, секс-чата и откровенных разговоров',
     description: 'Сервисы для взрослых: от мягкой романтики до hardcore NSFW. Выбери по своим предпочтениям.',
-    icon: '🔥',
-    experienceTypes: [
-      { id: 'slow-burn', label: 'Романтика', desc: 'Медленное развитие отношений' },
-      { id: 'explicit', label: 'Откровенно', desc: 'Прямые разговоры без цензуры' },
-      { id: 'gfe', label: 'GFE', desc: 'Girlfriend Experience — ощущение отношений' },
-      { id: 'fantasy', label: 'Фантазии', desc: 'Dom/Sub, фетиши, ролевые сценарии' },
-    ],
+    icon: '❤️',
   },
-  roleplay: {
-    title: 'Ролевые игры',
+  escapism: {
+    title: 'Эскапизм',
     subtitle: 'AI-персонажи для сценариев, сюжетов и импровизации',
     description: 'От лёгких сценок до глубоких сюжетных арок. Персонажи из аниме, фильмов или оригинальные.',
     icon: '🎭',
-    experienceTypes: [
-      { id: 'character-accurate', label: 'Персонажи', desc: 'Точные образы из аниме/фильмов' },
-      { id: 'lite-rp', label: 'Лёгкий RP', desc: 'Спонтанные сценки' },
-      { id: 'structured-rp', label: 'Сюжетный', desc: 'Арки, мир, развитие' },
-      { id: 'high-improv', label: 'Импровизация', desc: 'Быстрые респонсы, ветвления' },
-    ],
   },
-  companion: {
-    title: 'Эмоциональная поддержка',
+  connection: {
+    title: 'Связь',
     subtitle: 'AI-компаньоны для разговоров, дружбы и поддержки',
     description: 'Когда нужен кто-то, кто выслушает. Терапевтические беседы, ежедневное общение, борьба с одиночеством.',
-    icon: '💬',
-    experienceTypes: [
-      { id: 'therapy-lite', label: 'Поддержка', desc: 'Выслушивание, эмпатия' },
-      { id: 'daily-companion', label: 'Ежедневно', desc: 'Регулярное общение' },
-      { id: 'loneliness', label: 'Одиночество', desc: 'Борьба с изоляцией' },
-      { id: 'motivation', label: 'Мотивация', desc: 'Поддержка целей' },
-    ],
-  },
-  voice: {
-    title: 'Голосовое общение',
-    subtitle: 'AI-девушки с голосовыми звонками и сообщениями',
-    description: 'Не только текст — реальные разговоры голосом. Звонки, голосовые сообщения, AR.',
-    icon: '🎤',
-    experienceTypes: [
-      { id: 'calls', label: 'Звонки', desc: 'Реальные голосовые звонки' },
-      { id: 'voice-messages', label: 'Сообщения', desc: 'Голосовые сообщения' },
-      { id: 'ar', label: 'AR', desc: 'Дополненная реальность' },
-    ],
-  },
-  visual: {
-    title: 'Генерация фото',
-    subtitle: 'AI-девушки с генерацией изображений и аватаров',
-    description: 'Не только текст — картинки твоей AI-девушки. Кастомизация внешности, фото в разных образах.',
-    icon: '📸',
-    experienceTypes: [
-      { id: 'photo-gen', label: 'Фото', desc: 'Генерация изображений' },
-      { id: 'avatar', label: 'Аватары', desc: 'Кастомные аватары' },
-      { id: 'multimodal', label: 'Мультимодал', desc: 'Текст + фото + голос' },
-    ],
+    icon: '🤝',
   },
 };
 
 // Генерируем статические пути
 export function getStaticPaths() {
-  const goals = ['flirt', 'roleplay', 'companion', 'voice', 'visual'];
-  return goals.map(goal => ({ params: { goal } }));
+  const motivations = ['intimacy', 'escapism', 'connection'];
+  return motivations.map(motivation => ({ params: { goal: motivation } }));
 }
 
 const { goal } = Astro.params;
-const meta = goalsMeta[goal as keyof typeof goalsMeta];
+const meta = motivationsMeta[goal as keyof typeof motivationsMeta];
 
 if (!meta) {
   return Astro.redirect('/404');
 }
 
-// Получаем модели для этой цели
+// Получаем модели для этой мотивации
 const allModels = await getCollection('models');
-type GoalType = 'flirt' | 'roleplay' | 'companion' | 'voice' | 'visual';
-const goalTyped = goal as GoalType;
+type MotivationType = 'intimacy' | 'escapism' | 'connection';
+const motivationTyped = goal as MotivationType;
 const models = allModels
   .map(entry => ({ slug: entry.id.replace('.yaml', ''), ...entry.data }))
-  .filter(m => m.primaryGoal === goalTyped || m.secondaryGoals?.includes(goalTyped))
+  .filter(m => m.motivation === motivationTyped || m.motivationSupport?.includes(motivationTyped))
   .sort((a, b) => b.rating - a.rating);
 
 // Лучший выбор для этой цели

@@ -12,10 +12,13 @@ tagline: "Эмоциональная поддержка и терапия"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: companion
-secondaryGoals:
-  - experimental
+# Уровень 1: Мотивация
+motivation: connection
+motivationSupport: []
+
+# Уровень 1.5: Форматы
+formats:
+  - text
 
 # Уровень 2: Тип опыта
 experienceTypes:

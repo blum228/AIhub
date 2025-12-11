@@ -12,10 +12,15 @@ tagline: "Конструктор идеальной девушки"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: visual
-secondaryGoals:
-  - flirt
+# Уровень 1: Мотивация
+motivation: intimacy
+motivationSupport: []
+
+# Уровень 1.5: Форматы
+formats:
+  - text
+  - voice
+  - visual
 
 # Уровень 2: Тип опыта
 experienceTypes:

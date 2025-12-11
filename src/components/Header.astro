@@ -11,13 +11,11 @@ interface Props {
 
 const { class: className } = Astro.props;
 
-// Цели пользователя для dropdown
-const goals = [
-  { id: 'flirt', href: '/for/flirt', label: 'Флирт и NSFW', icon: '🔥' },
-  { id: 'roleplay', href: '/for/roleplay', label: 'Ролевые игры', icon: '🎭' },
-  { id: 'companion', href: '/for/companion', label: 'Поддержка', icon: '💬' },
-  { id: 'voice', href: '/for/voice', label: 'Голос', icon: '🎤' },
-  { id: 'visual', href: '/for/visual', label: 'Генерация фото', icon: '📸' },
+// Мотивации пользователя для dropdown
+const motivations = [
+  { id: 'intimacy', href: '/for/intimacy', label: 'Интим', icon: '❤️' },
+  { id: 'escapism', href: '/for/escapism', label: 'Эскапизм', icon: '🎭' },
+  { id: 'connection', href: '/for/connection', label: 'Связь', icon: '🤝' },
 ];
 
 // Основные пункты навигации
@@ -49,13 +47,13 @@ const isGoalPage = currentPath.startsWith('/for/');
           </svg>
         </button>
         <div class="header__dropdown-menu" aria-hidden="true">
-          {goals.map(goal => (
+          {motivations.map(motivation => (
             <a 
-              href={goal.href} 
-              class:list={['header__dropdown-item', { 'header__dropdown-item--active': currentPath === goal.href }]}
+              href={motivation.href} 
+              class:list={['header__dropdown-item', { 'header__dropdown-item--active': currentPath === motivation.href }]}
             >
-              <span class="header__dropdown-icon">{goal.icon}</span>
-              {goal.label}
+              <span class="header__dropdown-icon">{motivation.icon}</span>
+              {motivation.label}
             </a>
           ))}
         </div>
@@ -80,16 +78,16 @@ const isGoalPage = currentPath.startsWith('/for/');
 
   <!-- Mobile nav -->
   <nav class="header__nav header__nav--mobile" aria-hidden="true">
-    <!-- Цели -->
+    <!-- Мотивации -->
     <div class="header__mobile-section">
       <span class="header__mobile-label">Выбрать AI</span>
-      {goals.map(goal => (
+      {motivations.map(motivation => (
         <a 
-          href={goal.href} 
-          class:list={['header__link', { 'header__link--active': currentPath === goal.href }]}
+          href={motivation.href} 
+          class:list={['header__link', { 'header__link--active': currentPath === motivation.href }]}
         >
-          <span class="header__link-icon">{goal.icon}</span>
-          {goal.label}
+          <span class="header__link-icon">{motivation.icon}</span>
+          {motivation.label}
         </a>
       ))}
     </div>

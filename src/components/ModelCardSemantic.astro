@@ -24,7 +24,8 @@ interface ModelData {
     idealFor?: string[];
     notFor?: string[];
   };
-  primaryGoal?: string;
+  motivation?: string;
+  formats?: string[];
 }
 
 interface Props {
@@ -49,54 +50,30 @@ const positioning = model.tagline || model.description.slice(0, 60) + '...';
 // Продукт-фит (берём первые 2 пункта)
 const idealFor = model.productFit?.idealFor?.slice(0, 2) || [];
 
-// Иконка цели
-const goalIcons: Record<string, string> = {
-  flirt: '🔥',
-  roleplay: '🎭',
-  companion: '💬',
-  voice: '🎤',
-  visual: '📸',
-  experimental: '🧪',
+// Иконка мотивации
+const motivationIcons: Record<string, string> = {
+  intimacy: '❤️',
+  escapism: '🎭',
+  connection: '🤝',
 };
-const goalIcon = model.primaryGoal ? goalIcons[model.primaryGoal] || '' : '';
+const motivationIcon = model.motivation ? motivationIcons[model.motivation] || '' : '';
 
 const classes = ['semantic-card', compact && 'semantic-card--compact', className].filter(Boolean).join(' ');
 ---
 
 <article class={classes}>
   <a href={`/models/${model.slug}`} class="semantic-card__link">
-    <!-- Header: Logo + Name + Rating -->
+    <!-- Header: Name + Rating -->
     <div class="semantic-card__header">
-      <div class="semantic-card__logo-wrap">
-        {model.logo ? (
-          <img src={model.logo} alt="" class="semantic-card__logo" loading="lazy" />
-        ) : (
-          <span class="semantic-card__logo semantic-card__logo--placeholder">{model.name.charAt(0)}</span>
-        )}
-      </div>
-      <div class="semantic-card__title-group">
-        <h3 class="semantic-card__name">
-          {goalIcon && <span class="semantic-card__goal-icon">{goalIcon}</span>}
-          {model.name}
-        </h3>
-        <span class="semantic-card__rating">★ {model.rating.toFixed(1)}</span>
-      </div>
+      <h3 class="semantic-card__name">
+        {motivationIcon && <span class="semantic-card__goal-icon">{motivationIcon}</span>}
+        {model.name}
+      </h3>
+      <span class="semantic-card__rating">★ {model.rating.toFixed(1)}</span>
     </div>
 
-    <!-- Positioning -->
+    <!-- Tagline: краткое описание -->
     <p class="semantic-card__tagline">{positioning}</p>
-
-    <!-- Product Fit -->
-    {idealFor.length > 0 && (
-      <div class="semantic-card__fit">
-        <span class="semantic-card__fit-label">Идеален для:</span>
-        <ul class="semantic-card__fit-list">
-          {idealFor.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      </div>
-    )}
 
     <!-- Footer: Price -->
     <div class="semantic-card__footer">
@@ -148,38 +125,10 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
   /* Header */
   .semantic-card__header {
     display: flex;
-    align-items: flex-start;
-    gap: var(--ids__space-m);
-  }
-
-  .semantic-card__logo-wrap {
-    flex-shrink: 0;
-  }
-
-  .semantic-card__logo {
-    width: 3rem;
-    height: 3rem;
-    border-radius: var(--ids__radius-m);
-    object-fit: cover;
-  }
-
-  .semantic-card__logo--placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--ids__font-size-h4);
-    font-weight: var(--ids__font-weight-bold);
-    color: var(--ids__bg-page);
-    background: var(--ids__accent);
-  }
-
-  .semantic-card__title-group {
-    flex: 1;
-    min-width: 0;
-    display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: baseline;
     gap: var(--ids__space-s);
+    margin-bottom: var(--ids__space-s);
   }
 
   .semantic-card__name {
@@ -188,6 +137,7 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
     font-weight: var(--ids__font-weight-bold);
     color: var(--ids__text-primary);
     line-height: var(--ids__line-height-snug);
+    flex: 1;
   }
 
   .semantic-card__goal-icon {
@@ -199,6 +149,7 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
     font-size: var(--ids__font-size-small);
     font-weight: var(--ids__font-weight-semibold);
     color: var(--ids__text-secondary);
+    white-space: nowrap;
   }
 
   /* Tagline */
@@ -207,49 +158,6 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
     font-size: var(--ids__font-size-small);
     color: var(--ids__text-secondary);
     line-height: var(--ids__line-height-relaxed);
-  }
-
-  /* Product Fit */
-  .semantic-card__fit {
-    margin-top: var(--ids__space-m);
-    padding-top: var(--ids__space-m);
-    border-top: 1px solid var(--ids__border-subtle);
-  }
-
-  .semantic-card__fit-label {
-    display: block;
-    font-size: var(--ids__font-size-caption);
-    font-weight: var(--ids__font-weight-bold);
-    color: var(--ids__text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: var(--ids__space-xs);
-  }
-
-  .semantic-card__fit-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .semantic-card__fit-list li {
-    position: relative;
-    padding-left: 1.2em;
-    font-size: var(--ids__font-size-small);
-    color: var(--ids__text-secondary);
-    line-height: var(--ids__line-height-relaxed);
-  }
-
-  .semantic-card__fit-list li::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: var(--ids__accent);
-    font-weight: var(--ids__font-weight-bold);
-  }
-
-  .semantic-card__fit-list li + li {
-    margin-top: var(--ids__space-2xs);
   }
 
   /* Footer */
@@ -326,15 +234,6 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
   /* Compact variant */
   .semantic-card--compact .semantic-card__link {
     padding: var(--ids__space-m);
-  }
-
-  .semantic-card--compact .semantic-card__logo {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .semantic-card--compact .semantic-card__fit {
-    display: none;
   }
 
   .semantic-card--compact .semantic-card__cta {

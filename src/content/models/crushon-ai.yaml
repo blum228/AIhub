@@ -12,10 +12,14 @@ tagline: "Character.AI + NSFW"
 # СМЫСЛОВАЯ СЕГМЕНТАЦИЯ
 # ═══════════════════════════════════════════════════════════════
 
-# Уровень 1: Главная цель
-primaryGoal: roleplay
-secondaryGoals:
-  - flirt
+# Уровень 1: Мотивация
+motivation: escapism
+motivationSupport:
+  - intimacy
+
+# Уровень 1.5: Форматы
+formats:
+  - text
 
 # Уровень 2: Тип опыта
 experienceTypes:

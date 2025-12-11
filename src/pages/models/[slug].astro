@@ -31,19 +31,16 @@ const allModelsData = allModels
   .filter(m => m.id !== entry.id)
   .map(m => ({ slug: m.id.replace('.yaml', ''), ...m.data }));
 
-// Похожие модели по цели (для секции "Другие сервисы для [цели]")
-const goalLabels: Record<string, string> = {
-  flirt: 'флирта',
-  roleplay: 'ролевых игр',
-  companion: 'поддержки',
-  voice: 'голосового общения',
-  visual: 'генерации фото',
-  experimental: 'экспериментов',
+// Похожие модели по мотивации (для секции "Другие сервисы для [мотивации]")
+const motivationLabels: Record<string, string> = {
+  intimacy: 'интима',
+  escapism: 'эскапизма',
+  connection: 'связи',
 };
 
-const relatedByGoal = model.primaryGoal 
+const relatedByMotivation = model.motivation 
   ? allModelsData
-      .filter(m => m.primaryGoal === model.primaryGoal || m.secondaryGoals?.includes(model.primaryGoal))
+      .filter(m => m.motivation === model.motivation || m.motivationSupport?.includes(model.motivation))
       .slice(0, 3)
   : [];
 
@@ -283,12 +280,12 @@ const schema = {
       </section>
     )}
 
-    <!-- Другие сервисы для той же цели -->
-    {relatedByGoal.length > 0 && model.primaryGoal && (
+    <!-- Другие сервисы для той же мотивации -->
+    {relatedByMotivation.length > 0 && model.motivation && (
       <section class="model-section">
-        <h2 class="section-title">Другие сервисы для {goalLabels[model.primaryGoal] || model.primaryGoal}</h2>
+        <h2 class="section-title">Другие сервисы для {motivationLabels[model.motivation] || model.motivation}</h2>
         <div class="related-models">
-          {relatedByGoal.map((related: any) => (
+          {relatedByMotivation.map((related: any) => (
             <a href={`/models/${related.slug}`} class="related-model">
               {related.logo ? (
                 <img src={related.logo} alt="" class="related-model__logo" />
