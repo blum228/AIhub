@@ -23,18 +23,18 @@ const features: Record<string, { icon: string; label: string }> = {
 };
 
 const feature = features[type];
-const classes = ['aigh__feature-badge', compact && 'compact', className].filter(Boolean).join(' ');
+const classes = ['ids__feature-badge', compact && 'compact', className].filter(Boolean).join(' ');
 ---
 
 {feature && (
   <span class={classes} title={feature.label}>
-    <span class="aigh__feature-icon">{feature.icon}</span>
-    {!compact && <span class="aigh__feature-label">{feature.label}</span>}
+    <span class="ids__feature-icon">{feature.icon}</span>
+    {!compact && <span class="ids__feature-label">{feature.label}</span>}
   </span>
 )}
 
 <style>
-  .aigh__feature-badge {
+  .ids__feature-badge {
     display: inline-flex;
     align-items: center;
     gap: var(--ids__space-2xs);
@@ -46,20 +46,20 @@ const classes = ['aigh__feature-badge', compact && 'compact', className].filter(
     white-space: nowrap;
   }
 
-  .aigh__feature-icon {
+  .ids__feature-icon {
     font-size: var(--ids__font-size-small);
   }
 
-  .aigh__feature-label {
+  .ids__feature-label {
     font-weight: var(--ids__font-weight-medium);
     color: var(--ids__text-secondary);
   }
 
-  .aigh__feature-badge.compact {
+  .ids__feature-badge.compact {
     padding: var(--ids__space-2xs);
   }
 
-  .aigh__feature-badge.compact .aigh__feature-icon {
+  .ids__feature-badge.compact .ids__feature-icon {
     font-size: var(--ids__font-size-body);
   }
 </style>

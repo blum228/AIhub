@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { rating, showNumber = true, size = 'M', class: className } = Astro.props;
-const classes = ['aigh__rating', size !== 'M' && size, className].filter(Boolean).join(' ');
+const classes = ['ids__rating', size !== 'M' && size, className].filter(Boolean).join(' ');
 
 // Округляем до 0.5
 const roundedRating = Math.round(rating * 2) / 2;
@@ -23,30 +23,30 @@ const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
 ---
 
 <div class={classes} title={`Рейтинг: ${rating} из 5`}>
-  <span class="aigh__rating-stars" aria-hidden="true">
+  <span class="ids__rating-stars" aria-hidden="true">
     {Array(fullStars).fill(null).map(() => <span class="star full">★</span>)}
     {hasHalf && <span class="star half">★</span>}
     {Array(emptyStars).fill(null).map(() => <span class="star empty">★</span>)}
   </span>
-  {showNumber && <span class="aigh__rating-number">{rating.toFixed(1)}</span>}
+  {showNumber && <span class="ids__rating-number">{rating.toFixed(1)}</span>}
 </div>
 
 <style>
-  .aigh__rating {
+  .ids__rating {
     display: inline-flex;
     align-items: center;
-    gap: 0.35em;
+    gap: var(--ids__space-xs);
   }
 
-  .aigh__rating-stars {
+  .ids__rating-stars {
     display: inline-flex;
-    gap: 0.05em;
-    font-size: 0.9em;
+    gap: var(--ids__space-2xs);
+    font-size: var(--ids__font-size-small);
     line-height: 1;
   }
 
   .star {
-    transition: transform 0.15s ease;
+    transition: transform var(--ids__transition-fast);
   }
 
   .star.full {
@@ -55,7 +55,7 @@ const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
 
   .star.half {
     position: relative;
-    color: rgba(var(--ids__text-RGB), 0.15);
+    color: var(--ids__text-muted);
   }
 
   .star.half::before {
@@ -68,25 +68,25 @@ const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
   }
 
   .star.empty {
-    color: rgba(var(--ids__text-RGB), 0.15);
+    color: var(--ids__text-muted);
   }
 
-  .aigh__rating-number {
-    font-size: 0.9em;
-    font-weight: 500;
-    color: rgba(var(--ids__text-RGB), 0.7);
+  .ids__rating-number {
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-secondary);
   }
 
   /* Size S */
-  .aigh__rating.S {
-    gap: 0.25em;
+  .ids__rating.S {
+    gap: var(--ids__space-2xs);
   }
 
-  .aigh__rating.S .aigh__rating-stars {
-    font-size: 0.75em;
+  .ids__rating.S .ids__rating-stars {
+    font-size: var(--ids__font-size-micro);
   }
 
-  .aigh__rating.S .aigh__rating-number {
-    font-size: 0.8em;
+  .ids__rating.S .ids__rating-number {
+    font-size: var(--ids__font-size-caption);
   }
 </style>

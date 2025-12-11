@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { features, pricing, priceFrom, class: className } = Astro.props;
-const classes = ['aigh__feature-table', className].filter(Boolean).join(' ');
+const classes = ['ids__feature-table', className].filter(Boolean).join(' ');
 
 const featureLabels: Record<string, string> = {
   voice: 'Голосовое общение',
@@ -43,20 +43,20 @@ const featureEntries = Object.entries(featureLabels);
   <table>
     <tbody>
       <tr>
-        <td class="aigh__feature-table-label">Тип</td>
-        <td class="aigh__feature-table-value">
+        <td class="ids__feature-table-label">Тип</td>
+        <td class="ids__feature-table-value">
           {pricingLabels[pricing]}
-          {priceFrom && <span class="aigh__feature-table-price"> (от ${priceFrom}/мес)</span>}
+          {priceFrom && <span class="ids__feature-table-price"> (от ${priceFrom}/мес)</span>}
         </td>
       </tr>
       {featureEntries.map(([key, label]) => (
         <tr>
-          <td class="aigh__feature-table-label">{label}</td>
-          <td class="aigh__feature-table-value">
+          <td class="ids__feature-table-label">{label}</td>
+          <td class="ids__feature-table-value">
             {features[key as keyof Features] ? (
-              <span class="aigh__feature-table-yes">✓ Да</span>
+              <span class="ids__feature-table-yes">✓ Да</span>
             ) : (
-              <span class="aigh__feature-table-no">✗ Нет</span>
+              <span class="ids__feature-table-no">✗ Нет</span>
             )}
           </td>
         </tr>
@@ -66,50 +66,50 @@ const featureEntries = Object.entries(featureLabels);
 </div>
 
 <style>
-  .aigh__feature-table {
-    background-color: rgba(var(--ids__surface-RGB), 0.5);
-    border-radius: 0.5em;
+  .ids__feature-table {
+    background-color: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-s);
     overflow: hidden;
   }
 
-  .aigh__feature-table table {
+  .ids__feature-table table {
     width: 100%;
     border-collapse: collapse;
   }
 
-  .aigh__feature-table tr {
-    border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.06);
+  .ids__feature-table tr {
+    border-bottom: 1px solid var(--ids__border-subtle);
   }
 
-  .aigh__feature-table tr:last-child {
+  .ids__feature-table tr:last-child {
     border-bottom: none;
   }
 
-  .aigh__feature-table td {
-    padding: calc(var(--ids__density) * 0.6em) calc(var(--ids__density) * 0.8em);
-    font-size: 0.95em;
+  .ids__feature-table td {
+    padding: var(--ids__space-s) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
     border: none;
   }
 
-  .aigh__feature-table-label {
+  .ids__feature-table-label {
     width: 50%;
-    color: rgba(var(--ids__text-RGB), 0.7);
+    color: var(--ids__text-secondary);
   }
 
-  .aigh__feature-table-value {
-    font-weight: 500;
+  .ids__feature-table-value {
+    font-weight: var(--ids__font-weight-medium);
   }
 
-  .aigh__feature-table-price {
-    font-weight: 400;
-    color: rgba(var(--ids__text-RGB), 0.6);
+  .ids__feature-table-price {
+    font-weight: var(--ids__font-weight-regular);
+    color: var(--ids__text-tertiary);
   }
 
-  .aigh__feature-table-yes {
-    color: rgb(0, 140, 70);
+  .ids__feature-table-yes {
+    color: var(--ids__success);
   }
 
-  .aigh__feature-table-no {
-    color: rgba(var(--ids__text-RGB), 0.4);
+  .ids__feature-table-no {
+    color: var(--ids__text-muted);
   }
 </style>

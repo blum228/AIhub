@@ -32,35 +32,35 @@ const {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 4em 2em;
+    padding: var(--ids__space-3xl) var(--ids__space-xl);
   }
 
   .empty__icon {
-    font-size: 3em;
-    color: rgba(var(--ids__text-RGB), 0.15);
-    margin-bottom: 0.5em;
+    font-size: var(--ids__font-size-hero-mobile);
+    color: var(--ids__text-muted);
+    margin-bottom: var(--ids__space-s);
   }
 
   .empty__title {
-    margin: 0 0 0.3em;
-    font-size: 1.3em;
-    font-weight: 600;
-    color: rgba(var(--ids__text-RGB), 0.7);
+    margin: 0 0 var(--ids__space-xs);
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-secondary);
   }
 
   .empty__desc {
-    margin: 0 0 1.5em;
-    font-size: 1em;
-    color: rgba(var(--ids__text-RGB), 0.5);
+    margin: 0 0 var(--ids__space-l);
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-tertiary);
     max-width: 20em;
   }
 
   .empty__link {
-    font-size: 0.95em;
-    font-weight: 500;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
     color: var(--ids__accent);
     text-decoration: none;
-    transition: opacity 0.15s ease;
+    transition: opacity var(--ids__transition-fast);
   }
 
   .empty__link:hover {

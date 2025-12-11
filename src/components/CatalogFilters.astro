@@ -45,42 +45,26 @@ const filters = [
 
 <style>
   .filters-bar {
-    position: sticky;
-    top: 3.5em;
-    z-index: var(--ids__z-dropdown);
     margin-top: var(--ids__space-m);
-    padding: var(--ids__space-s) 0;
-    background: rgba(var(--ids__background-RGB), 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--ids__border-subtle);
   }
 
   .filters-bar :global(.ids__wrapper) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--ids__space-m);
   }
 
   .filters {
     display: flex;
-    gap: var(--ids__space-s);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .filters::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    gap: var(--ids__space-xs);
   }
 
   .filter {
-    flex-shrink: 0;
-    padding: var(--ids__space-s) var(--ids__space-m);
+    padding: var(--ids__space-xs) var(--ids__space-m);
     font-size: var(--ids__font-size-small);
-    font-weight: var(--ids__font-weight-semibold);
-    color: var(--ids__text-tertiary);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-secondary);
     background: var(--ids__bg-surface);
     border-radius: var(--ids__radius-full);
     text-decoration: none;
@@ -104,9 +88,9 @@ const filters = [
   }
 
   .filters-count {
-    flex-shrink: 0;
     font-size: var(--ids__font-size-caption);
     color: var(--ids__text-tertiary);
+    margin-left: auto;
   }
 
   @media (width < 600px) {
@@ -116,7 +100,8 @@ const filters = [
     }
     
     .filters-count {
-      margin-top: var(--ids__space-s);
+      margin-left: 0;
+      margin-top: var(--ids__space-xs);
     }
   }
 </style>

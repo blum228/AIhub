@@ -38,7 +38,7 @@ const {
   class: className 
 } = Astro.props;
 
-const classes = ['aigh__model-hero', className].filter(Boolean).join(' ');
+const classes = ['ids__model-hero', className].filter(Boolean).join(' ');
 
 // Собираем активные фичи
 const activeFeatures: string[] = [];
@@ -50,25 +50,25 @@ if (features?.roleplay) activeFeatures.push('roleplay');
 ---
 
 <div class={classes}>
-  <div class="aigh__model-hero-left">
+  <div class="ids__model-hero-left">
     {logo ? (
-      <img src={logo} alt={name} class="aigh__model-hero-logo" />
+      <img src={logo} alt={name} class="ids__model-hero-logo" />
     ) : (
-      <div class="aigh__model-hero-logo aigh__model-hero-logo--placeholder">
+      <div class="ids__model-hero-logo ids__model-hero-logo--placeholder">
         {name.charAt(0)}
       </div>
     )}
   </div>
   
-  <div class="aigh__model-hero-right">
-    <div class="aigh__model-hero-header">
-      <h1 class="aigh__model-hero-name">{name}</h1>
+  <div class="ids__model-hero-right">
+    <div class="ids__model-hero-header">
+      <h1 class="ids__model-hero-name">{name}</h1>
       <RatingStars rating={rating} />
     </div>
     
-    <p class="aigh__model-hero-desc">{description}</p>
+    <p class="ids__model-hero-desc">{description}</p>
     
-    <div class="aigh__model-hero-meta">
+    <div class="ids__model-hero-meta">
       <PriceBadge pricing={pricing} priceFrom={priceFrom} />
       {activeFeatures.map(feature => (
         <FeatureBadge type={feature as any} />
@@ -77,111 +77,111 @@ if (features?.roleplay) activeFeatures.push('roleplay');
     
     <Space size="M" />
     
-    <div class="aigh__model-hero-actions">
+    <div class="ids__model-hero-actions">
       <CTAButton href={affiliateUrl} text="Перейти на сайт" size="L" />
     </div>
   </div>
 </div>
 
 <style>
-  .aigh__model-hero {
+  .ids__model-hero {
     display: flex;
-    gap: calc(var(--ids__density) * 1.5em);
+    gap: var(--ids__space-l);
     align-items: flex-start;
   }
 
   @media (width < 600px) {
-    .aigh__model-hero {
+    .ids__model-hero {
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
   }
 
-  .aigh__model-hero-left {
+  .ids__model-hero-left {
     flex-shrink: 0;
   }
 
-  .aigh__model-hero-logo {
-    width: 6em;
-    height: 6em;
-    border-radius: 1em;
+  .ids__model-hero-logo {
+    width: var(--ids__logo-xl);
+    height: var(--ids__logo-xl);
+    border-radius: var(--ids__radius-xl);
     object-fit: cover;
-    box-shadow: 0 4px 20px rgba(var(--ids__text-RGB), 0.1);
+    box-shadow: var(--ids__shadow-m);
   }
 
-  .aigh__model-hero-logo--placeholder {
+  .ids__model-hero-logo--placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5em;
-    font-weight: 600;
-    color: rgb(var(--ids__background-RGB));
+    font-size: var(--ids__font-size-h1);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
     background: linear-gradient(135deg, 
-      rgb(var(--ids__accent-RGB)), 
-      rgba(var(--ids__accent-RGB), 0.7)
+      var(--ids__accent), 
+      var(--ids__accent-hover)
     );
   }
 
-  .aigh__model-hero-right {
+  .ids__model-hero-right {
     flex: 1;
   }
 
-  .aigh__model-hero-header {
+  .ids__model-hero-header {
     display: flex;
     align-items: center;
-    gap: 1em;
+    gap: var(--ids__space-m);
     flex-wrap: wrap;
-    margin-bottom: 0.5em;
+    margin-bottom: var(--ids__space-s);
   }
 
   @media (width < 600px) {
-    .aigh__model-hero-header {
+    .ids__model-hero-header {
       justify-content: center;
     }
   }
 
-  .aigh__model-hero-name {
+  .ids__model-hero-name {
     margin: 0;
-    font-size: 2.2em;
-    font-weight: 700;
-    line-height: 1.1;
+    font-size: var(--ids__font-size-h1);
+    font-weight: var(--ids__font-weight-heavy);
+    line-height: var(--ids__line-height-tight);
   }
 
   @media (width < 600px) {
-    .aigh__model-hero-name {
-      font-size: 1.8em;
+    .ids__model-hero-name {
+      font-size: var(--ids__font-size-h1-mobile);
     }
   }
 
-  .aigh__model-hero-desc {
-    margin: 0 0 1em 0;
-    font-size: 1.1em;
-    line-height: 1.5;
-    color: rgba(var(--ids__text-RGB), 0.7);
+  .ids__model-hero-desc {
+    margin: 0 0 var(--ids__space-m) 0;
+    font-size: var(--ids__font-size-h4);
+    line-height: var(--ids__line-height-relaxed);
+    color: var(--ids__text-secondary);
     max-width: 35em;
   }
 
-  .aigh__model-hero-meta {
+  .ids__model-hero-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5em;
+    gap: var(--ids__space-s);
   }
 
   @media (width < 600px) {
-    .aigh__model-hero-meta {
+    .ids__model-hero-meta {
       justify-content: center;
     }
   }
 
-  .aigh__model-hero-actions {
+  .ids__model-hero-actions {
     display: flex;
-    gap: 1em;
+    gap: var(--ids__space-m);
     flex-wrap: wrap;
   }
 
   @media (width < 600px) {
-    .aigh__model-hero-actions {
+    .ids__model-hero-actions {
       justify-content: center;
     }
   }

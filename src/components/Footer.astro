@@ -24,7 +24,7 @@ const links = [
   <div class="footer__inner">
     <nav class="footer__nav">
       {links.map(link => (
-        <a href={link.href} class="footer__link">{link.label}</a>
+        <a href={link.href} class="footer__link ids__nav-link">{link.label}</a>
       ))}
     </nav>
     <div class="footer__meta">
@@ -67,14 +67,6 @@ const links = [
 
   .footer__link {
     font-size: var(--ids__font-size-small);
-    color: var(--ids__text-tertiary);
-    text-decoration: none;
-    transition: color var(--ids__transition-fast);
-  }
-
-  .footer__link:hover {
-    color: var(--ids__text-primary);
-    text-decoration: none;
   }
 
   .footer__meta {

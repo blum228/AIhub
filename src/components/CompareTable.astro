@@ -41,7 +41,7 @@ interface Props {
 }
 
 const { modelA, modelB, class: className } = Astro.props;
-const classes = ['aigh__compare-table', className].filter(Boolean).join(' ');
+const classes = ['ids__compare-table', className].filter(Boolean).join(' ');
 
 // Лейблы
 const goalLabels: Record<string, string> = {
@@ -110,109 +110,109 @@ const getErotic = (model: ModelData) => eroticLabels[model.advancedFeatures?.ero
   <table>
     <thead>
       <tr>
-        <th class="aigh__compare-table-feature">Характеристика</th>
-        <th class="aigh__compare-table-model">{modelA.name}</th>
-        <th class="aigh__compare-table-model">{modelB.name}</th>
+        <th class="ids__compare-table-feature">Характеристика</th>
+        <th class="ids__compare-table-model">{modelA.name}</th>
+        <th class="ids__compare-table-model">{modelB.name}</th>
       </tr>
     </thead>
     <tbody>
       <!-- Основное -->
-      <tr class="aigh__compare-table-section">
+      <tr class="ids__compare-table-section">
         <td colspan="3">Основное</td>
       </tr>
       <tr>
         <td>Главная цель</td>
-        <td class="aigh__compare-table-value aigh__compare-table-highlight">{getGoal(modelA)}</td>
-        <td class="aigh__compare-table-value aigh__compare-table-highlight">{getGoal(modelB)}</td>
+        <td class="ids__compare-table-value ids__compare-table-highlight">{getGoal(modelA)}</td>
+        <td class="ids__compare-table-value ids__compare-table-highlight">{getGoal(modelB)}</td>
       </tr>
       <tr>
         <td>Рейтинг</td>
-        <td class="aigh__compare-table-value">
-          <span class="aigh__compare-table-rating">{modelA.rating.toFixed(1)}</span>
+        <td class="ids__compare-table-value">
+          <span class="ids__compare-table-rating">{modelA.rating.toFixed(1)}</span>
         </td>
-        <td class="aigh__compare-table-value">
-          <span class="aigh__compare-table-rating">{modelB.rating.toFixed(1)}</span>
+        <td class="ids__compare-table-value">
+          <span class="ids__compare-table-rating">{modelB.rating.toFixed(1)}</span>
         </td>
       </tr>
       <tr>
         <td>Цена</td>
-        <td class="aigh__compare-table-value">{getPrice(modelA)}</td>
-        <td class="aigh__compare-table-value">{getPrice(modelB)}</td>
+        <td class="ids__compare-table-value">{getPrice(modelA)}</td>
+        <td class="ids__compare-table-value">{getPrice(modelB)}</td>
       </tr>
 
       <!-- Уникальные фичи -->
-      <tr class="aigh__compare-table-section">
+      <tr class="ids__compare-table-section">
         <td colspan="3">Уникальные фичи</td>
       </tr>
       <tr>
         <td>Память</td>
-        <td class="aigh__compare-table-value">{getMemory(modelA)}</td>
-        <td class="aigh__compare-table-value">{getMemory(modelB)}</td>
+        <td class="ids__compare-table-value">{getMemory(modelA)}</td>
+        <td class="ids__compare-table-value">{getMemory(modelB)}</td>
       </tr>
       <tr>
         <td>Голос</td>
-        <td class="aigh__compare-table-value">{getVoice(modelA)}</td>
-        <td class="aigh__compare-table-value">{getVoice(modelB)}</td>
+        <td class="ids__compare-table-value">{getVoice(modelA)}</td>
+        <td class="ids__compare-table-value">{getVoice(modelB)}</td>
       </tr>
       <tr>
         <td>NSFW</td>
-        <td class="aigh__compare-table-value">{getNsfw(modelA)}</td>
-        <td class="aigh__compare-table-value">{getNsfw(modelB)}</td>
+        <td class="ids__compare-table-value">{getNsfw(modelA)}</td>
+        <td class="ids__compare-table-value">{getNsfw(modelB)}</td>
       </tr>
       <tr>
         <td>Цензура</td>
-        <td class="aigh__compare-table-value">{getCensorship(modelA)}</td>
-        <td class="aigh__compare-table-value">{getCensorship(modelB)}</td>
+        <td class="ids__compare-table-value">{getCensorship(modelA)}</td>
+        <td class="ids__compare-table-value">{getCensorship(modelB)}</td>
       </tr>
       <tr>
         <td>Глубина сюжета</td>
-        <td class="aigh__compare-table-value">{getDepth(modelA)}</td>
-        <td class="aigh__compare-table-value">{getDepth(modelB)}</td>
+        <td class="ids__compare-table-value">{getDepth(modelA)}</td>
+        <td class="ids__compare-table-value">{getDepth(modelB)}</td>
       </tr>
       <tr>
         <td>Качество эротики</td>
-        <td class="aigh__compare-table-value">{getErotic(modelA)}</td>
-        <td class="aigh__compare-table-value">{getErotic(modelB)}</td>
+        <td class="ids__compare-table-value">{getErotic(modelA)}</td>
+        <td class="ids__compare-table-value">{getErotic(modelB)}</td>
       </tr>
 
       <!-- Базовые фичи -->
-      <tr class="aigh__compare-table-section">
+      <tr class="ids__compare-table-section">
         <td colspan="3">Базовые функции</td>
       </tr>
       <tr>
         <td>Генерация фото</td>
-        <td class="aigh__compare-table-value">
-          {modelA.features?.imageGen ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelA.features?.imageGen ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
-        <td class="aigh__compare-table-value">
-          {modelB.features?.imageGen ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelB.features?.imageGen ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
       </tr>
       <tr>
         <td>Русский язык</td>
-        <td class="aigh__compare-table-value">
-          {modelA.features?.russian ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelA.features?.russian ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
-        <td class="aigh__compare-table-value">
-          {modelB.features?.russian ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelB.features?.russian ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
       </tr>
       <tr>
         <td>Кастомизация</td>
-        <td class="aigh__compare-table-value">
-          {modelA.advancedFeatures?.personalityCustomization ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelA.advancedFeatures?.personalityCustomization ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
-        <td class="aigh__compare-table-value">
-          {modelB.advancedFeatures?.personalityCustomization ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelB.advancedFeatures?.personalityCustomization ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
       </tr>
       <tr>
         <td>Маркетплейс</td>
-        <td class="aigh__compare-table-value">
-          {modelA.advancedFeatures?.hasMarketplace ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelA.advancedFeatures?.hasMarketplace ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
-        <td class="aigh__compare-table-value">
-          {modelB.advancedFeatures?.hasMarketplace ? <span class="aigh__compare-table-yes">✓</span> : <span class="aigh__compare-table-no">✗</span>}
+        <td class="ids__compare-table-value">
+          {modelB.advancedFeatures?.hasMarketplace ? <span class="ids__compare-table-yes">✓</span> : <span class="ids__compare-table-no">✗</span>}
         </td>
       </tr>
     </tbody>
@@ -220,94 +220,94 @@ const getErotic = (model: ModelData) => eroticLabels[model.advancedFeatures?.ero
 </div>
 
 <style>
-  .aigh__compare-table {
+  .ids__compare-table {
     overflow-x: auto;
   }
 
-  .aigh__compare-table table {
+  .ids__compare-table table {
     width: 100%;
     border-collapse: collapse;
-    background-color: rgb(var(--ids__background-RGB));
-    border: 1px solid rgba(var(--ids__text-RGB), 0.08);
-    border-radius: 0.5em;
+    background-color: var(--ids__bg-page);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-s);
     overflow: hidden;
   }
 
-  .aigh__compare-table th,
-  .aigh__compare-table td {
-    padding: calc(var(--ids__density) * 0.7em) calc(var(--ids__density) * 1em);
+  .ids__compare-table th,
+  .ids__compare-table td {
+    padding: var(--ids__space-s) var(--ids__space-m);
     text-align: left;
-    border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.06);
+    border-bottom: 1px solid var(--ids__border-subtle);
   }
 
-  .aigh__compare-table th {
-    font-weight: 600;
-    background-color: rgba(var(--ids__surface-RGB), 0.5);
+  .ids__compare-table th {
+    font-weight: var(--ids__font-weight-bold);
+    background-color: var(--ids__bg-surface);
   }
 
-  .aigh__compare-table-feature {
+  .ids__compare-table-feature {
     width: 40%;
   }
 
-  .aigh__compare-table-model {
+  .ids__compare-table-model {
     width: 30%;
     text-align: center !important;
   }
 
-  .aigh__compare-table-value {
+  .ids__compare-table-value {
     text-align: center !important;
-    font-weight: 500;
+    font-weight: var(--ids__font-weight-medium);
   }
 
-  .aigh__compare-table-rating {
+  .ids__compare-table-rating {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 2.2em;
     height: 2.2em;
-    font-size: 0.9em;
-    font-weight: 600;
-    color: rgb(var(--ids__background-RGB));
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__bg-page);
     background-color: var(--ids__accent);
-    border-radius: 50%;
+    border-radius: var(--ids__radius-full);
   }
 
-  .aigh__compare-table-yes {
-    color: rgb(0, 140, 70);
-    font-size: 1.2em;
+  .ids__compare-table-yes {
+    color: var(--ids__success);
+    font-size: var(--ids__font-size-h3);
   }
 
-  .aigh__compare-table-no {
-    color: rgba(var(--ids__text-RGB), 0.3);
-    font-size: 1.2em;
+  .ids__compare-table-no {
+    color: var(--ids__text-muted);
+    font-size: var(--ids__font-size-h3);
   }
 
-  .aigh__compare-table tr:last-child td {
+  .ids__compare-table tr:last-child td {
     border-bottom: none;
   }
 
   /* Секции таблицы */
-  .aigh__compare-table-section td {
-    font-size: 0.75em;
-    font-weight: 700;
+  .ids__compare-table-section td {
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-heavy);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(var(--ids__text-RGB), 0.5);
-    background-color: rgba(var(--ids__surface-RGB), 0.3);
-    padding: calc(var(--ids__density) * 0.5em) calc(var(--ids__density) * 1em);
+    color: var(--ids__text-tertiary);
+    background-color: var(--ids__bg-surface);
+    padding: var(--ids__space-xs) var(--ids__space-m);
   }
 
   /* Выделение главной цели */
-  .aigh__compare-table-highlight {
-    font-weight: 600;
+  .ids__compare-table-highlight {
+    font-weight: var(--ids__font-weight-bold);
     color: var(--ids__accent);
   }
 
   @media (width < 500px) {
-    .aigh__compare-table th,
-    .aigh__compare-table td {
-      padding: calc(var(--ids__density) * 0.5em);
-      font-size: 0.9em;
+    .ids__compare-table th,
+    .ids__compare-table td {
+      padding: var(--ids__space-xs);
+      font-size: var(--ids__font-size-small);
     }
   }
 </style>

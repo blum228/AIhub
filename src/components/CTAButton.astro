@@ -26,8 +26,8 @@ const {
 } = Astro.props;
 
 const classes = [
-  'aigh__cta',
-  `aigh__cta--${variant}`,
+  'ids__cta',
+  `ids__cta--${variant}`,
   size !== 'M' && size,
   className
 ].filter(Boolean).join(' ');
@@ -36,12 +36,12 @@ const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer s
 ---
 
 <a href={href} class={classes} {...externalAttrs}>
-  <span class="aigh__cta-text">{text}</span>
-  {external && <span class="aigh__cta-arrow" aria-hidden="true">→</span>}
+  <span class="ids__cta-text">{text}</span>
+  {external && <span class="ids__cta-arrow" aria-hidden="true">→</span>}
 </a>
 
 <style>
-  .aigh__cta {
+  .ids__cta {
     display: inline-flex;
     align-items: center;
     gap: var(--ids__space-xs);
@@ -56,55 +56,55 @@ const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer s
       box-shadow var(--ids__transition-normal);
   }
 
-  .aigh__cta:hover {
+  .ids__cta:hover {
     text-decoration: none;
     transform: translateY(-1px);
   }
 
-  .aigh__cta:active {
+  .ids__cta:active {
     transform: translateY(0);
   }
 
   /* Primary */
-  .aigh__cta--primary {
+  .ids__cta--primary {
     color: var(--ids__bg-page);
     background-color: var(--ids__accent);
   }
 
-  .aigh__cta--primary:hover {
+  .ids__cta--primary:hover {
     background-color: rgba(var(--ids__accent-RGB), 0.9);
     box-shadow: var(--ids__shadow-accent);
     color: var(--ids__bg-page);
   }
 
   /* Secondary */
-  .aigh__cta--secondary {
+  .ids__cta--secondary {
     color: var(--ids__text-primary);
     background-color: transparent;
     border: 1px solid var(--ids__border-default);
   }
 
-  .aigh__cta--secondary:hover {
+  .ids__cta--secondary:hover {
     background-color: var(--ids__bg-surface);
     border-color: var(--ids__border-strong);
     color: var(--ids__text-primary);
   }
 
-  .aigh__cta-arrow {
+  .ids__cta-arrow {
     transition: transform var(--ids__transition-normal);
   }
 
-  .aigh__cta:hover .aigh__cta-arrow {
+  .ids__cta:hover .ids__cta-arrow {
     transform: translateX(3px);
   }
 
   /* Sizes */
-  .aigh__cta.S {
+  .ids__cta.S {
     padding: var(--ids__space-xs) var(--ids__space-s);
     font-size: var(--ids__font-size-caption);
   }
 
-  .aigh__cta.L {
+  .ids__cta.L {
     padding: var(--ids__space-s) var(--ids__space-l);
     font-size: var(--ids__font-size-h4);
   }

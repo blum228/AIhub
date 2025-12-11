@@ -41,58 +41,58 @@ const sizeMap: Record<number, string> = {
 };
 
 const classes = [
-  'aigh__model-grid',
-  `aigh__model-grid--cols-${columns}`,
+  'ids__model-grid',
+  `ids__model-grid--cols-${columns}`,
   className
 ].filter(Boolean).join(' ');
 ---
 
 <div class={classes}>
   {models.map(model => (
-    <div class="aigh__model-grid-item">
+    <div class="ids__model-grid-item">
       <ModelCard model={model} />
     </div>
   ))}
 </div>
 
 <style>
-  .aigh__model-grid {
+  .ids__model-grid {
     display: grid;
-    gap: var(--ids__space-2xs);
+    gap: var(--ids__space-m);
   }
 
-  .aigh__model-grid--cols-2 {
+  .ids__model-grid--cols-2 {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .aigh__model-grid--cols-3 {
+  .ids__model-grid--cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .aigh__model-grid--cols-4 {
+  .ids__model-grid--cols-4 {
     grid-template-columns: repeat(4, 1fr);
   }
 
   @media (width < 900px) {
-    .aigh__model-grid--cols-3,
-    .aigh__model-grid--cols-4 {
+    .ids__model-grid--cols-3,
+    .ids__model-grid--cols-4 {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (width < 600px) {
-    .aigh__model-grid--cols-2,
-    .aigh__model-grid--cols-3,
-    .aigh__model-grid--cols-4 {
+    .ids__model-grid--cols-2,
+    .ids__model-grid--cols-3,
+    .ids__model-grid--cols-4 {
       grid-template-columns: 1fr;
     }
   }
 
-  .aigh__model-grid-item {
+  .ids__model-grid-item {
     display: flex;
   }
 
-  .aigh__model-grid-item > :global(*) {
+  .ids__model-grid-item > :global(*) {
     flex: 1;
   }
 </style>

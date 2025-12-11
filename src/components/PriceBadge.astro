@@ -19,8 +19,8 @@ const labels: Record<string, string> = {
 };
 
 const classes = [
-  'aigh__price-badge',
-  `aigh__price-badge--${pricing}`,
+  'ids__price-badge',
+  `ids__price-badge--${pricing}`,
   className
 ].filter(Boolean).join(' ');
 ---
@@ -28,7 +28,7 @@ const classes = [
 <span class={classes}>{labels[pricing]}</span>
 
 <style>
-  .aigh__price-badge {
+  .ids__price-badge {
     display: inline-block;
     padding: var(--ids__space-2xs) var(--ids__space-s);
     font-size: var(--ids__font-size-micro);
@@ -38,17 +38,17 @@ const classes = [
     white-space: nowrap;
   }
 
-  .aigh__price-badge--free {
-    color: rgb(0, 140, 70);
+  .ids__price-badge--free {
+    color: var(--ids__success);
     background-color: rgba(0, 180, 90, 0.12);
   }
 
-  .aigh__price-badge--freemium {
-    color: rgb(var(--ids__link-RGB));
+  .ids__price-badge--freemium {
+    color: var(--ids__link);
     background-color: rgba(var(--ids__link-RGB), 0.1);
   }
 
-  .aigh__price-badge--paid {
+  .ids__price-badge--paid {
     color: var(--ids__text-secondary);
     background-color: var(--ids__bg-surface);
   }

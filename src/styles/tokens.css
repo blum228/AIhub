@@ -1,117 +1,133 @@
 /**
- * Design Tokens — единый источник правды для дизайн-системы
+ * IDS Design Tokens — единый источник правды для дизайн-системы
  * Все значения должны использоваться через эти переменные
+ * 
+ * ИСПОЛЬЗОВАНИЕ:
+ * - Spacing: margin, padding, gap → --ids__space-*
+ * - Typography: font-size → --ids__font-size-*, font-weight → --ids__font-weight-*
+ * - Colors: color → --ids__text-*, background → --ids__bg-*, border → --ids__border-*
+ * - Radius: border-radius → --ids__radius-*
+ * - Shadows: box-shadow → --ids__shadow-*
  */
 
 :root {
   /* ═══════════════════════════════════════════════════════════════
      ТИПОГРАФИКА
+     Размеры шрифтов для разных уровней иерархии
      ═══════════════════════════════════════════════════════════════ */
   
-  /* Размеры шрифтов */
-  --ids__font-size-hero: 4em;       /* Hero заголовок на главной */
-  --ids__font-size-h1: 2.4em;       /* Заголовок страницы */
-  --ids__font-size-h2: 1.6em;       /* Заголовок секции */
-  --ids__font-size-h3: 1.2em;       /* Заголовок карточки/блока */
-  --ids__font-size-h4: 1.05em;      /* Подзаголовок */
-  --ids__font-size-body: 1em;       /* Основной текст */
-  --ids__font-size-small: 0.9em;    /* Мелкий текст, описания */
-  --ids__font-size-caption: 0.85em; /* Подписи, метаданные */
-  --ids__font-size-micro: 0.75em;   /* Бейджи, теги */
+  /* Размеры шрифтов (при base 16px) */
+  --ids__font-size-hero: 4em;       /* 64px — Hero заголовок на главной */
+  --ids__font-size-h1: 2.4em;       /* 38px — Заголовок страницы */
+  --ids__font-size-h2: 1.6em;       /* 26px — Заголовок секции */
+  --ids__font-size-h3: 1.2em;       /* 19px — Заголовок карточки/блока */
+  --ids__font-size-h4: 1.05em;      /* 17px — Подзаголовок */
+  --ids__font-size-body: 1em;       /* 16px — Основной текст */
+  --ids__font-size-small: 0.9em;    /* 14px — Мелкий текст, описания */
+  --ids__font-size-caption: 0.85em; /* 14px — Подписи, метаданные */
+  --ids__font-size-micro: 0.75em;   /* 12px — Бейджи, теги */
 
-  /* Мобильные размеры */
-  --ids__font-size-hero-mobile: 2.4em;
-  --ids__font-size-h1-mobile: 1.8em;
-  --ids__font-size-h2-mobile: 1.4em;
+  /* Мобильные размеры (уменьшенные для экранов < 600px) */
+  --ids__font-size-hero-mobile: 2.4em;  /* 38px */
+  --ids__font-size-h1-mobile: 1.8em;    /* 29px */
+  --ids__font-size-h2-mobile: 1.4em;    /* 22px */
 
   /* Веса шрифтов */
-  --ids__font-weight-regular: 400;
-  --ids__font-weight-medium: 450;
-  --ids__font-weight-semibold: 500;
-  --ids__font-weight-bold: 600;
-  --ids__font-weight-heavy: 700;
+  --ids__font-weight-regular: 400;   /* Обычный текст */
+  --ids__font-weight-medium: 450;    /* Акцентированный текст */
+  --ids__font-weight-semibold: 500;  /* Подзаголовки */
+  --ids__font-weight-bold: 600;      /* Заголовки */
+  --ids__font-weight-heavy: 700;     /* Hero, важные элементы */
 
   /* Межстрочные интервалы */
-  --ids__line-height-tight: 1.1;
-  --ids__line-height-snug: 1.2;
-  --ids__line-height-normal: var(--ids__density);
-  --ids__line-height-relaxed: 1.5;
+  --ids__line-height-tight: 1.1;     /* Заголовки */
+  --ids__line-height-snug: 1.2;      /* Подзаголовки */
+  --ids__line-height-normal: var(--ids__density);  /* Стандартный */
+  --ids__line-height-relaxed: 1.5;   /* Текстовые блоки, параграфы */
 
   /* ═══════════════════════════════════════════════════════════════
      ОТСТУПЫ (SPACING)
+     Используй для margin, padding, gap
+     Шкала: 2xs → xs → s → m → l → xl → 2xl → 3xl
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__space-2xs: calc(var(--ids__density) * 0.25em);  /* 4px */
-  --ids__space-xs: calc(var(--ids__density) * 0.4em);    /* 6px */
-  --ids__space-s: calc(var(--ids__density) * 0.6em);     /* 10px */
-  --ids__space-m: calc(var(--ids__density) * 1em);       /* 16px */
-  --ids__space-l: calc(var(--ids__density) * 1.5em);     /* 24px */
-  --ids__space-xl: calc(var(--ids__density) * 2em);      /* 32px */
-  --ids__space-2xl: calc(var(--ids__density) * 3em);     /* 48px */
-  --ids__space-3xl: calc(var(--ids__density) * 4em);     /* 64px */
+  --ids__space-2xs: calc(var(--ids__density) * 0.25em);  /* ~4px — минимальные отступы, иконки */
+  --ids__space-xs: calc(var(--ids__density) * 0.4em);    /* ~6px — между элементами в группе */
+  --ids__space-s: calc(var(--ids__density) * 0.6em);     /* ~10px — внутри компонентов */
+  --ids__space-m: calc(var(--ids__density) * 1em);       /* ~16px — стандартный отступ */
+  --ids__space-l: calc(var(--ids__density) * 1.5em);     /* ~24px — между секциями */
+  --ids__space-xl: calc(var(--ids__density) * 2em);      /* ~32px — большие секции */
+  --ids__space-2xl: calc(var(--ids__density) * 3em);     /* ~48px — разделы страницы */
+  --ids__space-3xl: calc(var(--ids__density) * 4em);     /* ~64px — hero-секции */
 
   /* ═══════════════════════════════════════════════════════════════
      РАДИУСЫ СКРУГЛЕНИЯ
+     Используй для border-radius
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__radius-xs: 0.25em;   /* Бейджи, мелкие элементы */
-  --ids__radius-s: 0.4em;     /* Кнопки, инпуты */
-  --ids__radius-m: 0.6em;     /* Карточки, логотипы */
-  --ids__radius-l: 0.75em;    /* Большие карточки */
-  --ids__radius-xl: 1em;      /* Контейнеры, hero-логотипы */
-  --ids__radius-full: 100em;  /* Pills, круглые элементы */
+  --ids__radius-xs: 0.25em;   /* ~4px — Бейджи, теги, мелкие элементы */
+  --ids__radius-s: 0.4em;     /* ~6px — Кнопки, инпуты, небольшие карточки */
+  --ids__radius-m: 0.6em;     /* ~10px — Карточки, логотипы */
+  --ids__radius-l: 0.75em;    /* ~12px — Большие карточки, модалки */
+  --ids__radius-xl: 1em;      /* ~16px — Контейнеры, hero-логотипы */
+  --ids__radius-full: 100em;  /* Pills, круглые аватары, переключатели */
 
   /* ═══════════════════════════════════════════════════════════════
      ЦВЕТА ТЕКСТА (семантические)
+     Используй вместо rgba(var(--ids__text-RGB), X)
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__text-primary: rgba(var(--ids__text-RGB), 1);
-  --ids__text-secondary: rgba(var(--ids__text-RGB), 0.7);
-  --ids__text-tertiary: rgba(var(--ids__text-RGB), 0.5);
-  --ids__text-muted: rgba(var(--ids__text-RGB), 0.35);
+  --ids__text-primary: rgba(var(--ids__text-RGB), 1);     /* Заголовки, основной текст */
+  --ids__text-secondary: rgba(var(--ids__text-RGB), 0.7); /* Описания, подзаголовки */
+  --ids__text-tertiary: rgba(var(--ids__text-RGB), 0.5);  /* Вспомогательный текст */
+  --ids__text-muted: rgba(var(--ids__text-RGB), 0.35);    /* Плейсхолдеры, неактивные элементы */
 
   /* ═══════════════════════════════════════════════════════════════
      АКЦЕНТНЫЕ ЦВЕТА
+     Брендовые и интерактивные цвета
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__accent: rgb(var(--ids__accent-RGB));
-  --ids__accent-hover: rgba(var(--ids__accent-RGB), 0.85);
-  --ids__accent-subtle: rgba(var(--ids__accent-RGB), 0.1);
-  --ids__link: rgb(var(--ids__link-RGB));
-  --ids__link-hover: rgb(var(--ids__hover-RGB));
+  --ids__accent: rgb(var(--ids__accent-RGB));             /* CTA кнопки, важные элементы */
+  --ids__accent-hover: rgba(var(--ids__accent-RGB), 0.85); /* Hover состояние акцента */
+  --ids__accent-subtle: rgba(var(--ids__accent-RGB), 0.1); /* Фон для акцентных блоков */
+  --ids__link: rgb(var(--ids__link-RGB));                 /* Ссылки в тексте */
+  --ids__link-hover: rgb(var(--ids__hover-RGB));          /* Hover состояние ссылок */
   
-  /* Статусные цвета */
-  --ids__success: rgb(0, 140, 70);
-  --ids__warning: rgb(230, 160, 0);
-  --ids__error: rgb(220, 50, 50);
+  /* Статусные цвета — для индикации состояний */
+  --ids__success: rgb(0, 140, 70);   /* Успех, положительное (плюсы, бесплатно) */
+  --ids__warning: rgb(230, 160, 0);  /* Предупреждение */
+  --ids__error: rgb(220, 50, 50);    /* Ошибка, негативное */
 
   /* ═══════════════════════════════════════════════════════════════
      ЦВЕТА ГРАНИЦ
+     Используй для border-color
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__border-subtle: rgba(var(--ids__text-RGB), 0.06);
-  --ids__border-default: rgba(var(--ids__text-RGB), 0.1);
-  --ids__border-strong: rgba(var(--ids__text-RGB), 0.15);
-  --ids__border-accent: rgba(var(--ids__accent-RGB), 0.3);
+  --ids__border-subtle: rgba(var(--ids__text-RGB), 0.06);  /* Едва заметные разделители */
+  --ids__border-default: rgba(var(--ids__text-RGB), 0.1);  /* Стандартные границы */
+  --ids__border-strong: rgba(var(--ids__text-RGB), 0.15);  /* Выделенные границы */
+  --ids__border-accent: rgba(var(--ids__accent-RGB), 0.3); /* Акцентные границы */
 
   /* ═══════════════════════════════════════════════════════════════
      ФОНЫ
+     Используй для background-color
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__bg-page: rgb(var(--ids__background-RGB));
-  --ids__bg-surface: rgba(var(--ids__surface-RGB), 0.4);
-  --ids__bg-surface-hover: rgba(var(--ids__surface-RGB), 0.6);
-  --ids__bg-elevated: rgb(var(--ids__background-RGB));
-  --ids__bg-accent-subtle: rgba(var(--ids__accent-RGB), 0.08);
+  --ids__bg-page: rgb(var(--ids__background-RGB));           /* Основной фон страницы */
+  --ids__bg-surface: rgba(var(--ids__surface-RGB), 0.4);     /* Карточки, блоки */
+  --ids__bg-surface-hover: rgba(var(--ids__surface-RGB), 0.6); /* Hover состояние карточек */
+  --ids__bg-elevated: rgb(var(--ids__background-RGB));       /* Модалки, выпадающие меню */
+  --ids__bg-accent-subtle: rgba(var(--ids__accent-RGB), 0.08); /* Акцентный фон (выделение) */
 
   /* ═══════════════════════════════════════════════════════════════
      ТЕНИ
+     Используй для box-shadow
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__shadow-s: 0 2px 8px rgba(var(--ids__text-RGB), 0.04);
-  --ids__shadow-m: 0 4px 16px rgba(var(--ids__text-RGB), 0.06);
-  --ids__shadow-l: 0 8px 24px rgba(var(--ids__text-RGB), 0.08);
-  --ids__shadow-accent: 0 4px 12px rgba(var(--ids__accent-RGB), 0.25);
+  --ids__shadow-s: 0 2px 8px rgba(var(--ids__text-RGB), 0.04);   /* Мелкие элементы */
+  --ids__shadow-m: 0 4px 16px rgba(var(--ids__text-RGB), 0.06);  /* Карточки, кнопки */
+  --ids__shadow-l: 0 8px 24px rgba(var(--ids__text-RGB), 0.08);  /* Модалки, hover карточек */
+  --ids__shadow-accent: 0 4px 12px rgba(var(--ids__accent-RGB), 0.25); /* CTA кнопки */
 
   /* ═══════════════════════════════════════════════════════════════
      РАЗМЕРЫ ЛОГОТИПОВ

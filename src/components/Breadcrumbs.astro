@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { items, class: className } = Astro.props;
-const classes = ['aigh__breadcrumbs', className].filter(Boolean).join(' ');
+const classes = ['ids__breadcrumbs', className].filter(Boolean).join(' ');
 
 // Schema.org BreadcrumbList
 const schemaItems = items.map((item, index) => ({
@@ -32,16 +32,16 @@ const schema = {
 ---
 
 <nav class={classes} aria-label="Навигация">
-  <ol class="aigh__breadcrumbs-list">
+  <ol class="ids__breadcrumbs-list">
     {items.map((item, index) => (
-      <li class="aigh__breadcrumbs-item">
+      <li class="ids__breadcrumbs-item">
         {item.href ? (
-          <a href={item.href}>{item.label}</a>
+          <a href={item.href} class="ids__nav-link">{item.label}</a>
         ) : (
           <span aria-current="page">{item.label}</span>
         )}
         {index < items.length - 1 && (
-          <span class="aigh__breadcrumbs-sep" aria-hidden="true">→</span>
+          <span class="ids__breadcrumbs-sep" aria-hidden="true">→</span>
         )}
       </li>
     ))}
@@ -51,11 +51,11 @@ const schema = {
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <style>
-  .aigh__breadcrumbs {
+  .ids__breadcrumbs {
     margin-bottom: var(--ids__space-s);
   }
 
-  .aigh__breadcrumbs-list {
+  .ids__breadcrumbs-list {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -65,7 +65,7 @@ const schema = {
     padding: 0;
   }
 
-  .aigh__breadcrumbs-item {
+  .ids__breadcrumbs-item {
     display: flex;
     align-items: center;
     gap: var(--ids__space-xs);
@@ -73,27 +73,20 @@ const schema = {
     padding: 0;
   }
 
-  .aigh__breadcrumbs-item::before {
+  .ids__breadcrumbs-item::before {
     display: none;
   }
 
-  .aigh__breadcrumbs-item a {
+  .ids__breadcrumbs-item a {
     font-size: var(--ids__font-size-caption);
-    color: var(--ids__text-tertiary);
-    text-decoration: none;
-    transition: color var(--ids__transition-normal);
   }
 
-  .aigh__breadcrumbs-item a:hover {
-    color: rgb(var(--ids__link-RGB));
-  }
-
-  .aigh__breadcrumbs-item span[aria-current="page"] {
+  .ids__breadcrumbs-item span[aria-current="page"] {
     font-size: var(--ids__font-size-caption);
     color: var(--ids__text-secondary);
   }
 
-  .aigh__breadcrumbs-sep {
+  .ids__breadcrumbs-sep {
     font-size: var(--ids__font-size-micro);
     color: var(--ids__text-muted);
   }

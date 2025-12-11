@@ -28,7 +28,7 @@ const currentPath = Astro.url.pathname;
       {navItems.map(item => (
         <a 
           href={item.href} 
-          class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
+          class:list={['header__link', 'ids__nav-link', { 'ids__nav-link--active': currentPath.startsWith(item.href) }]}
         >
           {item.label}
         </a>
@@ -47,7 +47,7 @@ const currentPath = Astro.url.pathname;
     {navItems.map(item => (
       <a 
         href={item.href} 
-        class:list={['header__link', { 'header__link--active': currentPath.startsWith(item.href) }]}
+        class:list={['header__link', 'ids__nav-link', { 'ids__nav-link--active': currentPath.startsWith(item.href) }]}
       >
         {item.label}
       </a>
@@ -110,18 +110,6 @@ const currentPath = Astro.url.pathname;
 
   .header__link {
     font-size: var(--ids__font-size-small);
-    color: var(--ids__text-secondary);
-    text-decoration: none;
-    transition: color var(--ids__transition-fast);
-  }
-
-  .header__link:hover {
-    color: var(--ids__text-primary);
-    text-decoration: none;
-  }
-
-  .header__link--active {
-    color: var(--ids__text-primary);
   }
 
   /* Mobile nav */

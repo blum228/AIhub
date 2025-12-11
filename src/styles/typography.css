@@ -1,0 +1,116 @@
+/**
+ * Global Typography Styles
+ * Базовые стили для HTML элементов типографики
+ * Использует IDS токены из tokens.css
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   ЗАГОЛОВКИ
+   ═══════════════════════════════════════════════════════════════ */
+
+h1 {
+  font-size: var(--ids__font-size-h1);
+  font-weight: var(--ids__font-weight-bold);
+  line-height: var(--ids__line-height-tight);
+  margin: 0 0 var(--ids__space-m) 0;
+  color: var(--ids__text-primary);
+}
+
+h2 {
+  font-size: var(--ids__font-size-h2);
+  font-weight: var(--ids__font-weight-semibold);
+  line-height: var(--ids__line-height-snug);
+  margin: 0 0 var(--ids__space-s) 0;
+  color: var(--ids__text-primary);
+}
+
+h3 {
+  font-size: var(--ids__font-size-h3);
+  font-weight: var(--ids__font-weight-semibold);
+  line-height: var(--ids__line-height-snug);
+  margin: 0 0 var(--ids__space-xs) 0;
+  color: var(--ids__text-primary);
+}
+
+h4 {
+  font-size: var(--ids__font-size-h4);
+  font-weight: var(--ids__font-weight-medium);
+  line-height: var(--ids__line-height-normal);
+  margin: 0 0 var(--ids__space-xs) 0;
+  color: var(--ids__text-primary);
+}
+
+h5 {
+  font-size: var(--ids__font-size-body);
+  font-weight: var(--ids__font-weight-medium);
+  line-height: var(--ids__line-height-normal);
+  margin: 0 0 var(--ids__space-2xs) 0;
+  color: var(--ids__text-primary);
+}
+
+h6 {
+  font-size: var(--ids__font-size-small);
+  font-weight: var(--ids__font-weight-medium);
+  line-height: var(--ids__line-height-normal);
+  margin: 0 0 var(--ids__space-2xs) 0;
+  color: var(--ids__text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ПАРАГРАФЫ
+   ═══════════════════════════════════════════════════════════════ */
+
+p {
+  font-size: var(--ids__font-size-body);
+  line-height: var(--ids__line-height-relaxed);
+  margin: 0 0 var(--ids__space-m) 0;
+  color: var(--ids__text-primary);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   СПИСКИ
+   ═══════════════════════════════════════════════════════════════ */
+
+ul, ol {
+  font-size: var(--ids__font-size-body);
+  line-height: var(--ids__line-height-relaxed);
+  margin: 0 0 var(--ids__space-m) 0;
+  padding-left: var(--ids__space-l);
+  color: var(--ids__text-primary);
+}
+
+ul:last-child, ol:last-child {
+  margin-bottom: 0;
+}
+
+li {
+  margin-bottom: var(--ids__space-xs);
+}
+
+li:last-child {
+  margin-bottom: 0;
+}
+
+/* Вложенные списки */
+ul ul, ul ol, ol ul, ol ol {
+  margin-top: var(--ids__space-xs);
+  margin-bottom: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   МОБИЛЬНАЯ АДАПТАЦИЯ
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: var(--ids__font-size-h1-mobile);
+  }
+  
+  h2 {
+    font-size: var(--ids__font-size-h2-mobile);
+  }
+}

@@ -10,28 +10,28 @@ interface Props {
 }
 
 const { pros, cons, class: className } = Astro.props;
-const classes = ['aigh__pros-cons', className].filter(Boolean).join(' ');
+const classes = ['ids__pros-cons', className].filter(Boolean).join(' ');
 ---
 
 <div class={classes}>
-  <div class="aigh__pros-cons-col aigh__pros-cons-col--pros">
-    <h4 class="aigh__pros-cons-title">
-      <span class="aigh__pros-cons-icon">✓</span>
+  <div class="ids__pros-cons-col ids__pros-cons-col--pros">
+    <h4 class="ids__pros-cons-title">
+      <span class="ids__pros-cons-icon">✓</span>
       Плюсы
     </h4>
-    <ul class="aigh__pros-cons-list">
+    <ul class="ids__pros-cons-list">
       {pros.map(item => (
         <li>{item}</li>
       ))}
     </ul>
   </div>
   
-  <div class="aigh__pros-cons-col aigh__pros-cons-col--cons">
-    <h4 class="aigh__pros-cons-title">
-      <span class="aigh__pros-cons-icon">✗</span>
+  <div class="ids__pros-cons-col ids__pros-cons-col--cons">
+    <h4 class="ids__pros-cons-title">
+      <span class="ids__pros-cons-icon">✗</span>
       Минусы
     </h4>
-    <ul class="aigh__pros-cons-list">
+    <ul class="ids__pros-cons-list">
       {cons.map(item => (
         <li>{item}</li>
       ))}
@@ -40,80 +40,80 @@ const classes = ['aigh__pros-cons', className].filter(Boolean).join(' ');
 </div>
 
 <style>
-  .aigh__pros-cons {
+  .ids__pros-cons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: calc(var(--ids__density) * 1.5em);
+    gap: var(--ids__space-l);
   }
 
   @media (width < 600px) {
-    .aigh__pros-cons {
+    .ids__pros-cons {
       grid-template-columns: 1fr;
-      gap: calc(var(--ids__density) * 1em);
+      gap: var(--ids__space-m);
     }
   }
 
-  .aigh__pros-cons-col {
-    padding: calc(var(--ids__density) * 1em);
-    border-radius: 0.5em;
+  .ids__pros-cons-col {
+    padding: var(--ids__space-m);
+    border-radius: var(--ids__radius-s);
   }
 
-  .aigh__pros-cons-col--pros {
+  .ids__pros-cons-col--pros {
     background-color: rgba(0, 180, 90, 0.06);
   }
 
-  .aigh__pros-cons-col--cons {
+  .ids__pros-cons-col--cons {
     background-color: rgba(var(--ids__accent-RGB), 0.06);
   }
 
-  .aigh__pros-cons-title {
+  .ids__pros-cons-title {
     display: flex;
     align-items: center;
-    gap: 0.4em;
-    margin: 0 0 0.8em 0;
-    font-size: 1em;
-    font-weight: 600;
+    gap: var(--ids__space-xs);
+    margin: 0 0 var(--ids__space-s) 0;
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-bold);
   }
 
-  .aigh__pros-cons-col--pros .aigh__pros-cons-title {
-    color: rgb(0, 140, 70);
+  .ids__pros-cons-col--pros .ids__pros-cons-title {
+    color: var(--ids__success);
   }
 
-  .aigh__pros-cons-col--cons .aigh__pros-cons-title {
+  .ids__pros-cons-col--cons .ids__pros-cons-title {
     color: var(--ids__accent);
   }
 
-  .aigh__pros-cons-icon {
-    font-size: 0.9em;
+  .ids__pros-cons-icon {
+    font-size: var(--ids__font-size-small);
   }
 
-  .aigh__pros-cons-list {
+  .ids__pros-cons-list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .aigh__pros-cons-list li {
+  .ids__pros-cons-list li {
     position: relative;
-    padding-left: 1.2em;
-    margin-bottom: 0.5em;
-    font-size: 0.95em;
-    line-height: 1.4;
-    color: rgba(var(--ids__text-RGB), 0.85);
+    padding-left: var(--ids__space-m);
+    margin-bottom: var(--ids__space-xs);
+    font-size: var(--ids__font-size-small);
+    line-height: var(--ids__line-height-snug);
+    color: var(--ids__text-primary);
   }
 
-  .aigh__pros-cons-list li::before {
+  .ids__pros-cons-list li::before {
     position: absolute;
     left: 0;
     content: '·';
-    font-weight: bold;
+    font-weight: var(--ids__font-weight-bold);
   }
 
-  .aigh__pros-cons-col--pros .aigh__pros-cons-list li::before {
-    color: rgb(0, 140, 70);
+  .ids__pros-cons-col--pros .ids__pros-cons-list li::before {
+    color: var(--ids__success);
   }
 
-  .aigh__pros-cons-col--cons .aigh__pros-cons-list li::before {
+  .ids__pros-cons-col--cons .ids__pros-cons-list li::before {
     color: var(--ids__accent);
   }
 </style>

@@ -267,12 +267,12 @@ const classes = ['comparison-table', compact && 'comparison-table--compact', cla
 
   /* Цветовая индикация */
   .comparison-table__value[data-pricing="free"] {
-    color: rgb(0, 140, 70);
+    color: var(--ids__success);
     font-weight: var(--ids__font-weight-semibold);
   }
 
   .comparison-table__value[data-check="yes"] {
-    color: rgb(0, 140, 70);
+    color: var(--ids__success);
     font-weight: var(--ids__font-weight-bold);
   }
 
@@ -290,7 +290,7 @@ const classes = ['comparison-table', compact && 'comparison-table--compact', cla
   }
 
   .comparison-table__value[data-censorship="none"] {
-    color: rgb(0, 140, 70);
+    color: var(--ids__success);
   }
 
   .comparison-table__value[data-censorship="strict"] {

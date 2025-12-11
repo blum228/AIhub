@@ -12,38 +12,38 @@ interface Props {
 }
 
 const { size = 'M', class: className } = Astro.props;
-const classes = ['aigh__logo', size !== 'M' && size, className].filter(Boolean).join(' ');
+const classes = ['ids__logo', size !== 'M' && size, className].filter(Boolean).join(' ');
 ---
 
 <a href={url('/')} class={classes}>
-  <span class="aigh__logo-text">AI</span><span class="aigh__logo-accent">Girls</span><span class="aigh__logo-text">Hub</span>
+  <span class="ids__logo-text">AI</span><span class="ids__logo-accent">Girls</span><span class="ids__logo-text">Hub</span>
 </a>
 
 <style>
-  .aigh__logo {
+  .ids__logo {
     display: inline-flex;
     align-items: baseline;
-    font-size: 1.3em;
-    font-weight: 650;
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
     letter-spacing: -0.02em;
     text-decoration: none;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--ids__transition-normal);
   }
 
-  .aigh__logo:hover {
+  .ids__logo:hover {
     opacity: 0.7;
     text-decoration: none;
   }
 
-  .aigh__logo-text {
-    color: rgb(var(--ids__text-RGB));
+  .ids__logo-text {
+    color: var(--ids__text-primary);
   }
 
-  .aigh__logo-accent {
+  .ids__logo-accent {
     color: var(--ids__accent);
   }
 
-  .aigh__logo.S {
-    font-size: 1.1em;
+  .ids__logo.S {
+    font-size: var(--ids__font-size-h4);
   }
 </style>

@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { verdict, winner, modelAName, modelBName, class: className } = Astro.props;
-const classes = ['aigh__verdict', className].filter(Boolean).join(' ');
+const classes = ['ids__verdict', className].filter(Boolean).join(' ');
 
 const winnerText = winner === 'a' ? `Победитель: ${modelAName}` 
   : winner === 'b' ? `Победитель: ${modelBName}` 
@@ -19,61 +19,61 @@ const winnerText = winner === 'a' ? `Победитель: ${modelAName}`
 ---
 
 <div class={classes}>
-  <div class="aigh__verdict-header">
-    <span class="aigh__verdict-icon">⚖️</span>
-    <h3 class="aigh__verdict-title">Вердикт</h3>
+  <div class="ids__verdict-header">
+    <span class="ids__verdict-icon">⚖️</span>
+    <h3 class="ids__verdict-title">Вердикт</h3>
   </div>
-  <p class="aigh__verdict-text">{verdict}</p>
+  <p class="ids__verdict-text">{verdict}</p>
   {winner && (
-    <p class="aigh__verdict-winner" data-winner={winner}>{winnerText}</p>
+    <p class="ids__verdict-winner" data-winner={winner}>{winnerText}</p>
   )}
 </div>
 
 <style>
-  .aigh__verdict {
-    padding: calc(var(--ids__density) * 1.2em);
+  .ids__verdict {
+    padding: var(--ids__space-l);
     background: linear-gradient(135deg, 
       rgba(var(--ids__accent-RGB), 0.08), 
       rgba(var(--ids__accent-RGB), 0.02)
     );
     border-left: 4px solid var(--ids__accent);
-    border-radius: 0 0.5em 0.5em 0;
+    border-radius: 0 var(--ids__radius-s) var(--ids__radius-s) 0;
   }
 
-  .aigh__verdict-header {
+  .ids__verdict-header {
     display: flex;
     align-items: center;
-    gap: 0.5em;
-    margin-bottom: 0.8em;
+    gap: var(--ids__space-s);
+    margin-bottom: var(--ids__space-s);
   }
 
-  .aigh__verdict-icon {
-    font-size: 1.3em;
+  .ids__verdict-icon {
+    font-size: var(--ids__font-size-h3);
   }
 
-  .aigh__verdict-title {
+  .ids__verdict-title {
     margin: 0;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: rgb(var(--ids__text-RGB));
+    font-size: var(--ids__font-size-h4);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
   }
 
-  .aigh__verdict-text {
+  .ids__verdict-text {
     margin: 0;
-    font-size: 1.05em;
-    line-height: 1.5;
-    color: rgba(var(--ids__text-RGB), 0.85);
+    font-size: var(--ids__font-size-body);
+    line-height: var(--ids__line-height-relaxed);
+    color: var(--ids__text-primary);
   }
 
-  .aigh__verdict-winner {
-    margin: 0.8em 0 0 0;
-    font-size: 0.9em;
-    font-weight: 500;
-    color: rgba(var(--ids__text-RGB), 0.6);
+  .ids__verdict-winner {
+    margin: var(--ids__space-s) 0 0 0;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-tertiary);
   }
 
-  .aigh__verdict-winner[data-winner="a"],
-  .aigh__verdict-winner[data-winner="b"] {
+  .ids__verdict-winner[data-winner="a"],
+  .ids__verdict-winner[data-winner="b"] {
     color: var(--ids__accent);
   }
 </style>
