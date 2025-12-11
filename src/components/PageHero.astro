@@ -1,0 +1,48 @@
+---
+/**
+ * PageHero — унифицированный hero-блок для страниц
+ * Обеспечивает консистентный стиль заголовков на всех страницах
+ */
+import Wrapper from './Wrapper.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  class?: string;
+}
+
+const { title, subtitle, class: className } = Astro.props;
+const classes = ['page-hero', className].filter(Boolean).join(' ');
+---
+
+<section class={classes}>
+  <Wrapper>
+    <h1 class="page-hero__title">{title}</h1>
+    {subtitle && <p class="page-hero__subtitle">{subtitle}</p>}
+  </Wrapper>
+</section>
+
+<style>
+  .page-hero {
+    margin-top: var(--ids__space-xl);
+  }
+
+  .page-hero__title {
+    font-size: 3em;
+    line-height: 1.1;
+    font-weight: 600;
+    margin-bottom: var(--ids__space-xs);
+  }
+
+  @media (width < 768px) {
+    .page-hero__title {
+      font-size: 2em;
+    }
+  }
+
+  .page-hero__subtitle {
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-secondary);
+    margin-bottom: 0;
+  }
+</style>

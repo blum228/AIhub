@@ -1,0 +1,201 @@
+---
+/**
+ * CatalogList — компактный список сервисов
+ * Минимализм + максимум информации на экране
+ */
+import { url } from '../utils/url';
+
+interface ModelData {
+  slug: string;
+  name: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  tagline?: string;
+  description: string;
+  affiliateUrl: string;
+  features?: {
+    voice?: boolean;
+    nsfw?: boolean;
+    russian?: boolean;
+    imageGen?: boolean;
+  };
+}
+
+interface Props {
+  models: ModelData[];
+}
+
+const { models } = Astro.props;
+
+// Форматирование цены
+function formatPrice(model: ModelData): string {
+  if (model.pricing === 'free') return 'Бесплатно';
+  if (model.priceFrom) return `$${model.priceFrom}`;
+  return 'Freemium';
+}
+---
+
+<div class="catalog-list">
+  {models.map((model, index) => (
+    <a href={url(`/models/${model.slug}`)} class="catalog-item">
+      <div class="catalog-item__main">
+        <span class="catalog-item__rank">{index + 1}</span>
+        <div class="catalog-item__info">
+          <h3 class="catalog-item__name">{model.name}</h3>
+          <p class="catalog-item__tagline">{model.tagline || model.description.slice(0, 50) + '...'}</p>
+        </div>
+      </div>
+      
+      <div class="catalog-item__features">
+        {model.features?.russian && <span class="feature-tag">RU</span>}
+        {model.features?.voice && <span class="feature-tag">Voice</span>}
+        {model.features?.imageGen && <span class="feature-tag">Img</span>}
+        {model.features?.nsfw && <span class="feature-tag">18+</span>}
+      </div>
+      
+      <div class="catalog-item__meta">
+        <span class="catalog-item__rating">★ {model.rating.toFixed(1)}</span>
+        <span class="catalog-item__price" data-pricing={model.pricing}>{formatPrice(model)}</span>
+      </div>
+      
+      <span class="catalog-item__arrow">→</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .catalog-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .catalog-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: var(--ids__space-m);
+    padding: var(--ids__space-m) 0;
+    border-bottom: 1px solid var(--ids__border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: background var(--ids__transition-fast);
+  }
+
+  .catalog-item:first-child {
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .catalog-item:hover {
+    background: var(--ids__bg-surface);
+    margin: 0 calc(-1 * var(--ids__space-m));
+    padding-left: var(--ids__space-m);
+    padding-right: var(--ids__space-m);
+    text-decoration: none;
+  }
+
+  .catalog-item__main {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-m);
+    min-width: 0;
+  }
+
+  .catalog-item__rank {
+    flex-shrink: 0;
+    width: 1.5em;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-muted);
+    text-align: center;
+  }
+
+  .catalog-item__info {
+    min-width: 0;
+  }
+
+  .catalog-item__name {
+    margin: 0;
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .catalog-item__tagline {
+    margin: var(--ids__space-2xs) 0 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .catalog-item__features {
+    display: flex;
+    gap: var(--ids__space-2xs);
+    flex-shrink: 0;
+  }
+
+  .feature-tag {
+    padding: var(--ids__space-2xs) var(--ids__space-xs);
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-tertiary);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-xs);
+  }
+
+  .catalog-item__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--ids__space-2xs);
+    flex-shrink: 0;
+    min-width: 5em;
+  }
+
+  .catalog-item__rating {
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-secondary);
+  }
+
+  .catalog-item__price {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-tertiary);
+  }
+
+  .catalog-item__price[data-pricing="free"] {
+    color: var(--ids__success);
+    font-weight: var(--ids__font-weight-semibold);
+  }
+
+  .catalog-item__arrow {
+    flex-shrink: 0;
+    color: var(--ids__text-muted);
+    transition: transform var(--ids__transition-fast), color var(--ids__transition-fast);
+  }
+
+  .catalog-item:hover .catalog-item__arrow {
+    transform: translateX(4px);
+    color: var(--ids__accent);
+  }
+
+  /* Mobile */
+  @media (width < 700px) {
+    .catalog-item {
+      grid-template-columns: 1fr auto auto;
+    }
+
+    .catalog-item__features {
+      display: none;
+    }
+
+    .catalog-item__tagline {
+      display: none;
+    }
+  }
+</style>

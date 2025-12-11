@@ -182,6 +182,148 @@ h2 {
 *For any* CSS class in the codebase that is part of the design system, the class name SHALL use the `ids__` prefix rather than `aigh__` or other prefixes.
 **Validates: Requirements 7.1, 7.2**
 
+### Property 7: Page Hero Consistency
+*For any* page with a main title, the title SHALL be rendered using the PageHero component pattern with consistent font-size (3em desktop, 2em mobile) and subtitle styling.
+**Validates: Requirements 9.2, 10.1**
+
+### Property 8: Interactive Element Hover Consistency
+*For any* interactive card element, the hover state SHALL include `transform: translateY(-2px)` and `box-shadow: var(--ids__shadow-l)`.
+**Validates: Requirements 11.1**
+
+### Property 9: Section Spacing Consistency
+*For any* major page section, the vertical spacing between sections SHALL use `--ids__space-xl`.
+**Validates: Requirements 9.1**
+
+---
+
+## Фаза 2: Унификация визуального языка
+
+### Проблема
+
+Homepage и каталог используют IDS токены, но визуально выглядят по-разному:
+- Homepage: минималистичный hero с большим текстом, карточки-цели с бордерами
+- Каталог: стандартный заголовок h1, фильтры-пилюли, сетка карточек
+
+### Решение: Единые паттерны компонентов
+
+#### 1. PageHero Component
+
+Новый компонент для консистентных заголовков страниц:
+
+```astro
+<!-- src/components/PageHero.astro -->
+<section class="page-hero">
+  <Wrapper>
+    <h1 class="page-hero__title">{title}</h1>
+    {subtitle && <p class="page-hero__subtitle">{subtitle}</p>}
+  </Wrapper>
+</section>
+
+<style>
+  .page-hero {
+    margin-top: var(--ids__space-xl);
+  }
+  
+  .page-hero__title {
+    font-size: 3em;
+    line-height: 1.1;
+    font-weight: 600;
+    margin-bottom: var(--ids__space-xs);
+  }
+  
+  @media (width < 768px) {
+    .page-hero__title {
+      font-size: 2em;
+    }
+  }
+  
+  .page-hero__subtitle {
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-secondary);
+    margin-bottom: 0;
+  }
+</style>
+```
+
+#### 2. Обновление CatalogFilters
+
+Фильтры должны выглядеть как часть IDS — с бордерами вместо заливки:
+
+```css
+/* Было: pills с заливкой */
+.filter {
+  background: var(--ids__bg-surface);
+}
+
+/* Стало: pills с бордером (как goal cards на homepage) */
+.filter {
+  background: transparent;
+  border: 1px solid var(--ids__border-default);
+}
+
+.filter:hover {
+  border-color: var(--ids__border-strong);
+  background: var(--ids__bg-surface);
+}
+
+.filter--active {
+  background: var(--ids__accent);
+  border-color: var(--ids__accent);
+}
+```
+
+#### 3. Консистентные hover-эффекты
+
+Все интерактивные карточки должны использовать одинаковый hover:
+
+```css
+/* Стандартный hover для карточек */
+.ids__card-hover {
+  transition: 
+    transform var(--ids__transition-fast),
+    box-shadow var(--ids__transition-fast),
+    border-color var(--ids__transition-fast);
+}
+
+.ids__card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ids__shadow-l);
+  border-color: var(--ids__border-strong);
+}
+```
+
+#### 4. Структура страниц
+
+Все страницы должны следовать единой структуре:
+
+```
+┌─────────────────────────────────────┐
+│ Header (sticky)                     │
+├─────────────────────────────────────┤
+│ Space L                             │
+│ Breadcrumbs (если не homepage)      │
+│ PageHero (title + subtitle)         │
+├─────────────────────────────────────┤
+│ Space M                             │
+│ Filters/Navigation (если есть)      │
+├─────────────────────────────────────┤
+│ Space M                             │
+│ Content (cards, lists, etc)         │
+├─────────────────────────────────────┤
+│ Space XL                            │
+│ Footer                              │
+└─────────────────────────────────────┘
+```
+
+### Компоненты для обновления
+
+| Компонент | Изменения |
+|-----------|-----------|
+| `CatalogFilters.astro` | Бордеры вместо заливки, hover как у goal cards |
+| `[tag].astro` | Использовать PageHero вместо h1 |
+| `compare/index.astro` | Использовать PageHero, унифицировать карточки |
+| `ModelCardSemantic.astro` | Добавить border, унифицировать hover |
+
 ## Error Handling
 
 - Если токен не существует — использовать ближайший существующий токен

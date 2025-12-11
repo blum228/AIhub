@@ -1,7 +1,7 @@
 ---
 /**
  * Единый компонент фильтров для каталога
- * Используется на /catalog и /catalog/[tag]
+ * Sticky + минималистичный дизайн
  */
 import Wrapper from './Wrapper.astro';
 import { url } from '../utils/url';
@@ -13,14 +13,14 @@ interface Props {
 
 const { activeFilter = 'all', totalCount } = Astro.props;
 
-// Конфигурация фильтров — единый источник правды
+// Конфигурация фильтров
 const filters = [
   { slug: 'all', title: 'Все', href: url('/catalog') },
   { slug: 'free', title: 'Бесплатные', href: url('/catalog/free') },
-  { slug: 'russian', title: 'На русском', href: url('/catalog/russian') },
+  { slug: 'russian', title: 'Русский', href: url('/catalog/russian') },
   { slug: 'nsfw', title: '18+', href: url('/catalog/nsfw') },
-  { slug: 'voice', title: 'С голосом', href: url('/catalog/voice') },
-  { slug: 'image-gen', title: 'Генерация фото', href: url('/catalog/image-gen') },
+  { slug: 'voice', title: 'Голос', href: url('/catalog/voice') },
+  { slug: 'image-gen', title: 'Фото', href: url('/catalog/image-gen') },
 ];
 ---
 
@@ -38,70 +38,75 @@ const filters = [
       ))}
     </nav>
     {totalCount !== undefined && (
-      <span class="filters-count">{totalCount} сервисов</span>
+      <span class="filters-count">{totalCount}</span>
     )}
   </Wrapper>
 </div>
 
 <style>
   .filters-bar {
-    margin-top: var(--ids__space-m);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: var(--ids__space-s) 0;
+    background: var(--ids__bg-page);
+    border-bottom: 1px solid var(--ids__border-subtle);
   }
 
   .filters-bar :global(.ids__wrapper) {
     display: flex;
     align-items: center;
-    gap: var(--ids__space-m);
+    gap: var(--ids__space-s);
   }
 
   .filters {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--ids__space-xs);
+    flex-wrap: nowrap;
+    gap: var(--ids__space-2xs);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none;
   }
 
   .filter {
-    padding: var(--ids__space-xs) var(--ids__space-m);
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-2xs);
+    padding: var(--ids__space-xs) var(--ids__space-s);
     font-size: var(--ids__font-size-small);
     font-weight: var(--ids__font-weight-medium);
     color: var(--ids__text-secondary);
-    background: var(--ids__bg-surface);
-    border-radius: var(--ids__radius-full);
+    background: transparent;
+    border: none;
+    border-radius: var(--ids__radius-s);
     text-decoration: none;
-    transition: all var(--ids__transition-fast);
+    white-space: nowrap;
+    transition: 
+      color var(--ids__transition-fast),
+      background var(--ids__transition-fast);
   }
 
   .filter:hover {
     color: var(--ids__text-primary);
-    background: var(--ids__bg-surface-hover);
+    background: var(--ids__bg-surface);
     text-decoration: none;
   }
 
   .filter--active {
-    color: var(--ids__bg-page);
-    background: var(--ids__accent);
-  }
-
-  .filter--active:hover {
-    color: var(--ids__bg-page);
-    background: var(--ids__accent);
+    color: var(--ids__text-primary);
+    background: var(--ids__bg-surface);
+    font-weight: var(--ids__font-weight-semibold);
   }
 
   .filters-count {
-    font-size: var(--ids__font-size-caption);
-    color: var(--ids__text-tertiary);
+    flex-shrink: 0;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-muted);
     margin-left: auto;
-  }
-
-  @media (width < 600px) {
-    .filters-bar :global(.ids__wrapper) {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .filters-count {
-      margin-left: 0;
-      margin-top: var(--ids__space-xs);
-    }
   }
 </style>

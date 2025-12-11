@@ -2,7 +2,17 @@
 
 ## Introduction
 
-Миграция проекта AIGirlsHub на единую дизайн-систему IDS (Intuition Design System). Цель — устранить несогласованность в стилях: разные цвета ссылок, хардкодированные отступы, смешанные размеры шрифтов, разные радиусы скругления. Все компоненты должны использовать токены из IDS и следовать единым правилам.
+Миграция проекта AIGirlsHub на единую дизайн-систему IDS (Intuition Design System). 
+
+**Фаза 1 (завершена):** Устранение несогласованности в стилях — токены вместо хардкодов.
+
+**Фаза 2 (текущая):** Унификация визуального языка между страницами. Homepage и каталог должны выглядеть как части одного продукта с единым вайбом. Референс: https://intuition-tech.github.io/ids/#intro
+
+Ключевые принципы IDS:
+- Минимализм и чистота
+- Консистентные паттерны компонентов
+- Единый ритм отступов
+- Спокойная цветовая палитра с акцентами
 
 ## Glossary
 
@@ -97,3 +107,47 @@
 1. WHEN a developer needs to choose a spacing token THEN the tokens.css file SHALL contain comments explaining each token's intended use
 2. WHEN a developer needs to choose a color token THEN the tokens.css file SHALL contain comments explaining semantic meaning
 3. WHEN a developer needs to choose a typography token THEN the tokens.css file SHALL contain comments with pixel equivalents
+
+---
+
+## Фаза 2: Унификация визуального языка
+
+### Requirement 9
+
+**User Story:** As a user, I want all pages to have consistent visual rhythm, so that the site feels cohesive and professional.
+
+#### Acceptance Criteria
+
+1. WHEN a page section is rendered THEN the system SHALL use consistent vertical spacing (`--ids__space-xl` between major sections)
+2. WHEN a page header is rendered THEN the system SHALL follow the same pattern: large title + subtitle in muted color
+3. WHEN content blocks are displayed THEN the system SHALL use consistent internal padding (`--ids__space-l` for cards, `--ids__space-m` for compact elements)
+
+### Requirement 10
+
+**User Story:** As a user, I want the catalog page to match the homepage visual style, so that navigation feels seamless.
+
+#### Acceptance Criteria
+
+1. WHEN the catalog page is rendered THEN the system SHALL use the same hero pattern as homepage (large title, subtitle)
+2. WHEN filter pills are displayed THEN the system SHALL use the same visual treatment as homepage goal cards (border, hover states)
+3. WHEN model cards are displayed THEN the system SHALL use consistent card styling with homepage elements
+
+### Requirement 11
+
+**User Story:** As a user, I want interactive elements to have consistent hover states, so that the interface feels responsive and unified.
+
+#### Acceptance Criteria
+
+1. WHEN a user hovers over a card THEN the system SHALL apply consistent transform (`translateY(-2px)`) and shadow (`--ids__shadow-l`)
+2. WHEN a user hovers over a navigation element THEN the system SHALL apply consistent color transition using `--ids__transition-fast`
+3. WHEN a user hovers over a button THEN the system SHALL apply consistent opacity or background change
+
+### Requirement 12
+
+**User Story:** As a user, I want page layouts to follow a consistent structure, so that I can easily navigate and find information.
+
+#### Acceptance Criteria
+
+1. WHEN a page is rendered THEN the system SHALL use Wrapper component for consistent max-width and centering
+2. WHEN breadcrumbs are displayed THEN the system SHALL position them consistently at the top of content area
+3. WHEN a page has filters THEN the system SHALL display them in a consistent location below the page header

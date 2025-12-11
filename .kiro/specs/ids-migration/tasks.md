@@ -109,3 +109,63 @@
 
 - [x] 15. Final Checkpoint - Ensure all tests pass
   - Build passes successfully
+
+---
+
+## Фаза 2: Унификация визуального языка
+
+- [x] 16. Create PageHero component
+  - [x] 16.1 Create `src/components/PageHero.astro`
+    - Implement hero section with title and optional subtitle
+    - Use consistent font-size (3em desktop, 2em mobile)
+    - Apply IDS spacing tokens for margins
+    - _Requirements: 9.2, 10.1_
+  - [ ] 16.2 Write property test for page hero consistency
+    - **Property 7: Page Hero Consistency**
+    - **Validates: Requirements 9.2, 10.1**
+
+- [x] 17. Update CatalogFilters styling
+  - [x] 17.1 Refactor CatalogFilters.astro to use border-based styling
+    - Replace background fill with transparent + border
+    - Add border: 1px solid var(--ids__border-default)
+    - Update hover to show border-color change + background
+    - Keep active state with accent background
+    - _Requirements: 10.2, 11.1_
+
+- [x] 18. Update catalog page to use PageHero
+  - [x] 18.1 Refactor `src/pages/catalog/[tag].astro` and `src/pages/catalog.astro`
+    - Replace h1 + subtitle with PageHero component
+    - Ensure consistent spacing with homepage
+    - _Requirements: 10.1, 12.1_
+
+- [x] 19. Update compare index page
+  - [x] 19.1 Refactor `src/pages/compare/index.astro`
+    - Replace h1 + description with PageHero component
+    - Ensure consistent spacing
+    - _Requirements: 9.2, 12.1_
+
+- [x] 20. Unify card hover effects
+  - [x] 20.1 Update ModelCardSemantic.astro hover
+    - Add border: 1px solid var(--ids__border-subtle) to base state
+    - Ensure hover includes translateY(-2px) and shadow-l
+    - Add border-color change on hover
+    - _Requirements: 11.1_
+  - [x] 20.2 Update compare-card hover in compare/index.astro
+    - Ensure consistent hover with ModelCardSemantic
+    - _Requirements: 11.1_
+  - [ ] 20.3 Write property test for hover consistency
+    - **Property 8: Interactive Element Hover Consistency**
+    - **Validates: Requirements 11.1**
+
+- [x] 21. Verify section spacing consistency
+  - [x] 21.1 Audit all pages for section spacing
+    - Ensure all major sections use --ids__space-xl margin-top
+    - Fixed for/[goal].astro, about.astro, privacy.astro, disclaimer.astro
+    - Replaced hardcoded values with IDS tokens
+    - _Requirements: 9.1_
+  - [ ] 21.2 Write property test for section spacing
+    - **Property 9: Section Spacing Consistency**
+    - **Validates: Requirements 9.1**
+
+- [x] 22. Final Checkpoint - Ensure all tests pass
+  - Build passes successfully

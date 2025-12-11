@@ -98,16 +98,19 @@ const classes = ['semantic-card', compact && 'semantic-card--compact', className
     display: flex;
     flex-direction: column;
     background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
     border-radius: var(--ids__radius-l);
     overflow: hidden;
     transition: 
       transform var(--ids__transition-fast),
-      box-shadow var(--ids__transition-fast);
+      box-shadow var(--ids__transition-fast),
+      border-color var(--ids__transition-fast);
   }
 
   .semantic-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--ids__shadow-l);
+    border-color: var(--ids__border-strong);
   }
 
   .semantic-card__link {

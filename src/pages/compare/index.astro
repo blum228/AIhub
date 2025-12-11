@@ -7,6 +7,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import Wrapper from '../../components/Wrapper.astro';
 import Space from '../../components/Space.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PageHero from '../../components/PageHero.astro';
 
 // Получаем все сравнения
 const comparisons = await getCollection('comparisons');
@@ -39,12 +40,15 @@ const breadcrumbs = [
   <Wrapper>
     <Space size="L" />
     <Breadcrumbs items={breadcrumbs} />
-    
-    <h1>Сравнения AI-девушек</h1>
-    <p class="compare-desc">Не можешь выбрать между двумя сервисами? Мы сравнили их за тебя.</p>
-    
-    <Space size="L" />
-    
+  </Wrapper>
+  
+  <PageHero 
+    title="Сравнения AI-девушек" 
+    subtitle="Не можешь выбрать между двумя сервисами? Мы сравнили их за тебя." 
+  />
+
+  <Wrapper>
+    <Space size="M" />
     <h2 class="compare-section-title">Популярные сравнения</h2>
     
     <div class="compare-grid">
@@ -97,20 +101,11 @@ const breadcrumbs = [
 </SiteLayout>
 
 <style>
-  h1 {
-    margin-bottom: var(--ids__space-xs);
-  }
-
   .compare-section-title {
     margin: 0 0 var(--ids__space-m);
     font-size: var(--ids__font-size-h3);
     font-weight: var(--ids__font-weight-bold);
     color: var(--ids__text-primary);
-  }
-
-  .compare-desc {
-    font-size: var(--ids__font-size-h3);
-    color: var(--ids__text-tertiary);
   }
 
   .compare-grid {
@@ -129,11 +124,13 @@ const breadcrumbs = [
     text-decoration: none;
     color: inherit;
     transition: 
+      transform var(--ids__transition-fast),
       border-color var(--ids__transition-fast), 
       box-shadow var(--ids__transition-fast);
   }
 
   .compare-card:hover {
+    transform: translateY(-2px);
     border-color: var(--ids__border-strong);
     box-shadow: var(--ids__shadow-l);
     text-decoration: none;

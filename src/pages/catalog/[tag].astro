@@ -7,10 +7,10 @@ import { getCollection } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import Wrapper from '../../components/Wrapper.astro';
 import Space from '../../components/Space.astro';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import CatalogFilters from '../../components/CatalogFilters.astro';
-import ModelGrid from '../../components/ModelGrid.astro';
+import CatalogList from '../../components/CatalogList.astro';
 import EmptyState from '../../components/EmptyState.astro';
+import { url } from '../../utils/url';
 
 // Конфигурация фильтров
 const filterConfig: Record<string, { title: string; description: string }> = {
@@ -51,35 +51,19 @@ const filteredModels = sortedModels.filter(model => {
   const featureKey = tagToFeature[tag];
   return featureKey && model.features?.[featureKey as keyof typeof model.features];
 });
-
-import { url } from '../../utils/url';
-
-// Breadcrumbs
-const breadcrumbs = [
-  { label: 'Главная', href: url('/') },
-  { label: 'Каталог', href: url('/catalog') },
-  { label: config.title }
-];
 ---
 
 <SiteLayout 
   title={`${config.title} AI-девушки — AIGirlsHub`}
   description={config.description}
 >
-  <Wrapper>
-    <Space size="L" />
-    <Breadcrumbs items={breadcrumbs} />
-    <h1>Каталог</h1>
-    <p class="catalog__subtitle">{config.description}</p>
-  </Wrapper>
-
-  <!-- Фильтры -->
+  <!-- Sticky фильтры -->
   <CatalogFilters activeFilter={tag} totalCount={filteredModels.length} />
 
   <Wrapper>
     <Space size="M" />
     {filteredModels.length > 0 ? (
-      <ModelGrid models={filteredModels} columns={3} />
+      <CatalogList models={filteredModels} />
     ) : (
       <EmptyState 
         title="Пока пусто"
@@ -92,10 +76,4 @@ const breadcrumbs = [
   </Wrapper>
 </SiteLayout>
 
-<style>
-  .catalog__subtitle {
-    margin: var(--ids__space-xs) 0 0;
-    font-size: var(--ids__font-size-body);
-    color: var(--ids__text-tertiary);
-  }
-</style>
+

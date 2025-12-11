@@ -1,15 +1,14 @@
 ---
 /**
  * Каталог всех AI-девушек
- * Простой список с фильтрами по фичам (цели — на главной и в header)
+ * Минималистичный список с фокусом на функциональность
  */
 import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Wrapper from '../components/Wrapper.astro';
 import Space from '../components/Space.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
-import ModelCardSemantic from '../components/ModelCardSemantic.astro';
 import CatalogFilters from '../components/CatalogFilters.astro';
+import CatalogList from '../components/CatalogList.astro';
 import { url } from '../utils/url';
 
 // Получаем все модели
@@ -19,45 +18,34 @@ const allModels = await getCollection('models');
 const models = allModels
   .map(entry => ({ slug: entry.id.replace('.yaml', ''), ...entry.data }))
   .sort((a, b) => b.rating - a.rating);
-
-
-// Breadcrumbs
-const breadcrumbs = [
-  { label: 'Главная', href: url('/') },
-  { label: 'Все сервисы' }
-];
 ---
 
 <SiteLayout 
-  title="Все AI-девушки — AIGirlsHub"
-  description="Полный каталог AI-девушек и виртуальных компаньонов. Сравните рейтинги, цены и функции лучших AI-сервисов."
+  title="Каталог AI-девушек — AIGirlsHub"
+  description="Полный каталог AI-девушек и виртуальных компаньонов. Сравните рейтинги, цены и функции."
 >
-  <Wrapper>
-    <Space size="L" />
-    <Breadcrumbs items={breadcrumbs} />
-    <h1>Все сервисы</h1>
-    <p class="catalog__subtitle">{models.length} AI-девушек • по рейтингу</p>
-  </Wrapper>
-
-  <!-- Фильтры по фичам -->
+  <!-- Sticky фильтры -->
   <CatalogFilters activeFilter="all" totalCount={models.length} />
 
   <Wrapper>
     <Space size="M" />
     
-    <!-- Все сервисы -->
-    <div class="catalog-grid" id="catalog-grid">
-      {models.map(model => (
-        <ModelCardSemantic model={model} showCTA={false} />
-      ))}
+    <!-- Сортировка -->
+    <div class="sort-bar">
+      <button class="sort-btn sort-btn--active" data-sort="rating">Рейтинг</button>
+      <button class="sort-btn" data-sort="price">Цена</button>
     </div>
+    
+    <Space size="S" />
+    
+    <!-- Компактный список -->
+    <CatalogList models={models} />
     
     <Space size="L" />
 
-    <!-- CTA к сравнениям -->
-    <div class="catalog-cta">
-      <p>Не можешь выбрать?</p>
-      <a href={url('/compare')} class="catalog-cta__link">Смотреть сравнения →</a>
+    <!-- CTA -->
+    <div class="catalog-footer">
+      <a href={url('/compare')} class="catalog-footer__link">Сравнить сервисы →</a>
     </div>
     
     <Space size="XL" />
@@ -65,47 +53,82 @@ const breadcrumbs = [
 </SiteLayout>
 
 <style>
-  .catalog__subtitle {
-    margin: var(--ids__space-xs) 0 0;
-    font-size: var(--ids__font-size-body);
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-2xs);
+  }
+
+  .sort-btn {
+    padding: var(--ids__space-2xs) var(--ids__space-xs);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
     color: var(--ids__text-tertiary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color var(--ids__transition-fast);
   }
 
-  /* Сетка карточек */
-  .catalog-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--ids__space-m);
+  .sort-btn:hover {
+    color: var(--ids__text-primary);
   }
 
-  @media (width < 1000px) {
-    .catalog-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .sort-btn--active {
+    color: var(--ids__text-primary);
+    font-weight: var(--ids__font-weight-semibold);
   }
 
-  @media (width < 600px) {
-    .catalog-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* CTA */
-  .catalog-cta {
+  .catalog-footer {
     text-align: center;
-    padding: var(--ids__space-l);
-    background: var(--ids__bg-surface);
-    border-radius: var(--ids__radius-m);
+    padding: var(--ids__space-m) 0;
   }
 
-  .catalog-cta p {
-    margin: 0 0 var(--ids__space-xs);
-    color: var(--ids__text-tertiary);
-  }
-
-  .catalog-cta__link {
+  .catalog-footer__link {
+    font-size: var(--ids__font-size-small);
     font-weight: var(--ids__font-weight-semibold);
     color: var(--ids__accent);
   }
-
 </style>
+
+<script>
+  // Сортировка
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sortType = btn.getAttribute('data-sort');
+      const list = document.querySelector('.catalog-list');
+      if (!list) return;
+      
+      const items = Array.from(list.querySelectorAll('.catalog-item')) as HTMLElement[];
+      
+      items.sort((a, b) => {
+        if (sortType === 'rating') {
+          const ratingA = parseFloat(a.querySelector('.catalog-item__rating')?.textContent?.replace('★ ', '') || '0');
+          const ratingB = parseFloat(b.querySelector('.catalog-item__rating')?.textContent?.replace('★ ', '') || '0');
+          return ratingB - ratingA;
+        }
+        if (sortType === 'price') {
+          const priceA = a.querySelector('.catalog-item__price')?.textContent || '';
+          const priceB = b.querySelector('.catalog-item__price')?.textContent || '';
+          if (priceA.includes('Бесплатно')) return -1;
+          if (priceB.includes('Бесплатно')) return 1;
+          const numA = parseFloat(priceA.replace(/[^0-9.]/g, '')) || 999;
+          const numB = parseFloat(priceB.replace(/[^0-9.]/g, '')) || 999;
+          return numA - numB;
+        }
+        return 0;
+      });
+      
+      // Обновляем ранги и DOM
+      items.forEach((item, index) => {
+        const rank = item.querySelector('.catalog-item__rank');
+        if (rank) rank.textContent = String(index + 1);
+        list.appendChild(item);
+      });
+      
+      // Обновляем активную кнопку
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('sort-btn--active'));
+      btn.classList.add('sort-btn--active');
+    });
+  });
+</script>
