@@ -10,6 +10,7 @@
  * - Цензура
  * - Цена
  */
+import { url } from '../utils/url';
 
 interface ModelData {
   slug: string;
@@ -98,7 +99,7 @@ const classes = ['comparison-table', compact && 'comparison-table--compact', cla
         <th class="comparison-table__feature-col">Фича</th>
         {models.map(model => (
           <th class="comparison-table__model-col">
-            <a href={`/models/${model.slug}`}>{model.name}</a>
+            <a href={url(`/models/${model.slug}`)}>{model.name}</a>
           </th>
         ))}
       </tr>

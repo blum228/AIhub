@@ -42,10 +42,12 @@ if (!modelA || !modelB) {
   return Astro.redirect('/catalog');
 }
 
+import { url } from '../../utils/url';
+
 // Breadcrumbs
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
-  { label: 'Сравнения', href: '/compare' },
+  { label: 'Главная', href: url('/') },
+  { label: 'Сравнения', href: url('/compare') },
   { label: entry.data.title }
 ];
 
@@ -145,10 +147,10 @@ const schema = {
         <h3 class="compare-more-title">Другие сравнения</h3>
         <div class="compare-more-links">
           {otherComparisons.map(comp => (
-            <a href={`/compare/${comp.slug}`}>{comp.modelA} vs {comp.modelB}</a>
+            <a href={url(`/compare/${comp.slug}`)}>{comp.modelA} vs {comp.modelB}</a>
           ))}
         </div>
-        <a href="/compare" class="compare-more-catalog">Все сравнения →</a>
+        <a href={url('/compare')} class="compare-more-catalog">Все сравнения →</a>
       </div>
     )}
     

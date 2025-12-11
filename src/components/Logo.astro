@@ -4,6 +4,8 @@
  * Минималистичный текстовый логотип в стиле IDS
  * @prop size - размер: 'S' | 'M' (default)
  */
+import { url } from '../utils/url';
+
 interface Props {
   size?: 'S' | 'M';
   class?: string;
@@ -13,7 +15,7 @@ const { size = 'M', class: className } = Astro.props;
 const classes = ['aigh__logo', size !== 'M' && size, className].filter(Boolean).join(' ');
 ---
 
-<a href="/" class={classes}>
+<a href={url('/')} class={classes}>
   <span class="aigh__logo-text">AI</span><span class="aigh__logo-accent">Girls</span><span class="aigh__logo-text">Hub</span>
 </a>
 

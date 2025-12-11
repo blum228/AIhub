@@ -4,6 +4,7 @@
  * Используется на /catalog и /catalog/[tag]
  */
 import Wrapper from './Wrapper.astro';
+import { url } from '../utils/url';
 
 interface Props {
   activeFilter?: string;
@@ -14,12 +15,12 @@ const { activeFilter = 'all', totalCount } = Astro.props;
 
 // Конфигурация фильтров — единый источник правды
 const filters = [
-  { slug: 'all', title: 'Все', href: '/catalog' },
-  { slug: 'free', title: 'Бесплатные', href: '/catalog/free' },
-  { slug: 'russian', title: 'На русском', href: '/catalog/russian' },
-  { slug: 'nsfw', title: '18+', href: '/catalog/nsfw' },
-  { slug: 'voice', title: 'С голосом', href: '/catalog/voice' },
-  { slug: 'image-gen', title: 'Генерация фото', href: '/catalog/image-gen' },
+  { slug: 'all', title: 'Все', href: url('/catalog') },
+  { slug: 'free', title: 'Бесплатные', href: url('/catalog/free') },
+  { slug: 'russian', title: 'На русском', href: url('/catalog/russian') },
+  { slug: 'nsfw', title: '18+', href: url('/catalog/nsfw') },
+  { slug: 'voice', title: 'С голосом', href: url('/catalog/voice') },
+  { slug: 'image-gen', title: 'Генерация фото', href: url('/catalog/image-gen') },
 ];
 ---
 

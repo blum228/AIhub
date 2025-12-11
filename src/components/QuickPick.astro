@@ -9,23 +9,25 @@ interface Props {
 
 const { class: className } = Astro.props;
 
+import { url } from '../utils/url';
+
 const quickPicks = [
   {
     label: 'Бесплатно',
     model: 'Character.AI',
-    href: '/models/character-ai',
+    href: url('/models/character-ai'),
     icon: '💸',
   },
   {
     label: 'Генерация фото',
     model: 'Candy.AI',
-    href: '/models/candy-ai',
+    href: url('/models/candy-ai'),
     icon: '📸',
   },
   {
     label: 'На русском',
     model: 'Replika',
-    href: '/models/replika',
+    href: url('/models/replika'),
     icon: '🇷🇺',
   },
 ];

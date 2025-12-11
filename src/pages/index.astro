@@ -9,6 +9,7 @@ import Wrapper from '../components/Wrapper.astro';
 import Space from '../components/Space.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import QuickPick from '../components/QuickPick.astro';
+import { url } from '../utils/url';
 
 // Получаем все модели для подсчёта
 const allModels = await getCollection('models');
@@ -30,27 +31,27 @@ const motivations = [
     id: 'intimacy',
     title: 'Интим',
     description: 'Флирт, романтика, NSFW-контент',
-    icon: '/images/icons/intimacy.svg',
+    icon: url('/images/icons/intimacy.svg'),
     count: motivationCounts.intimacy,
-    href: '/for/intimacy',
+    href: url('/for/intimacy'),
     color: 'red',
   },
   {
     id: 'escapism',
     title: 'Эскапизм',
     description: 'Ролевые игры, персонажи, фантазии',
-    icon: '/images/icons/escapism.svg',
+    icon: url('/images/icons/escapism.svg'),
     count: motivationCounts.escapism,
-    href: '/for/escapism',
+    href: url('/for/escapism'),
     color: 'purple',
   },
   {
     id: 'connection',
     title: 'Связь',
     description: 'Поддержка, дружба, разговоры',
-    icon: '/images/icons/connection.svg',
+    icon: url('/images/icons/connection.svg'),
     count: motivationCounts.connection,
-    href: '/for/connection',
+    href: url('/for/connection'),
     color: 'blue',
   },
 ];
@@ -153,7 +154,7 @@ const faqSchema = {
   <!-- Ссылка на все сервисы -->
   <Wrapper>
     <div class="all-services">
-      <a href="/catalog" class="all-services__link">
+      <a href={url('/catalog')} class="all-services__link">
         Смотреть все {models.length} сервисов →
       </a>
     </div>

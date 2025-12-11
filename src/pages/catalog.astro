@@ -10,6 +10,7 @@ import Space from '../components/Space.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ModelCardSemantic from '../components/ModelCardSemantic.astro';
 import CatalogFilters from '../components/CatalogFilters.astro';
+import { url } from '../utils/url';
 
 // Получаем все модели
 const allModels = await getCollection('models');
@@ -22,7 +23,7 @@ const models = allModels
 
 // Breadcrumbs
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
+  { label: 'Главная', href: url('/') },
   { label: 'Все сервисы' }
 ];
 ---
@@ -56,7 +57,7 @@ const breadcrumbs = [
     <!-- CTA к сравнениям -->
     <div class="catalog-cta">
       <p>Не можешь выбрать?</p>
-      <a href="/compare" class="catalog-cta__link">Смотреть сравнения →</a>
+      <a href={url('/compare')} class="catalog-cta__link">Смотреть сравнения →</a>
     </div>
     
     <Space size="XL" />

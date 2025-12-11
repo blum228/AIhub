@@ -6,6 +6,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { url } from '../utils/url';
 
 interface Props {
   title?: string;
@@ -18,7 +19,7 @@ const {
   title = 'AIGirlsHub — Каталог AI-девушек', 
   description = 'Найди идеальную AI-девушку. Обзоры, рейтинги и сравнения лучших AI-компаньонов.',
   lang = 'ru',
-  ogImage = '/images/og/default.jpg'
+  ogImage = url('/images/og/default.jpg')
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://aigirlshub.ru');

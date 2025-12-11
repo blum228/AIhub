@@ -3,6 +3,8 @@
  * Подвал сайта AIGirlsHub
  * Минималистичный футер — одна строка
  */
+import { url } from '../utils/url';
+
 interface Props {
   class?: string;
 }
@@ -11,10 +13,10 @@ const { class: className } = Astro.props;
 const year = new Date().getFullYear();
 
 const links = [
-  { href: '/catalog', label: 'Каталог' },
-  { href: '/compare', label: 'Сравнения' },
-  { href: '/about', label: 'О проекте' },
-  { href: '/privacy', label: 'Политика' },
+  { href: url('/catalog'), label: 'Каталог' },
+  { href: url('/compare'), label: 'Сравнения' },
+  { href: url('/about'), label: 'О проекте' },
+  { href: url('/privacy'), label: 'Политика' },
 ];
 ---
 

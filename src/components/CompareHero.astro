@@ -6,6 +6,7 @@
 import RatingStars from './RatingStars.astro';
 import PriceBadge from './PriceBadge.astro';
 import CTAButton from './CTAButton.astro';
+import { url } from '../utils/url';
 
 interface ModelData {
   slug: string;
@@ -41,7 +42,7 @@ const classes = ['aigh__compare-hero', className].filter(Boolean).join(' ');
       )}
     </div>
     <h2 class="aigh__compare-hero-name">
-      <a href={`/models/${modelA.slug}`}>{modelA.name}</a>
+      <a href={url(`/models/${modelA.slug}`)}>{modelA.name}</a>
     </h2>
     <RatingStars rating={modelA.rating} />
     <PriceBadge pricing={modelA.pricing} priceFrom={modelA.priceFrom} />
@@ -66,7 +67,7 @@ const classes = ['aigh__compare-hero', className].filter(Boolean).join(' ');
       )}
     </div>
     <h2 class="aigh__compare-hero-name">
-      <a href={`/models/${modelB.slug}`}>{modelB.name}</a>
+      <a href={url(`/models/${modelB.slug}`)}>{modelB.name}</a>
     </h2>
     <RatingStars rating={modelB.rating} />
     <PriceBadge pricing={modelB.pricing} priceFrom={modelB.priceFrom} />

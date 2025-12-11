@@ -23,9 +23,11 @@ const modelsMap = new Map<string, ModelData>(
   allModels.map(m => [m.id.replace('.yaml', ''), m.data as ModelData])
 );
 
+import { url } from '../../utils/url';
+
 // Breadcrumbs
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
+  { label: 'Главная', href: url('/') },
   { label: 'Сравнения' }
 ];
 ---
@@ -51,7 +53,7 @@ const breadcrumbs = [
         const modelB = modelsMap.get(comp.data.modelB);
         
         return (
-          <a href={`/compare/${comp.slug}`} class="compare-card">
+          <a href={url(`/compare/${comp.slug}`)} class="compare-card">
             <div class="compare-card__vs">
               <div class="compare-card__model">
                 {modelA?.logo ? (
@@ -87,7 +89,7 @@ const breadcrumbs = [
     <!-- CTA -->
     <div class="compare-cta">
       <p class="compare-cta__text">Не нашёл нужное сравнение?</p>
-      <a href="/catalog" class="compare-cta__link">Смотреть все сервисы в каталоге →</a>
+      <a href={url('/catalog')} class="compare-cta__link">Смотреть все сервисы в каталоге →</a>
     </div>
     
     <Space size="XL" />

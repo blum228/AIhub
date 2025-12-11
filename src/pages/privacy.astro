@@ -7,8 +7,10 @@ import Wrapper from '../components/Wrapper.astro';
 import Space from '../components/Space.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 
+import { url } from '../utils/url';
+
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
+  { label: 'Главная', href: url('/') },
   { label: 'Политика конфиденциальности' }
 ];
 ---

@@ -11,6 +11,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Gallery from '../../components/Gallery.astro';
 import GalleryItem from '../../components/GalleryItem.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
+import { url } from '../../utils/url';
 
 // Генерация статических путей
 export async function getStaticPaths() {
@@ -63,8 +64,8 @@ const positioning = model.tagline || model.description.slice(0, 80);
 
 // Breadcrumbs
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
-  { label: 'Каталог', href: '/catalog' },
+  { label: 'Главная', href: url('/') },
+  { label: 'Каталог', href: url('/catalog') },
   { label: model.name }
 ];
 
@@ -286,7 +287,7 @@ const schema = {
         <h2 class="section-title">Другие сервисы для {motivationLabels[model.motivation] || model.motivation}</h2>
         <div class="related-models">
           {relatedByMotivation.map((related: any) => (
-            <a href={`/models/${related.slug}`} class="related-model">
+            <a href={url(`/models/${related.slug}`)} class="related-model">
               {related.logo ? (
                 <img src={related.logo} alt="" class="related-model__logo" />
               ) : (
@@ -308,7 +309,7 @@ const schema = {
           model.productFit.alternatives.map((alt: { slug: string; reason: string }) => {
             const altModel = allModelsData.find(m => m.slug === alt.slug);
             return altModel && (
-              <a href={`/models/${alt.slug}`} class="alternative">
+              <a href={url(`/models/${alt.slug}`)} class="alternative">
                 <span class="alternative__label">{alt.reason}</span>
                 <span class="alternative__name">{altModel.name}</span>
               </a>
@@ -317,26 +318,26 @@ const schema = {
         ) : (
           <>
             {alternatives.free && model.pricing !== 'free' && (
-              <a href={`/models/${alternatives.free.slug}`} class="alternative">
+              <a href={url(`/models/${alternatives.free.slug}`)} class="alternative">
                 <span class="alternative__label">Бесплатно →</span>
                 <span class="alternative__name">{alternatives.free.name}</span>
               </a>
             )}
             {alternatives.russian && !model.features?.russian && (
-              <a href={`/models/${alternatives.russian.slug}`} class="alternative">
+              <a href={url(`/models/${alternatives.russian.slug}`)} class="alternative">
                 <span class="alternative__label">На русском →</span>
                 <span class="alternative__name">{alternatives.russian.name}</span>
               </a>
             )}
             {alternatives.cheaper && (
-              <a href={`/models/${alternatives.cheaper.slug}`} class="alternative">
+              <a href={url(`/models/${alternatives.cheaper.slug}`)} class="alternative">
                 <span class="alternative__label">Дешевле →</span>
                 <span class="alternative__name">{alternatives.cheaper.name}</span>
               </a>
             )}
           </>
         )}
-        <a href="/catalog" class="alternative">
+        <a href={url('/catalog')} class="alternative">
           <span class="alternative__label">Все сервисы →</span>
           <span class="alternative__name">Каталог</span>
         </a>

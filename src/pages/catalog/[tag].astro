@@ -52,10 +52,12 @@ const filteredModels = sortedModels.filter(model => {
   return featureKey && model.features?.[featureKey as keyof typeof model.features];
 });
 
+import { url } from '../../utils/url';
+
 // Breadcrumbs
 const breadcrumbs = [
-  { label: 'Главная', href: '/' },
-  { label: 'Каталог', href: '/catalog' },
+  { label: 'Главная', href: url('/') },
+  { label: 'Каталог', href: url('/catalog') },
   { label: config.title }
 ];
 ---
@@ -82,7 +84,7 @@ const breadcrumbs = [
       <EmptyState 
         title="Пока пусто"
         description="В этой категории ещё нет сервисов"
-        linkHref="/catalog"
+        linkHref={url('/catalog')}
         linkText="Смотреть все"
       />
     )}

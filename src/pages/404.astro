@@ -6,6 +6,7 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import Wrapper from '../components/Wrapper.astro';
 import Space from '../components/Space.astro';
 import CTAButton from '../components/CTAButton.astro';
+import { url } from '../utils/url';
 ---
 
 <SiteLayout title="Страница не найдена — AIGirlsHub">
@@ -16,8 +17,8 @@ import CTAButton from '../components/CTAButton.astro';
       <p>Страница не найдена</p>
       <Space size="L" />
       <div class="error-page__actions">
-        <CTAButton href="/" text="На главную" variant="primary" />
-        <CTAButton href="/catalog" text="Каталог" variant="secondary" />
+        <CTAButton href={url('/')} text="На главную" variant="primary" />
+        <CTAButton href={url('/catalog')} text="Каталог" variant="secondary" />
       </div>
     </div>
   </Wrapper>

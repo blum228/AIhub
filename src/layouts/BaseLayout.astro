@@ -1,4 +1,6 @@
 ---
+import { url } from '../utils/url';
+
 interface Props {
   title?: string;
   lang?: string;
@@ -12,7 +14,7 @@ const { title = 'Intuition Design System', lang = 'ru' } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <title>{title}</title>
-    <link rel="icon" type="image/png" href="/images/favicon-inverted.png" />
+    <link rel="icon" type="image/png" href={url('/images/favicon-inverted.png')} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <slot name="head" />
   </head>
