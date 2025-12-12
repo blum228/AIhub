@@ -3,6 +3,7 @@
  * FilterPanel — минималистичная боковая панель фильтров
  * IDS Design: чистота, компактность
  */
+import { url } from '../utils/url';
 
 interface Props {
   activeFilters: {
@@ -107,7 +108,7 @@ const hasActiveFilters = Object.values(activeFilters).some(arr => arr.length > 0
     <div class="filters__actions">
       <button type="submit" class="filters__apply">Применить</button>
       {hasActiveFilters && (
-        <a href="/catalog" class="filters__reset">Сбросить</a>
+        <a href={url('/catalog')} class="filters__reset">Сбросить</a>
       )}
     </div>
   </form>

@@ -309,5 +309,27 @@ const getErotic = (model: ModelData) => eroticLabels[model.advancedFeatures?.ero
       padding: var(--ids__space-xs);
       font-size: var(--ids__font-size-small);
     }
+
+    .ids__compare-table-feature {
+      width: 35%;
+    }
+
+    .ids__compare-table-model {
+      width: 32.5%;
+    }
+
+    .ids__compare-table-rating {
+      width: 1.8em;
+      height: 1.8em;
+      font-size: var(--ids__font-size-micro);
+    }
+  }
+
+  @media (width < 400px) {
+    .ids__compare-table th,
+    .ids__compare-table td {
+      padding: var(--ids__space-2xs);
+      font-size: var(--ids__font-size-micro);
+    }
   }
 </style>

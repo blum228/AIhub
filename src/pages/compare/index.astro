@@ -218,4 +218,52 @@ const breadcrumbs = [
     font-weight: var(--ids__font-weight-semibold);
     color: var(--ids__accent);
   }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .compare-card {
+      padding: var(--ids__space-m);
+    }
+
+    .compare-card__vs {
+      gap: var(--ids__space-m);
+    }
+
+    .compare-card__logo {
+      width: var(--ids__logo-xs);
+      height: var(--ids__logo-xs);
+    }
+
+    .compare-card__name {
+      font-size: var(--ids__font-size-micro);
+    }
+
+    .compare-card__vs-text {
+      font-size: var(--ids__font-size-body);
+    }
+
+    .compare-card__verdict {
+      font-size: var(--ids__font-size-micro);
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .compare-card__action {
+      font-size: var(--ids__font-size-micro);
+    }
+
+    .compare-cta {
+      padding: var(--ids__space-m);
+    }
+
+    .compare-cta__text {
+      font-size: var(--ids__font-size-small);
+    }
+
+    .compare-cta__link {
+      font-size: var(--ids__font-size-small);
+    }
+  }
 </style>

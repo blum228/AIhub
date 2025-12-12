@@ -105,9 +105,10 @@ const filterConfig = [
     <Space size="XL" />
   </Wrapper>
 
-  <script is:inline define:vars={{ models, filterConfig }}>
+  <script is:inline define:vars={{ models, filterConfig, baseUrl: import.meta.env.BASE_URL || '' }}>
     window.__CATALOG_DATA__ = models;
     window.__FILTER_CONFIG__ = filterConfig;
+    window.__BASE_URL__ = baseUrl;
   </script>
 </SiteLayout>
 
@@ -115,6 +116,7 @@ const filterConfig = [
 (function() {
   var models = window.__CATALOG_DATA__;
   var filterConfig = window.__FILTER_CONFIG__;
+  var baseUrl = window.__BASE_URL__ || '';
   var activeFilters = { payment: new Set(), platform: new Set(), features: new Set(), meaning: new Set() };
 
   var grid = document.getElementById('catalog-grid');
@@ -215,7 +217,7 @@ const filterConfig = [
     var badge = hasRuPay ? '<span class="card__badge">🇷🇺</span>' : '';
     var desc = m.tagline || m.description.slice(0, 80);
     
-    return '<a href="/models/' + m.slug + '" class="card">' +
+    return '<a href="' + baseUrl + '/models/' + m.slug + '" class="card">' +
       '<div class="card__preview">' + preview +
         '<div class="card__overlay">' +
           '<span class="card__rating">★ ' + m.rating.toFixed(1) + '</span>' + badge +
@@ -284,7 +286,7 @@ const filterConfig = [
     for (var g in activeFilters) {
       activeFilters[g].forEach(function(v) { p.append(g, v); });
     }
-    history.replaceState(null, '', p.toString() ? '/catalog?' + p : '/catalog');
+    history.replaceState(null, '', p.toString() ? baseUrl + '/catalog?' + p : baseUrl + '/catalog');
   }
 
   function clearAll() {
@@ -397,8 +399,10 @@ const filterConfig = [
   .action-link:hover { text-decoration: underline; }
 
   @media (max-width: 768px) {
-    .filters__row { gap: 16px; }
+    .filters__row { gap: 12px; }
     .filters__label { display: none; }
+    .filters__count { font-size: 12px; }
+    .dropdown__trigger { font-size: 13px; }
     .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .card { border-radius: 12px; }
     .card__body { padding: 12px; gap: 6px; }
@@ -408,6 +412,26 @@ const filterConfig = [
     .card__desc { display: none; }
     .card__overlay { padding: 8px; }
     .card__rating { padding: 4px 8px; font-size: 11px; }
+    .active-tag { padding: 4px 10px; font-size: 12px; }
+    .catalog-actions { padding: 24px 0; }
+    .action-link { font-size: 14px; }
   }
-  @media (max-width: 480px) { .grid { gap: 10px; } .card__body { padding: 10px; } .card__initial { font-size: 36px; } }
+  @media (max-width: 480px) { 
+    .filters { padding: 12px 0; gap: 12px; }
+    .filters__row { gap: 8px; }
+    .dropdown__trigger { font-size: 12px; gap: 4px; }
+    .dropdown__badge { min-width: 16px; height: 16px; font-size: 10px; }
+    .grid { gap: 8px; } 
+    .card__body { padding: 10px; } 
+    .card__initial { font-size: 32px; }
+    .card__title { font-size: 13px; }
+    .tag { padding: 3px 6px; font-size: 10px; }
+    .catalog-empty { padding: 40px 16px; }
+    .catalog-empty p { font-size: 14px; }
+    .catalog-empty button { padding: 8px 16px; font-size: 13px; }
+  }
+  @media (max-width: 360px) {
+    .grid { grid-template-columns: 1fr; gap: 10px; }
+    .card__desc { display: block; -webkit-line-clamp: 1; }
+  }
 </style>

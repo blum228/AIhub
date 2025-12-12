@@ -59,10 +59,23 @@ const links = [
     }
   }
 
+  @media (width < 500px) {
+    .footer__inner {
+      padding: 0 var(--ids__space-m);
+    }
+  }
+
   .footer__nav {
     display: flex;
     gap: var(--ids__space-l);
     flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (width < 500px) {
+    .footer__nav {
+      gap: var(--ids__space-m);
+    }
   }
 
   .footer__link {

@@ -252,4 +252,36 @@ const schema = {
     font-size: 0.85em;
     color: rgba(var(--ids__text-RGB), 0.5);
   }
+
+  /* Mobile */
+  @media (width < 600px) {
+    .compare-title {
+      font-size: var(--ids__font-size-h2);
+    }
+
+    .compare-content {
+      font-size: var(--ids__font-size-small);
+    }
+
+    .compare-cta-item {
+      padding: calc(var(--ids__density) * 0.8em);
+    }
+
+    .compare-cta-label {
+      font-size: 0.85em;
+    }
+
+    .compare-more {
+      padding: calc(var(--ids__density) * 1em);
+    }
+
+    .compare-more-links {
+      flex-direction: column;
+      gap: 0.8em;
+    }
+
+    .compare-more-links a {
+      font-size: 0.85em;
+    }
+  }
 </style>

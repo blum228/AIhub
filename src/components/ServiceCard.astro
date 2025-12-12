@@ -168,6 +168,32 @@ const isDead = status === 'dead' || status === 'censored';
     justify-content: space-between;
     gap: var(--ids__space-s);
     margin-top: auto;
+    flex-wrap: wrap;
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .card {
+      padding: var(--ids__space-s);
+    }
+
+    .card__logo {
+      width: 32px;
+      height: 32px;
+    }
+
+    .card__name {
+      font-size: var(--ids__font-size-small);
+    }
+
+    .card__desc {
+      -webkit-line-clamp: 1;
+    }
+
+    .tag {
+      padding: 1px 4px;
+      font-size: 10px;
+    }
   }
 
   .card__tags {

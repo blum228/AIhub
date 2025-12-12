@@ -163,5 +163,15 @@ const currentPath = Astro.url.pathname;
     .header__burger {
       display: flex;
     }
+
+    .header__inner {
+      padding: 8px var(--ids__space-m);
+    }
+  }
+
+  @media (width < 400px) {
+    .header__inner {
+      padding: 6px var(--ids__space-s);
+    }
   }
 </style>
