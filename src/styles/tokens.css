@@ -78,9 +78,9 @@
      ═══════════════════════════════════════════════════════════════ */
   
   --ids__text-primary: rgba(var(--ids__text-RGB), 1);     /* Заголовки, основной текст */
-  --ids__text-secondary: rgba(var(--ids__text-RGB), 0.7); /* Описания, подзаголовки */
-  --ids__text-tertiary: rgba(var(--ids__text-RGB), 0.5);  /* Вспомогательный текст */
-  --ids__text-muted: rgba(var(--ids__text-RGB), 0.35);    /* Плейсхолдеры, неактивные элементы */
+  --ids__text-secondary: rgba(var(--ids__text-RGB), 0.75); /* Описания, подзаголовки — повышена контрастность */
+  --ids__text-tertiary: rgba(var(--ids__text-RGB), 0.55);  /* Вспомогательный текст */
+  --ids__text-muted: rgba(var(--ids__text-RGB), 0.4);      /* Плейсхолдеры, неактивные элементы */
 
   /* ═══════════════════════════════════════════════════════════════
      АКЦЕНТНЫЕ ЦВЕТА
@@ -103,10 +103,10 @@
      Используй для border-color
      ═══════════════════════════════════════════════════════════════ */
   
-  --ids__border-subtle: rgba(var(--ids__text-RGB), 0.06);  /* Едва заметные разделители */
-  --ids__border-default: rgba(var(--ids__text-RGB), 0.1);  /* Стандартные границы */
-  --ids__border-strong: rgba(var(--ids__text-RGB), 0.15);  /* Выделенные границы */
-  --ids__border-accent: rgba(var(--ids__accent-RGB), 0.3); /* Акцентные границы */
+  --ids__border-subtle: rgba(var(--ids__text-RGB), 0.08);  /* Едва заметные разделители */
+  --ids__border-default: rgba(var(--ids__text-RGB), 0.12); /* Стандартные границы */
+  --ids__border-strong: rgba(var(--ids__text-RGB), 0.2);   /* Выделенные границы */
+  --ids__border-accent: rgba(var(--ids__accent-RGB), 0.4); /* Акцентные границы */
 
   /* ═══════════════════════════════════════════════════════════════
      ФОНЫ
@@ -114,10 +114,10 @@
      ═══════════════════════════════════════════════════════════════ */
   
   --ids__bg-page: rgb(var(--ids__background-RGB));           /* Основной фон страницы */
-  --ids__bg-surface: rgba(var(--ids__surface-RGB), 0.4);     /* Карточки, блоки */
-  --ids__bg-surface-hover: rgba(var(--ids__surface-RGB), 0.6); /* Hover состояние карточек */
-  --ids__bg-elevated: rgb(var(--ids__background-RGB));       /* Модалки, выпадающие меню */
-  --ids__bg-accent-subtle: rgba(var(--ids__accent-RGB), 0.08); /* Акцентный фон (выделение) */
+  --ids__bg-surface: rgba(var(--ids__surface-RGB), 1);       /* Карточки, блоки — непрозрачный */
+  --ids__bg-surface-hover: rgba(var(--ids__surface-RGB), 0.85); /* Hover состояние карточек */
+  --ids__bg-elevated: rgb(40, 42, 48);                       /* Модалки, выпадающие меню — светлее */
+  --ids__bg-accent-subtle: rgba(var(--ids__accent-RGB), 0.1); /* Акцентный фон (выделение) */
 
   /* ═══════════════════════════════════════════════════════════════
      ТЕНИ

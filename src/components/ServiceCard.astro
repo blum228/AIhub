@@ -1,0 +1,206 @@
+---
+/**
+ * ServiceCard — минималистичная карточка сервиса
+ * IDS Design: чистота, воздух, фокус на контенте
+ */
+
+interface Props {
+  slug: string;
+  name: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  tagline?: string;
+  description: string;
+  logo?: string;
+  gifPreview?: string;
+  status: 'active' | 'dead' | 'censored';
+  affiliateUrl: string;
+  features: {
+    nsfw?: boolean;
+    russian?: boolean;
+    voice?: boolean;
+    telegram?: boolean;
+  };
+  advancedFeatures?: {
+    memoryType?: 'none' | 'short' | 'long' | 'persistent';
+  };
+  paymentMethods?: ('mir' | 'sbp' | 'crypto' | 'foreign_card')[];
+}
+
+const { 
+  slug, 
+  name, 
+  rating, 
+  pricing, 
+  priceFrom, 
+  tagline, 
+  description, 
+  logo,
+  status,
+  features,
+  advancedFeatures,
+  paymentMethods = []
+} = Astro.props;
+
+// Только ключевые теги (максимум 3)
+const tags: string[] = [];
+if (pricing === 'free') tags.push('Free');
+if (paymentMethods.includes('mir') || paymentMethods.includes('sbp')) tags.push('РФ');
+if (features.russian) tags.push('RU');
+if (features.nsfw) tags.push('18+');
+if (advancedFeatures?.memoryType === 'persistent') tags.push('Память');
+
+const displayTags = tags.slice(0, 3);
+
+// Цена
+const priceText = pricing === 'free' 
+  ? 'Бесплатно' 
+  : priceFrom 
+    ? `от $${priceFrom}` 
+    : 'Freemium';
+
+const isDead = status === 'dead' || status === 'censored';
+---
+
+<a href={`/models/${slug}`} class:list={['card', { 'card--dead': isDead }]}>
+  <div class="card__header">
+    {logo && <img src={logo} alt="" class="card__logo" loading="lazy" />}
+    <div class="card__meta">
+      <h3 class="card__name">{name}</h3>
+      <span class="card__rating">{rating.toFixed(1)}</span>
+    </div>
+  </div>
+
+  <p class="card__desc">{tagline || description}</p>
+
+  <div class="card__footer">
+    <div class="card__tags">
+      {displayTags.map(tag => (
+        <span class:list={['tag', { 'tag--nsfw': tag === '18+' }]}>{tag}</span>
+      ))}
+    </div>
+    <span class:list={['card__price', { 'card__price--free': pricing === 'free' }]}>
+      {priceText}
+    </span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-s);
+    padding: var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-m);
+    text-decoration: none;
+    color: inherit;
+    transition: 
+      border-color var(--ids__transition-fast),
+      box-shadow var(--ids__transition-fast);
+  }
+
+  .card:hover {
+    border-color: var(--ids__border-default);
+    box-shadow: var(--ids__shadow-m);
+  }
+
+  .card--dead {
+    opacity: 0.5;
+  }
+
+  .card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-s);
+  }
+
+  .card__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--ids__radius-s);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .card__meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ids__space-s);
+  }
+
+  .card__name {
+    margin: 0;
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card__rating {
+    flex-shrink: 0;
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-tertiary);
+  }
+
+  .card__desc {
+    margin: 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ids__space-s);
+    margin-top: auto;
+  }
+
+  .card__tags {
+    display: flex;
+    gap: var(--ids__space-2xs);
+  }
+
+  .tag {
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-tertiary);
+    background: rgba(var(--ids__text-RGB), 0.06);
+    border-radius: var(--ids__radius-xs);
+  }
+
+  .tag--nsfw {
+    color: var(--ids__error);
+    background: rgba(220, 50, 50, 0.1);
+  }
+
+  /* Safe Mode */
+  :global(body.safe-mode) .tag--nsfw {
+    display: none;
+  }
+
+  .card__price {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-tertiary);
+  }
+
+  .card__price--free {
+    color: var(--ids__success);
+    font-weight: var(--ids__font-weight-medium);
+  }
+</style>

@@ -1,0 +1,143 @@
+# Implementation Plan
+
+- [x] 1. Обновить цветовую схему на тёмную тему
+  - [x] 1.1 Обновить colors.css с тёмными значениями RGB
+    - Изменить --ids__background-RGB на тёмный (#0f0f0f)
+    - Изменить --ids__text-RGB на светлый (#e8e8e8)
+    - Изменить --ids__surface-RGB на тёмно-серый (#1a1a1a)
+    - Сохранить акцентные цвета контрастными
+    - _Requirements: 9.1, 9.2, 9.3, 9.4_
+  - [x] 1.2 Написать property test для контрастности цветов
+    - **Property 10: Card contains required information** (адаптировано для цветов)
+    - **Validates: Requirements 9.4**
+
+- [x] 2. Расширить схему данных моделей
+  - [x] 2.1 Обновить Zod-схему в config.ts
+    - Добавить payment_methods: z.array(z.enum(['mir', 'sbp', 'crypto', 'foreign_card']))
+    - Добавить vpn_required: z.boolean()
+    - Добавить platforms: z.array(z.enum(['web', 'ios', 'android', 'telegram']))
+    - Добавить status: z.enum(['active', 'dead', 'censored'])
+    - Добавить dead_reason, dead_date, gif_preview, payment_guide
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
+  - [x] 2.2 Написать property test для валидации схемы
+    - **Property 7: Schema validation**
+    - **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5, 6.6**
+  - [x] 2.3 Обновить существующие YAML-файлы моделей
+    - Добавить новые поля с дефолтными значениями
+    - Заполнить реальные данные для 2-3 моделей (Candy.AI, Replika)
+    - _Requirements: 6.1-6.6_
+
+- [x] 3. Создать компонент ServiceBadge
+  - [x] 3.1 Создать ServiceBadge.astro
+    - Реализовать badgeConfig с типами и цветами
+    - Использовать IDS токены для стилей
+    - Добавить класс для Safe Mode скрытия (.badge--nsfw)
+    - _Requirements: 3.3, 3.4, 3.5, 3.6, 10.1, 10.2_
+  - [x] 3.2 Написать property test для соответствия бейджей данным
+    - **Property 2: Badge rendering matches service data**
+    - **Validates: Requirements 3.3, 3.4, 3.5, 3.6**
+
+- [x] 4. Создать компонент ServiceCard
+  - [x] 4.1 Создать ServiceCard.astro
+    - Grid-layout с бейджами, названием, описанием, рейтингом, ценой
+    - Hover-эффект с GIF-превью (если есть)
+    - Стили для dead-сервисов (opacity: 0.6)
+    - Использовать IDS токены
+    - _Requirements: 3.1, 3.2, 5.1, 5.2, 10.1-10.5_
+  - [x] 4.2 Написать property test для обязательных элементов карточки
+    - **Property 10: Card contains required information**
+    - **Validates: Requirements 3.1**
+  - [x] 4.3 Написать property test для dead-сервисов
+    - **Property 5: Dead services visual indication**
+    - **Validates: Requirements 5.1, 5.2**
+
+- [x] 5. Checkpoint - Убедиться что все тесты проходят
+  - ✅ All tests pass (36 tests)
+
+- [x] 6. Создать компонент FilterPanel
+  - [x] 6.1 Создать FilterGroup.astro
+    - Группа чекбоксов с заголовком
+    - Использовать IDS токены для стилей
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 10.1-10.5_
+  - [x] 6.2 Создать FilterPanel.astro
+    - Боковая панель с группами фильтров
+    - Sticky на десктопе (width: 280px)
+    - Выдвижная панель на мобильных
+    - Счётчик результатов
+    - Чекбокс "Показать закрытые"
+    - _Requirements: 1.1, 1.6, 2.1-2.5, 5.4_
+  - [x] 6.3 Реализовать логику фильтрации через URL-параметры
+    - Синхронизация чекбоксов с URL
+    - Фильтрация коллекции на сервере
+    - _Requirements: 1.2, 1.3, 1.4, 1.5_
+  - [x] 6.4 Написать property test для фильтрации
+    - **Property 1: Filter returns only matching services**
+    - **Validates: Requirements 1.2, 1.3, 1.4, 1.5**
+  - [x] 6.5 Написать property test для исключения dead-сервисов
+    - **Property 6: Dead filter exclusion**
+    - **Validates: Requirements 5.5**
+
+- [x] 7. Создать компонент SafeModeToggle
+  - [x] 7.1 Создать SafeModeToggle.astro
+    - Переключатель в шапке сайта
+    - Сохранение состояния в localStorage
+    - Добавление класса 'safe-mode' на body
+    - _Requirements: 4.1, 4.5, 10.1-10.5_
+  - [x] 7.2 Добавить CSS для Safe Mode эффектов
+    - blur(10px) для .nsfw-content
+    - display: none для .badge--nsfw
+    - _Requirements: 4.2, 4.3, 4.4_
+  - [x] 7.3 Написать property test для Safe Mode toggle
+    - **Property 3: Safe Mode toggles content visibility**
+    - **Validates: Requirements 4.2, 4.3, 4.4**
+  - [x] 7.4 Написать property test для persistence
+    - **Property 4: Safe Mode state persistence (round-trip)**
+    - **Validates: Requirements 4.5**
+
+- [x] 8. Checkpoint - Убедиться что все тесты проходят
+  - ✅ All tests pass (51 tests)
+
+- [x] 9. Обновить страницу каталога
+  - [x] 9.1 Обновить catalog.astro
+    - Интегрировать FilterPanel слева
+    - Заменить CatalogList на сетку ServiceCard
+    - Добавить SafeModeToggle в Header
+    - Реализовать фильтрацию по URL-параметрам
+    - _Requirements: 1.1, 1.2-1.6, 3.1_
+  - [x] 9.2 Добавить мобильную адаптацию
+    - Выдвижная панель фильтров
+    - Одноколоночная сетка карточек
+    - _Requirements: 1.6, 10.5_
+
+- [x] 10. Создать компоненты для страницы сервиса
+  - [x] 10.1 Создать DeadBanner.astro
+    - Баннер с причиной закрытия и датой
+    - Использовать IDS токены
+    - _Requirements: 5.3, 10.1-10.5_
+  - [x] 10.2 Создать PaymentGuide.astro
+    - Секция "Как оплатить из РФ"
+    - Условный рендеринг (только если нет карт РФ)
+    - _Requirements: 7.1, 7.2, 7.3_
+  - [x] 10.3 Написать property test для условного рендеринга PaymentGuide
+    - **Property 8: Payment guide conditional rendering**
+    - **Validates: Requirements 7.1, 7.3**
+
+- [x] 11. SEO-оптимизация
+  - [x] 11.1 Добавить Schema.org микроразметку на страницы сервисов
+    - JSON-LD с @type="Product" и aggregateRating
+    - _Requirements: 8.1_
+  - [x] 11.2 Написать property test для микроразметки
+    - **Property 9: Schema.org microdata presence**
+    - **Validates: Requirements 8.1**
+  - [x] 11.3 Добавить FAQ-секцию на страницу каталога
+    - Вопросы в формате "Можно ли...", "Есть ли..."
+    - Schema.org FAQPage микроразметка
+    - _Requirements: 8.2_
+  - [x] 11.4 Обновить мета-теги на русском языке
+    - title и description для страницы каталога
+    - _Requirements: 8.3, 8.4_
+
+- [x] 12. Final Checkpoint - Убедиться что все тесты проходят
+  - ✅ All tests pass (66 tests)
+  - ✅ Build successful (33 pages)
+

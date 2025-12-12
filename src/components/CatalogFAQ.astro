@@ -1,0 +1,144 @@
+---
+/**
+ * CatalogFAQ — FAQ-секция для страницы каталога
+ * 
+ * Requirements: 8.2
+ * - Вопросы в формате "Можно ли...", "Есть ли..."
+ * - Schema.org FAQPage микроразметка
+ */
+
+const faqs = [
+  {
+    question: "Можно ли оплатить AI-девушку картой российского банка?",
+    answer: "Да, некоторые сервисы принимают карты Мир и СБП. Используйте фильтр «Карта РФ/Мир» в каталоге, чтобы найти такие сервисы. Для остальных есть способы оплаты через криптовалюту или виртуальные карты."
+  },
+  {
+    question: "Есть ли бесплатные AI-девушки?",
+    answer: "Да, многие сервисы предлагают бесплатный тариф с ограничениями. Используйте фильтр «Бесплатно» в каталоге. Полностью бесплатные: Character.AI, Chai AI. Freemium с хорошим бесплатным планом: Replika, Anima AI."
+  },
+  {
+    question: "Можно ли общаться с AI-девушкой на русском языке?",
+    answer: "Да, некоторые сервисы поддерживают русский язык. Используйте фильтр «Понимает русский». Лучшие варианты: Replika (полная поддержка), Character.AI (понимает, но отвечает на английском)."
+  },
+  {
+    question: "Есть ли AI-девушки с голосовыми сообщениями?",
+    answer: "Да, несколько сервисов поддерживают голосовое общение. Replika — голосовые звонки и AR-режим. Candy.AI и некоторые другие — голосовые сообщения в чате."
+  },
+  {
+    question: "Можно ли создать свою AI-девушку с нуля?",
+    answer: "Да, большинство сервисов позволяют настроить внешность и характер. Лучшие для кастомизации: Candy.AI (генерация фото), DreamGF (детальная настройка), Character.AI (создание персонажей)."
+  },
+  {
+    question: "Есть ли AI-девушки в Telegram?",
+    answer: "Да, некоторые сервисы работают как Telegram-боты. Используйте фильтр «Telegram» в каталоге. Это удобно для общения без установки отдельных приложений."
+  },
+  {
+    question: "Безопасно ли использовать AI-девушек?",
+    answer: "Да, при соблюдении базовых правил: не делитесь личными данными (паспорт, адрес), используйте надёжные пароли, проверяйте URL сайтов. Все сервисы в нашем каталоге проверены на безопасность."
+  },
+  {
+    question: "Можно ли использовать AI-девушку без VPN в России?",
+    answer: "Большинство сервисов работают без VPN. Используйте фильтр «Без VPN» в каталоге. Некоторые сервисы могут быть заблокированы — в таком случае понадобится VPN."
+  }
+];
+
+// Schema.org FAQPage
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<section class="catalog-faq">
+  <h2 class="catalog-faq__title">Частые вопросы</h2>
+  
+  <div class="catalog-faq__list">
+    {faqs.map((faq, index) => (
+      <details class="catalog-faq__item" open={index === 0}>
+        <summary class="catalog-faq__question">{faq.question}</summary>
+        <p class="catalog-faq__answer">{faq.answer}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema, null, 2)} />
+
+<style>
+  .catalog-faq {
+    margin: var(--ids__space-xl) 0;
+    padding: var(--ids__space-l);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-default);
+    border-radius: var(--ids__radius-m);
+  }
+
+  .catalog-faq__title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-h3);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+  }
+
+  .catalog-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-xs);
+  }
+
+  .catalog-faq__item {
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-s);
+    overflow: hidden;
+    background: rgba(var(--ids__background-RGB), 0.5);
+  }
+
+  .catalog-faq__question {
+    padding: var(--ids__space-s) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-primary);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--ids__space-m);
+    transition: background var(--ids__transition-fast);
+  }
+
+  .catalog-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .catalog-faq__question::after {
+    content: '+';
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-muted);
+    flex-shrink: 0;
+  }
+
+  .catalog-faq__item[open] .catalog-faq__question::after {
+    content: '−';
+  }
+
+  .catalog-faq__question:hover {
+    background: rgba(var(--ids__text-RGB), 0.03);
+  }
+
+  .catalog-faq__answer {
+    margin: 0;
+    padding: 0 var(--ids__space-m) var(--ids__space-m);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+</style>

@@ -1,0 +1,326 @@
+---
+/**
+ * CatalogTable — IDS-стиль табличный каталог
+ * Высокая плотность информации, минимум визуального шума
+ * Референс: nsfw.tools/collections/all
+ */
+import { url } from '../utils/url';
+
+interface ModelData {
+  slug: string;
+  name: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  tagline?: string;
+  description: string;
+  logo?: string;
+  status: 'active' | 'dead' | 'censored';
+  affiliateUrl: string;
+  features?: {
+    voice?: boolean;
+    nsfw?: boolean;
+    russian?: boolean;
+    imageGen?: boolean;
+    roleplay?: boolean;
+  };
+  advancedFeatures?: {
+    memoryType?: 'none' | 'short' | 'long' | 'persistent';
+  };
+  paymentMethods?: ('mir' | 'sbp' | 'crypto' | 'foreign_card')[];
+  platforms?: ('web' | 'ios' | 'android' | 'telegram')[];
+  vpnRequired?: boolean;
+}
+
+interface Props {
+  models: ModelData[];
+}
+
+const { models } = Astro.props;
+
+function getPriceLabel(m: ModelData): string {
+  if (m.pricing === 'free') return 'Free';
+  if (m.priceFrom) return `$${m.priceFrom}`;
+  return 'Freemium';
+}
+
+function getPaymentLabel(m: ModelData): string {
+  const methods = m.paymentMethods || [];
+  if (methods.includes('mir') || methods.includes('sbp')) return '🇷🇺';
+  if (methods.includes('crypto')) return '₿';
+  return '💳';
+}
+---
+
+<div class="catalog-table">
+  <div class="catalog-table__header">
+    <span class="col-rank">#</span>
+    <span class="col-name">Название</span>
+    <span class="col-features">Функции</span>
+    <span class="col-price">Цена</span>
+    <span class="col-rating">Рейтинг</span>
+  </div>
+
+  <div class="catalog-table__legend">
+    <span class="legend-item" title="Русский язык">RU — Русский</span>
+    <span class="legend-item" title="18+">18+ — NSFW</span>
+    <span class="legend-item" title="Голос">🎤 — Голос</span>
+    <span class="legend-item" title="Генерация фото">📷 — Фото</span>
+    <span class="legend-item" title="Память">🧠 — Память</span>
+    <span class="legend-item" title="Без VPN">✓ — Без VPN</span>
+    <span class="legend-item" title="Оплата картой РФ">🇷🇺 — Карта РФ</span>
+  </div>
+
+  <div class="catalog-table__body">
+    {models.map((model, i) => {
+      const isDead = model.status === 'dead' || model.status === 'censored';
+      return (
+        <a 
+          href={url(`/models/${model.slug}`)} 
+          class:list={['catalog-row', { 'catalog-row--dead': isDead }]}
+        >
+          <span class="col-rank">{i + 1}</span>
+          
+          <span class="col-name">
+            {model.logo && (
+              <img src={model.logo} alt="" class="row-logo" loading="lazy" />
+            )}
+            <span class="row-info">
+              <span class="row-title">{model.name}</span>
+              <span class="row-tagline">{model.tagline || model.description.slice(0, 60)}</span>
+            </span>
+          </span>
+
+          <span class="col-features">
+            {model.features?.russian && <span class="feat" title="Русский язык">RU</span>}
+            {model.features?.nsfw && <span class="feat feat--nsfw" title="18+">18+</span>}
+            {model.features?.voice && <span class="feat" title="Голос">🎤</span>}
+            {model.features?.imageGen && <span class="feat" title="Генерация фото">📷</span>}
+            {model.advancedFeatures?.memoryType === 'persistent' && <span class="feat" title="Память">🧠</span>}
+            {!model.vpnRequired && <span class="feat" title="Без VPN">✓</span>}
+            {getPaymentLabel(model) === '🇷🇺' && <span class="feat" title="Оплата картой РФ">🇷🇺</span>}
+          </span>
+
+          <span class:list={['col-price', { 'col-price--free': model.pricing === 'free' }]}>
+            {getPriceLabel(model)}
+          </span>
+
+          <span class="col-rating">
+            <span class="rating-value">{model.rating.toFixed(1)}</span>
+            <span class="rating-bar">
+              <span class="rating-fill" style={`width: ${model.rating * 10}%`}></span>
+            </span>
+          </span>
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .catalog-table {
+    width: 100%;
+    font-size: var(--ids__font-size-small);
+  }
+
+  .catalog-table__header {
+    display: grid;
+    grid-template-columns: 2.5em 1fr 140px 70px 90px;
+    gap: var(--ids__space-s);
+    padding: var(--ids__space-xs) 0;
+    border-bottom: 2px solid var(--ids__border-default);
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .catalog-table__legend {
+    display: flex;
+    gap: var(--ids__space-m);
+    padding: var(--ids__space-xs) 0;
+    font-size: 10px;
+    color: var(--ids__text-muted);
+    border-bottom: 1px solid var(--ids__border-subtle);
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    white-space: nowrap;
+  }
+
+  .catalog-table__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .catalog-row {
+    display: grid;
+    grid-template-columns: 2.5em 1fr 140px 70px 90px;
+    gap: var(--ids__space-s);
+    align-items: center;
+    padding: var(--ids__space-s) 0;
+    border-bottom: 1px solid var(--ids__border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: background var(--ids__transition-fast);
+  }
+
+  .catalog-row:hover {
+    background: var(--ids__bg-surface);
+    margin: 0 calc(-1 * var(--ids__space-s));
+    padding-left: var(--ids__space-s);
+    padding-right: var(--ids__space-s);
+  }
+
+  .catalog-row--dead {
+    opacity: 0.4;
+  }
+
+  /* Columns */
+  .col-rank {
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-muted);
+    text-align: center;
+  }
+
+  .col-name {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-s);
+    min-width: 0;
+  }
+
+  .row-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--ids__radius-xs);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .row-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .row-title {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .row-tagline {
+    font-size: var(--ids__font-size-micro);
+    color: var(--ids__text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .col-features {
+    display: flex;
+    gap: var(--ids__space-2xs);
+    flex-wrap: wrap;
+  }
+
+  .feat {
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-tertiary);
+    background: rgba(var(--ids__text-RGB), 0.05);
+    border-radius: 3px;
+  }
+
+  .feat--nsfw {
+    color: var(--ids__error);
+    background: rgba(220, 50, 50, 0.08);
+  }
+
+  :global(body.safe-mode) .feat--nsfw {
+    display: none;
+  }
+
+  .col-price {
+    font-weight: var(--ids__font-weight-medium);
+    color: var(--ids__text-secondary);
+  }
+
+  .col-price--free {
+    color: var(--ids__success);
+  }
+
+  .col-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
+  }
+
+  .rating-value {
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+    min-width: 2em;
+  }
+
+  .rating-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(var(--ids__text-RGB), 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .rating-fill {
+    display: block;
+    height: 100%;
+    background: var(--ids__accent);
+    border-radius: 2px;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .catalog-table__header,
+    .catalog-table__legend {
+      display: none;
+    }
+
+    .catalog-row {
+      grid-template-columns: 2em 1fr auto;
+      gap: var(--ids__space-xs);
+    }
+
+    .col-features {
+      display: none;
+    }
+
+    .col-rating {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .rating-bar {
+      display: none;
+    }
+
+    .col-price {
+      font-size: var(--ids__font-size-micro);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .row-tagline {
+      display: none;
+    }
+
+    .row-logo {
+      width: 28px;
+      height: 28px;
+    }
+  }
+</style>

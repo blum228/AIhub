@@ -1,0 +1,141 @@
+---
+/**
+ * FilterGroup — группа чекбоксов с заголовком
+ * 
+ * Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 10.1-10.5
+ * - Группа чекбоксов с заголовком
+ * - Использует IDS токены для стилей
+ */
+
+interface FilterOption {
+  value: string;
+  label: string;
+  count?: number;
+}
+
+interface Props {
+  title: string;
+  name: string;
+  options: FilterOption[];
+  selected: string[];
+}
+
+const { title, name, options, selected } = Astro.props;
+---
+
+<fieldset class="filter-group">
+  <legend class="filter-group__title">{title}</legend>
+  <div class="filter-group__options">
+    {options.map(option => (
+      <label class="filter-option">
+        <input 
+          type="checkbox" 
+          name={name}
+          value={option.value}
+          checked={selected.includes(option.value)}
+          class="filter-option__input"
+        />
+        <span class="filter-option__checkbox"></span>
+        <span class="filter-option__label">{option.label}</span>
+        {option.count !== undefined && (
+          <span class="filter-option__count">({option.count})</span>
+        )}
+      </label>
+    ))}
+  </div>
+</fieldset>
+
+<style>
+  .filter-group {
+    border: none;
+    padding: 0;
+    margin: 0 0 var(--ids__space-s);
+  }
+
+  .filter-group__title {
+    font-size: var(--ids__font-size-caption);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-tertiary);
+    margin-bottom: var(--ids__space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .filter-group__options {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
+    cursor: pointer;
+    padding: var(--ids__space-xs) var(--ids__space-xs);
+    border-radius: var(--ids__radius-xs);
+    transition: background var(--ids__transition-fast);
+  }
+
+  .filter-option:hover {
+    background: rgba(var(--ids__text-RGB), 0.05);
+  }
+
+  .filter-option__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .filter-option__checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--ids__border-strong);
+    border-radius: 3px;
+    background: transparent;
+    transition: all var(--ids__transition-fast);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .filter-option__input:checked + .filter-option__checkbox {
+    background: var(--ids__accent);
+    border-color: var(--ids__accent);
+  }
+
+  .filter-option__input:checked + .filter-option__checkbox::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  .filter-option__input:focus-visible + .filter-option__checkbox {
+    outline: 2px solid var(--ids__link);
+    outline-offset: 2px;
+  }
+
+  .filter-option__label {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    flex: 1;
+    transition: color var(--ids__transition-fast);
+  }
+
+  .filter-option:hover .filter-option__label {
+    color: var(--ids__text-primary);
+  }
+
+  .filter-option__input:checked ~ .filter-option__label {
+    color: var(--ids__text-primary);
+    font-weight: var(--ids__font-weight-medium);
+  }
+
+  .filter-option__count {
+    font-size: var(--ids__font-size-micro);
+    color: var(--ids__text-muted);
+  }
+</style>

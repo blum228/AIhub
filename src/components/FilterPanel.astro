@@ -1,0 +1,341 @@
+---
+/**
+ * FilterPanel — минималистичная боковая панель фильтров
+ * IDS Design: чистота, компактность
+ */
+
+interface Props {
+  activeFilters: {
+    meaning: string[];
+    features: string[];
+    platform: string[];
+    payment: string[];
+  };
+  showDead: boolean;
+  totalCount: number;
+  filteredCount: number;
+}
+
+const { activeFilters, showDead, totalCount, filteredCount } = Astro.props;
+
+// Группы фильтров
+const groups = [
+  {
+    name: 'meaning',
+    title: 'Тип',
+    options: [
+      { value: 'nsfw', label: '18+' },
+      { value: 'roleplay', label: 'Ролеплей' },
+    ]
+  },
+  {
+    name: 'features',
+    title: 'Возможности',
+    options: [
+      { value: 'russian', label: 'Русский язык' },
+      { value: 'memory', label: 'Память' },
+      { value: 'voice', label: 'Голос' },
+      { value: 'image-gen', label: 'Генерация фото' },
+      { value: 'no-vpn', label: 'Без VPN' },
+    ]
+  },
+  {
+    name: 'platform',
+    title: 'Платформа',
+    options: [
+      { value: 'web', label: 'Web' },
+      { value: 'telegram', label: 'Telegram' },
+      { value: 'ios', label: 'iOS' },
+      { value: 'android', label: 'Android' },
+    ]
+  },
+  {
+    name: 'payment',
+    title: 'Оплата',
+    options: [
+      { value: 'free', label: 'Бесплатно' },
+      { value: 'mir', label: 'Карта РФ' },
+      { value: 'crypto', label: 'Крипто' },
+    ]
+  }
+];
+
+function isChecked(group: string, value: string): boolean {
+  const filters = activeFilters[group as keyof typeof activeFilters];
+  return filters?.includes(value) || false;
+}
+
+const hasActiveFilters = Object.values(activeFilters).some(arr => arr.length > 0) || showDead;
+---
+
+<aside class="filters" id="filter-panel">
+  <div class="filters__head">
+    <span class="filters__count">{filteredCount}</span>
+    <button class="filters__close" id="filter-close" aria-label="Закрыть">×</button>
+  </div>
+
+  <form class="filters__form" id="filter-form" method="get">
+    {groups.map(group => (
+      <fieldset class="filters__group">
+        <legend class="filters__legend">{group.title}</legend>
+        {group.options.map(opt => (
+          <label class="filters__option">
+            <input 
+              type="checkbox" 
+              name={group.name}
+              value={opt.value}
+              checked={isChecked(group.name, opt.value)}
+              class="filters__checkbox"
+            />
+            <span class="filters__label">{opt.label}</span>
+          </label>
+        ))}
+      </fieldset>
+    ))}
+
+    <label class="filters__option filters__option--muted">
+      <input 
+        type="checkbox" 
+        name="showDead"
+        value="true"
+        checked={showDead}
+        class="filters__checkbox"
+      />
+      <span class="filters__label">Показать закрытые</span>
+    </label>
+
+    <div class="filters__actions">
+      <button type="submit" class="filters__apply">Применить</button>
+      {hasActiveFilters && (
+        <a href="/catalog" class="filters__reset">Сбросить</a>
+      )}
+    </div>
+  </form>
+</aside>
+
+<button class="filters__trigger" id="filter-trigger">
+  Фильтры
+  {filteredCount < totalCount && <span class="filters__badge">{filteredCount}</span>}
+</button>
+
+<div class="filters__overlay" id="filter-overlay"></div>
+
+<style>
+  .filters {
+    position: sticky;
+    top: 80px;
+    padding: var(--ids__space-m);
+    background: var(--ids__bg-surface);
+    border: 1px solid var(--ids__border-subtle);
+    border-radius: var(--ids__radius-m);
+  }
+
+  .filters__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--ids__space-m);
+  }
+
+  .filters__count {
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+    color: var(--ids__text-primary);
+  }
+
+  .filters__close {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--ids__text-tertiary);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .filters__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ids__space-m);
+  }
+
+  .filters__group {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .filters__legend {
+    font-size: var(--ids__font-size-micro);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--ids__space-xs);
+  }
+
+  .filters__option {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
+    padding: var(--ids__space-2xs) 0;
+    cursor: pointer;
+  }
+
+  .filters__option--muted {
+    margin-top: var(--ids__space-s);
+    padding-top: var(--ids__space-s);
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .filters__checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--ids__accent);
+    cursor: pointer;
+  }
+
+  .filters__label {
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    transition: color var(--ids__transition-fast);
+  }
+
+  .filters__option:hover .filters__label {
+    color: var(--ids__text-primary);
+  }
+
+  .filters__checkbox:checked + .filters__label {
+    color: var(--ids__text-primary);
+  }
+
+  .filters__actions {
+    display: flex;
+    gap: var(--ids__space-xs);
+    margin-top: var(--ids__space-s);
+    padding-top: var(--ids__space-m);
+    border-top: 1px solid var(--ids__border-subtle);
+  }
+
+  .filters__apply {
+    flex: 1;
+    padding: var(--ids__space-xs) var(--ids__space-m);
+    background: var(--ids__accent);
+    color: white;
+    border: none;
+    border-radius: var(--ids__radius-s);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    cursor: pointer;
+    transition: opacity var(--ids__transition-fast);
+  }
+
+  .filters__apply:hover {
+    opacity: 0.9;
+  }
+
+  .filters__reset {
+    padding: var(--ids__space-xs) var(--ids__space-s);
+    color: var(--ids__text-tertiary);
+    font-size: var(--ids__font-size-small);
+    text-decoration: none;
+  }
+
+  .filters__reset:hover {
+    color: var(--ids__text-primary);
+  }
+
+  /* Mobile trigger */
+  .filters__trigger {
+    display: none;
+    position: fixed;
+    bottom: var(--ids__space-m);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--ids__z-sticky);
+    padding: var(--ids__space-s) var(--ids__space-l);
+    background: var(--ids__bg-elevated);
+    color: var(--ids__text-primary);
+    border: 1px solid var(--ids__border-default);
+    border-radius: var(--ids__radius-full);
+    font-size: var(--ids__font-size-small);
+    font-weight: var(--ids__font-weight-medium);
+    cursor: pointer;
+    box-shadow: var(--ids__shadow-l);
+    gap: var(--ids__space-xs);
+    align-items: center;
+  }
+
+  .filters__badge {
+    background: var(--ids__accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: var(--ids__radius-full);
+    font-size: 11px;
+    margin-left: var(--ids__space-2xs);
+  }
+
+  .filters__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--ids__z-modal) - 1);
+  }
+
+  @media (max-width: 899px) {
+    .filters {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      max-height: 70vh;
+      overflow-y: auto;
+      border-radius: var(--ids__radius-l) var(--ids__radius-l) 0 0;
+      transform: translateY(100%);
+      transition: transform var(--ids__transition-slow);
+      z-index: var(--ids__z-modal);
+    }
+
+    .filters.is-open {
+      transform: translateY(0);
+    }
+
+    .filters__close {
+      display: block;
+    }
+
+    .filters__trigger {
+      display: flex;
+    }
+
+    .filters__overlay.is-open {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const panel = document.getElementById('filter-panel');
+  const trigger = document.getElementById('filter-trigger');
+  const close = document.getElementById('filter-close');
+  const overlay = document.getElementById('filter-overlay');
+
+  function open() {
+    panel?.classList.add('is-open');
+    overlay?.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close_() {
+    panel?.classList.remove('is-open');
+    overlay?.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', open);
+  close?.addEventListener('click', close_);
+  overlay?.addEventListener('click', close_);
+</script>

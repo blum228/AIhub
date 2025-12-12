@@ -1,0 +1,62 @@
+---
+/**
+ * SchemaOrg — JSON-LD микроразметка для SEO
+ * 
+ * Requirements: 8.1
+ * - JSON-LD с @type="Product" и aggregateRating
+ */
+
+interface Props {
+  name: string;
+  description: string;
+  rating: number;
+  reviewCount?: number;
+  priceFrom?: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  logo?: string;
+  url: string;
+}
+
+const { 
+  name, 
+  description, 
+  rating, 
+  reviewCount = 10, 
+  priceFrom, 
+  pricing,
+  logo,
+  url 
+} = Astro.props;
+
+// Формируем цену
+const price = pricing === 'free' ? '0' : priceFrom ? String(priceFrom) : '9.99';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": name,
+  "description": description,
+  "image": logo || "/images/default-logo.png",
+  "url": url,
+  "brand": {
+    "@type": "Brand",
+    "name": name
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": rating.toFixed(1),
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": reviewCount
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": price,
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />

@@ -146,6 +146,34 @@ const modelsCollection = defineCollection({
     }).default({}),
     
     // ═══════════════════════════════════════════════════════════════
+    // СНГ-СПЕЦИФИКА (sng-redesign)
+    // ═══════════════════════════════════════════════════════════════
+    
+    // Способы оплаты из РФ
+    payment_methods: z.array(z.enum(['mir', 'sbp', 'crypto', 'foreign_card'])).default([]),
+    
+    // Работает без VPN в РФ
+    vpn_required: z.boolean().default(true),
+    
+    // Платформы доступа
+    platforms: z.array(z.enum(['web', 'ios', 'android', 'telegram'])).default(['web']),
+    
+    // Статус сервиса
+    status: z.enum(['active', 'dead', 'censored']).default('active'),
+    
+    // Причина закрытия (для dead/censored)
+    dead_reason: z.string().optional(),
+    
+    // Дата закрытия
+    dead_date: z.string().optional(),
+    
+    // GIF-превью для hover
+    gif_preview: z.string().optional(),
+    
+    // Гайд по оплате из РФ (если нет карт РФ)
+    payment_guide: z.string().optional(),
+
+    // ═══════════════════════════════════════════════════════════════
     // СТАРЫЕ ПОЛЯ (для обратной совместимости)
     // ═══════════════════════════════════════════════════════════════
     

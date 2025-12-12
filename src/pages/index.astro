@@ -1,75 +1,54 @@
 ---
 /**
  * Главная страница AIGirlsHub
- * 
- * СИСТЕМА ОТСТУПОВ:
- * - section + section = margin-top на секции (большой ритм)
- * - внутри секции: заголовок → контент (малый ритм через margin-bottom)
+ * Стиль: nsfw.tools + СНГ фокус
+ * Дизайн-система: IDS
  */
 import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Wrapper from '../components/Wrapper.astro';
+import ServiceCard from '../components/ServiceCard.astro';
 import { url } from '../utils/url';
 
 // Получаем модели
 const allModels = await getCollection('models');
-const models = allModels.map(entry => ({ 
-  slug: entry.id.replace('.yaml', ''), 
-  ...entry.data 
-}));
+const models = allModels
+  .map(entry => ({ 
+    slug: entry.id.replace('.yaml', ''), 
+    ...entry.data 
+  }))
+  .filter(m => m.status !== 'dead')
+  .sort((a, b) => b.rating - a.rating);
 
-// Группируем по мотивациям
-const motivationCounts = {
-  intimacy: models.filter(m => m.motivation === 'intimacy' || m.motivationSupport?.includes('intimacy')).length,
-  escapism: models.filter(m => m.motivation === 'escapism' || m.motivationSupport?.includes('escapism')).length,
-  connection: models.filter(m => m.motivation === 'connection' || m.motivationSupport?.includes('connection')).length,
-};
+// Топ-6 для главной
+const topModels = models.slice(0, 6);
 
-// Мотивации с SVG иконками
-const motivations = [
-  {
-    id: 'intimacy',
-    title: 'Интим',
-    description: 'Флирт, романтика, NSFW',
-    count: motivationCounts.intimacy,
-    href: url('/for/intimacy'),
-    icon: url('/images/icons/intimacy.svg'),
-  },
-  {
-    id: 'escapism',
-    title: 'Эскапизм',
-    description: 'Ролевые игры, фантазии',
-    count: motivationCounts.escapism,
-    href: url('/for/escapism'),
-    icon: url('/images/icons/escapism.svg'),
-  },
-  {
-    id: 'connection',
-    title: 'Связь',
-    description: 'Поддержка, дружба',
-    count: motivationCounts.connection,
-    href: url('/for/connection'),
-    icon: url('/images/icons/connection.svg'),
-  },
+// Быстрые фильтры — без эмодзи, чище
+const quickFilters = [
+  { id: 'all', label: 'Все сервисы', href: url('/catalog') },
+  { id: 'free', label: 'Бесплатные', href: url('/catalog?pricing=free') },
+  { id: 'nsfw', label: 'Без цензуры', href: url('/catalog?nsfw=true') },
+  { id: 'ru', label: 'Русский язык', href: url('/catalog?russian=true') },
+  { id: 'mir', label: 'Оплата из РФ', href: url('/catalog?payment=mir') },
 ];
 
-// FAQ
+// FAQ — живой язык, конкретика
 const faqItems = [
   { 
-    q: 'Что такое AI-девушка?', 
-    a: 'Виртуальный компаньон на базе нейросетей. Она умеет общаться, запоминать контекст, поддерживать разговор и адаптироваться под твои предпочтения.' 
+    q: 'Чем это отличается от ChatGPT?', 
+    a: 'ChatGPT — это ассистент. Здесь — персонажи с характером, памятью и возможностью строить отношения. Многие сервисы позволяют то, что GPT запрещает.' 
   },
   { 
-    q: 'Это безопасно?', 
-    a: 'Да. Все сервисы в каталоге используют шифрование данных. Мы проверяем политику конфиденциальности каждого сервиса.' 
+    q: 'Как платить из России?', 
+    a: 'Часть сервисов принимает крипту напрямую. Для остальных работают виртуальные карты типа Pyypl или RedotPay — заводишь за 10 минут.' 
   },
   { 
-    q: 'Сколько это стоит?', 
-    a: 'От $0 до $20/мес. Многие сервисы предлагают бесплатный тариф с ограничениями или пробный период.' 
+    q: 'Какой сервис лучший?', 
+    a: 'Зависит от задачи. Для NSFW без ограничений — CrushOn. Для глубоких разговоров — Replika. Для ролевых игр — Character.AI. Сравнение в каталоге.' 
   },
   { 
-    q: 'Можно ли общаться на русском?', 
-    a: 'Большинство AI понимают русский язык. В карточке каждого сервиса указано, есть ли полноценная поддержка русского.' 
+    q: 'Это вообще легально?', 
+    a: 'Да. Все сервисы в каталоге — легальные компании с публичными офисами. Данные шифруются, история не продаётся.' 
   },
 ];
 
@@ -83,239 +62,344 @@ const schema = {
 ---
 
 <SiteLayout 
-  title="AIGirlsHub — Каталог AI-девушек 2025"
-  description="Найди идеальную AI-девушку. Обзоры, рейтинги и сравнения лучших AI-компаньонов."
+  title="AI-девушки — каталог сервисов 2025"
+  description="Сравнение Replika, Character.AI, CrushOn и других. Какой сервис выбрать, как оплатить из России, что работает без VPN."
 >
   <script type="application/ld+json" set:html={JSON.stringify(schema)} slot="head" is:inline />
 
-  <div class="page">
+  <main class="home">
     
     <!-- HERO -->
     <section class="hero">
       <Wrapper>
-        <p class="hero__huge">Каталог AI-девушек</p>
-        <p class="hero__sub">{models.length} сервисов · обзоры · сравнения</p>
+        <p class="hero__eyebrow">Каталог {models.length} сервисов</p>
+        <h1 class="hero__title">Найди свою AI-девушку</h1>
+        <p class="hero__subtitle">
+          Сравнения, обзоры, гайды по оплате из РФ. Без воды и рекламы.
+        </p>
       </Wrapper>
     </section>
 
-    <!-- GOALS -->
-    <section id="goals" class="section">
+    <!-- QUICK FILTERS -->
+    <section class="filters">
       <Wrapper>
-        <h2>Что ищешь?</h2>
-        
-        <nav class="goals">
-          {motivations.map((m) => (
-            <a href={m.href} class="goal">
-              <img src={m.icon} alt="" class="goal__icon" />
-              <span class="goal__title">{m.title}</span>
-              <span class="goal__desc">{m.description}</span>
-              <span class="goal__count">{m.count} сервисов</span>
-            </a>
+        <nav class="filters__grid">
+          {quickFilters.map((filter) => (
+            <a href={filter.href} class="filter-btn">{filter.label}</a>
           ))}
         </nav>
       </Wrapper>
     </section>
 
-    <!-- FAQ -->
-    <section class="section">
+    <!-- TOP SERVICES -->
+    <section class="services">
       <Wrapper>
-        <h2>Частые вопросы</h2>
+        <div class="services__header">
+          <h2 class="services__title">Популярные</h2>
+          <a href={url('/catalog')} class="services__link">
+            Все →
+          </a>
+        </div>
         
-        <div class="faq-list">
+        <div class="services__grid">
+          {topModels.map((model) => (
+            <ServiceCard
+              slug={model.slug}
+              name={model.name}
+              rating={model.rating}
+              pricing={model.pricing}
+              priceFrom={model.priceFrom}
+              tagline={model.tagline}
+              description={model.description}
+              logo={model.logo}
+              status={model.status}
+              affiliateUrl={model.affiliateUrl}
+              features={model.features}
+              advancedFeatures={model.advancedFeatures}
+              paymentMethods={model.payment_methods}
+            />
+          ))}
+        </div>
+      </Wrapper>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+      <Wrapper>
+        <h2 class="faq__title">Частые вопросы</h2>
+        
+        <div class="faq__list">
           {faqItems.map((item, index) => (
-            <details class="faq-item" open={index === 0}>
-              <summary class="faq-item__q">{item.q}</summary>
-              <p class="faq-item__a">{item.a}</p>
+            <details class="faq__item" open={index === 0}>
+              <summary class="faq__question">{item.q}</summary>
+              <p class="faq__answer">{item.a}</p>
             </details>
           ))}
         </div>
       </Wrapper>
     </section>
 
-  </div>
+    <!-- CTA -->
+    <section class="cta">
+      <Wrapper>
+        <div class="cta__box">
+          <div class="cta__content">
+            <p class="cta__title">Не знаешь что выбрать?</p>
+            <p class="cta__text">Сравни Replika vs Character.AI, CrushOn vs Candy и другие пары</p>
+          </div>
+          <a href={url('/compare')} class="cta__btn">Сравнения</a>
+        </div>
+      </Wrapper>
+    </section>
+
+  </main>
 </SiteLayout>
 
-
 <style>
-  /* РИТМ: section margin-top создаёт вертикальный ритм */
-  
-  .page {
+  .home {
+    padding-bottom: var(--ids__space-2xl);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════ */
+  .hero {
+    padding: var(--ids__space-2xl) 0 var(--ids__space-l);
+    text-align: center;
+  }
+
+  .hero__eyebrow {
+    margin: 0 0 var(--ids__space-xs);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: var(--ids__font-weight-bold);
+    line-height: var(--ids__line-height-tight);
+    margin: 0;
+    color: var(--ids__text-primary);
+  }
+
+  .hero__subtitle {
+    margin: var(--ids__space-s) 0 0;
+    font-size: var(--ids__font-size-body);
+    color: var(--ids__text-tertiary);
+    max-width: 32em;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     QUICK FILTERS
+     ═══════════════════════════════════════════════════════════════ */
+  .filters {
     padding-bottom: var(--ids__space-l);
   }
 
-  .section {
-    margin-top: var(--ids__space-xl);
+  .filters__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ids__space-2xs);
   }
 
-  .section h2 {
-    margin-bottom: var(--ids__space-2xs);
-  }
-
-  .section__lead {
+  .filter-btn {
+    padding: var(--ids__space-xs) var(--ids__space-s);
+    background: transparent;
+    border: 1px solid var(--ids__border-default);
+    border-radius: var(--ids__radius-s);
+    font-size: var(--ids__font-size-small);
     color: var(--ids__text-secondary);
+    text-decoration: none;
+    transition: 
+      background var(--ids__transition-fast),
+      border-color var(--ids__transition-fast),
+      color var(--ids__transition-fast);
+  }
+
+  .filter-btn:hover {
+    background: var(--ids__bg-surface);
+    border-color: var(--ids__border-strong);
+    color: var(--ids__text-primary);
+    text-decoration: none;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SERVICES GRID
+     ═══════════════════════════════════════════════════════════════ */
+  .services {
+    padding: var(--ids__space-l) 0;
+  }
+
+  .services__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     margin-bottom: var(--ids__space-m);
   }
 
-  /* HERO — IDS style */
-  .hero {
-    margin-top: var(--ids__space-xl);
-  }
-
-  .hero__huge {
-    font-size: 3em;
-    line-height: 1.1;
-    font-weight: 600;
-    margin-bottom: var(--ids__space-xs);
-  }
-
-  @media (width < 768px) {
-    .hero__huge {
-      font-size: 2em;
-    }
-  }
-
-  .hero__sub {
-    font-size: var(--ids__font-size-body);
-    color: var(--ids__text-secondary);
-    margin-bottom: 0;
-  }
-
-  /* GOALS */
-  .goals {
-    display: flex;
-    gap: 0;
-    margin-top: var(--ids__space-m);
-  }
-
-  .goal {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: var(--ids__space-m);
-    border: 1px solid var(--ids__border-default);
-    border-right: 0;
-    text-decoration: none;
-    color: inherit;
-    transition: 
-      background var(--ids__transition-fast),
-      border-color var(--ids__transition-fast);
-  }
-
-  .goal:first-child {
-    border-radius: var(--ids__radius-l) 0 0 var(--ids__radius-l);
-  }
-
-  .goal:last-child {
-    border-radius: 0 var(--ids__radius-l) var(--ids__radius-l) 0;
-    border-right: 1px solid var(--ids__border-default);
-  }
-
-  .goal:hover {
-    background: var(--ids__bg-surface);
-    border-color: var(--ids__border-strong);
-    text-decoration: none;
-  }
-
-  .goal:hover + .goal {
-    border-left-color: var(--ids__border-strong);
-  }
-
-  .goal__icon {
-    width: 1.5em;
-    height: 1.5em;
-    margin-bottom: var(--ids__space-s);
-    opacity: 0.5;
-  }
-
-  .goal__title {
-    font-size: var(--ids__font-size-h3);
+  .services__title {
+    margin: 0;
+    font-size: var(--ids__font-size-h2);
     font-weight: var(--ids__font-weight-bold);
-    margin-bottom: var(--ids__space-2xs);
   }
 
-  .goal__desc {
+  .services__link {
     font-size: var(--ids__font-size-small);
-    color: var(--ids__text-secondary);
+    color: var(--ids__text-tertiary);
+    text-decoration: none;
+    transition: color var(--ids__transition-fast);
   }
 
-  .goal__count {
-    font-size: var(--ids__font-size-micro);
-    color: var(--ids__text-muted);
-    margin-top: auto;
-    padding-top: var(--ids__space-s);
+  .services__link:hover {
+    color: var(--ids__link);
   }
 
-  @media (width < 768px) {
-    .goals {
-      flex-direction: column;
-    }
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ids__space-m);
+  }
 
-    .goal {
-      border-right: 1px solid var(--ids__border-default);
-      border-bottom: 0;
-    }
-
-    .goal:first-child {
-      border-radius: var(--ids__radius-l) var(--ids__radius-l) 0 0;
-    }
-
-    .goal:last-child {
-      border-radius: 0 0 var(--ids__radius-l) var(--ids__radius-l);
-      border-bottom: 1px solid var(--ids__border-default);
-    }
-
-    .goal:hover + .goal {
-      border-top-color: var(--ids__border-strong);
+  @media (width < 900px) {
+    .services__grid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  /* FAQ */
-  .faq-list {
+  @media (width < 600px) {
+    .services__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     FAQ
+     ═══════════════════════════════════════════════════════════════ */
+  .faq {
+    padding: var(--ids__space-xl) 0;
+  }
+
+  .faq__title {
+    margin: 0 0 var(--ids__space-m);
+    font-size: var(--ids__font-size-h2);
+    font-weight: var(--ids__font-weight-bold);
+  }
+
+  .faq__list {
     display: flex;
     flex-direction: column;
     gap: var(--ids__space-2xs);
-    margin-top: var(--ids__space-m);
   }
 
-  .faq-item {
+  .faq__item {
     padding: var(--ids__space-s) var(--ids__space-m);
     background: var(--ids__bg-surface);
     border-radius: var(--ids__radius-s);
     cursor: pointer;
   }
 
-  .faq-item[open] {
+  .faq__item[open] {
     background: var(--ids__bg-surface-hover);
   }
 
-  .faq-item__q {
+  .faq__question {
     font-size: var(--ids__font-size-small);
     font-weight: var(--ids__font-weight-semibold);
     list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
   }
 
-  .faq-item__q::-webkit-details-marker {
+  .faq__question::-webkit-details-marker {
     display: none;
   }
 
-  .faq-item__q::before {
+  .faq__question::before {
     content: '+';
-    display: inline-block;
-    width: 1.2em;
+    flex-shrink: 0;
+    width: 1em;
     color: var(--ids__text-muted);
+    font-weight: var(--ids__font-weight-regular);
   }
 
-  .faq-item[open] .faq-item__q::before {
+  .faq__item[open] .faq__question::before {
     content: '−';
   }
 
-  .faq-item__a {
+  .faq__answer {
+    margin: var(--ids__space-xs) 0 0;
+    padding-left: calc(1em + var(--ids__space-xs));
     font-size: var(--ids__font-size-small);
     color: var(--ids__text-secondary);
     line-height: var(--ids__line-height-relaxed);
-    margin-top: var(--ids__space-xs);
-    margin-bottom: 0;
-    padding-left: 1.2em;
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     CTA
+     ═══════════════════════════════════════════════════════════════ */
+  .cta {
+    padding: var(--ids__space-xl) 0;
+  }
+
+  .cta__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ids__space-m);
+    padding: var(--ids__space-l);
+    background: var(--ids__bg-surface);
+    border-radius: var(--ids__radius-m);
+  }
+
+  .cta__content {
+    flex: 1;
+  }
+
+  .cta__title {
+    margin: 0;
+    font-size: var(--ids__font-size-body);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  .cta__text {
+    margin: var(--ids__space-2xs) 0 0;
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-tertiary);
+  }
+
+  .cta__btn {
+    flex-shrink: 0;
+    padding: var(--ids__space-xs) var(--ids__space-m);
+    background: transparent;
+    border: 1px solid var(--ids__border-default);
+    border-radius: var(--ids__radius-s);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    text-decoration: none;
+    transition: 
+      background var(--ids__transition-fast),
+      border-color var(--ids__transition-fast),
+      color var(--ids__transition-fast);
+  }
+
+  .cta__btn:hover {
+    background: var(--ids__bg-surface-hover);
+    border-color: var(--ids__border-strong);
+    color: var(--ids__text-primary);
+    text-decoration: none;
+  }
+
+  @media (width < 600px) {
+    .cta__box {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
 </style>

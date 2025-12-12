@@ -1,0 +1,63 @@
+---
+/**
+ * ServiceBadge — бейдж для карточки сервиса
+ * 
+ * Requirements: 3.3, 3.4, 3.5, 3.6, 10.1, 10.2
+ * - Free (зелёный), 18+ (красный), Память (синий), Мир (зелёный с иконкой)
+ * - Использует IDS токены
+ * - .badge--nsfw скрывается в Safe Mode
+ */
+
+interface Props {
+  type: 'free' | 'nsfw' | 'memory' | 'mir' | 'russian' | 'voice' | 'telegram' | 'dead' | 'censored' | 'crypto' | 'sbp';
+}
+
+const { type } = Astro.props;
+
+const badgeConfig: Record<string, { label: string; color: string; hideInSafeMode?: boolean; icon?: string }> = {
+  free: { label: 'Free', color: 'var(--ids__success)' },
+  nsfw: { label: '18+', color: 'var(--ids__error)', hideInSafeMode: true },
+  memory: { label: 'Память', color: 'var(--ids__link)' },
+  mir: { label: 'Мир', color: '#4CAF50', icon: '💳' },
+  sbp: { label: 'СБП', color: '#4CAF50', icon: '📱' },
+  crypto: { label: 'Крипто', color: '#F7931A', icon: '₿' },
+  russian: { label: 'RU', color: 'var(--ids__text-secondary)' },
+  voice: { label: 'Голос', color: 'var(--ids__warning)', icon: '🎤' },
+  telegram: { label: 'TG', color: '#0088cc', icon: '✈️' },
+  dead: { label: 'Закрыт', color: 'var(--ids__text-muted)' },
+  censored: { label: 'Цензура', color: 'var(--ids__text-muted)' },
+};
+
+const config = badgeConfig[type] || { label: type, color: 'var(--ids__text-muted)' };
+const badgeClass = config.hideInSafeMode ? 'badge badge--nsfw' : 'badge';
+---
+
+<span class={badgeClass} style={`--badge-color: ${config.color}`}>
+  {config.icon && <span class="badge__icon">{config.icon}</span>}
+  {config.label}
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--badge-color);
+    background: color-mix(in srgb, var(--badge-color) 15%, transparent);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .badge__icon {
+    font-size: 10px;
+  }
+
+  /* Safe Mode: скрываем NSFW бейджи */
+  :global(body.safe-mode) .badge--nsfw {
+    display: none;
+  }
+</style>

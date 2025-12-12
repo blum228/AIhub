@@ -4,6 +4,7 @@
  * Минималистичный sticky header в стиле IDS
  */
 import Logo from './Logo.astro';
+import SafeModeToggle from './SafeModeToggle.astro';
 import { url } from '../utils/url';
 
 interface Props {
@@ -34,6 +35,9 @@ const currentPath = Astro.url.pathname;
         </a>
       ))}
     </nav>
+
+    <!-- Safe Mode Toggle (Req 4.1) -->
+    <SafeModeToggle />
 
     <!-- Mobile burger -->
     <button class="header__burger" aria-label="Меню" aria-expanded="false">

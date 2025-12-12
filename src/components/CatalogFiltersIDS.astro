@@ -1,0 +1,388 @@
+---
+/**
+ * CatalogFiltersIDS — фильтры в стиле nsfw.tools
+ * Dropdown меню + выбранные теги снизу
+ */
+
+interface Props {
+  activeFilters: {
+    meaning: string[];
+    features: string[];
+    platform: string[];
+    payment: string[];
+  };
+  showDead: boolean;
+  totalCount: number;
+  filteredCount: number;
+}
+
+const { activeFilters, showDead, totalCount, filteredCount } = Astro.props;
+
+// Группы фильтров для dropdown
+const filterGroups = [
+  {
+    id: 'payment',
+    label: 'Цена',
+    options: [
+      { value: 'free', label: 'Бесплатно' },
+      { value: 'mir', label: 'Карта РФ' },
+      { value: 'crypto', label: 'Криптовалюта' },
+    ]
+  },
+  {
+    id: 'platform',
+    label: 'Платформа',
+    options: [
+      { value: 'web', label: 'Web' },
+      { value: 'ios', label: 'iOS' },
+      { value: 'android', label: 'Android' },
+      { value: 'telegram', label: 'Telegram' },
+    ]
+  },
+  {
+    id: 'features',
+    label: 'Возможности',
+    options: [
+      { value: 'russian', label: 'Русский язык' },
+      { value: 'voice', label: 'Голос' },
+      { value: 'image-gen', label: 'Генерация фото' },
+      { value: 'memory', label: 'Память' },
+      { value: 'no-vpn', label: 'Без VPN' },
+    ]
+  },
+  {
+    id: 'meaning',
+    label: 'Тип',
+    options: [
+      { value: 'nsfw', label: 'NSFW' },
+      { value: 'roleplay', label: 'Ролеплей' },
+    ]
+  },
+];
+
+// Собираем все активные фильтры для отображения тегов
+type ActiveTag = { group: string; value: string; label: string; groupLabel: string };
+const activeTags: ActiveTag[] = [];
+
+for (const group of filterGroups) {
+  const values = activeFilters[group.id as keyof typeof activeFilters] || [];
+  for (const val of values) {
+    const opt = group.options.find(o => o.value === val);
+    if (opt) {
+      activeTags.push({
+        group: group.id,
+        value: val,
+        label: opt.label,
+        groupLabel: group.label
+      });
+    }
+  }
+}
+
+const hasFilters = activeTags.length > 0;
+---
+
+<div class="filters">
+  <div class="filters__row">
+    <span class="filters__label">Фильтр:</span>
+    
+    {filterGroups.map(group => {
+      const activeCount = (activeFilters[group.id as keyof typeof activeFilters] || []).length;
+      return (
+        <div class="dropdown" data-group={group.id}>
+          <button class="dropdown__trigger" type="button">
+            {group.label}
+            {activeCount > 0 && <span class="dropdown__badge">{activeCount}</span>}
+            <svg class="dropdown__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="dropdown__menu">
+            {group.options.map(opt => {
+              const isChecked = (activeFilters[group.id as keyof typeof activeFilters] || []).includes(opt.value);
+              return (
+                <label class="dropdown__option">
+                  <input 
+                    type="checkbox" 
+                    name={group.id}
+                    value={opt.value}
+                    checked={isChecked}
+                    class="dropdown__checkbox"
+                  />
+                  <span class="dropdown__text">{opt.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      );
+    })}
+
+    <span class="filters__count">{filteredCount}</span>
+  </div>
+
+  {hasFilters && (
+    <div class="filters__tags">
+      {activeTags.map(tag => (
+        <button 
+          class="tag" 
+          type="button"
+          data-group={tag.group}
+          data-value={tag.value}
+        >
+          <span class="tag__label">{tag.groupLabel}: {tag.label}</span>
+          <span class="tag__remove">×</span>
+        </button>
+      ))}
+      <button class="filters__clear" type="button">Удалить все</button>
+    </div>
+  )}
+</div>
+
+<script>
+  // Dropdown toggle
+  document.querySelectorAll('.dropdown__trigger').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const dropdown = (e.target as HTMLElement).closest('.dropdown');
+      const wasOpen = dropdown?.classList.contains('is-open');
+      
+      // Close all
+      document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('is-open'));
+      
+      // Toggle current
+      if (!wasOpen) {
+        dropdown?.classList.add('is-open');
+      }
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('is-open'));
+  });
+
+  // Prevent close on menu click
+  document.querySelectorAll('.dropdown__menu').forEach(menu => {
+    menu.addEventListener('click', e => e.stopPropagation());
+  });
+
+  // Checkbox change -> update URL
+  document.querySelectorAll('.dropdown__checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      updateFilters();
+    });
+  });
+
+  // Remove tag
+  document.querySelectorAll('.tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      const group = tag.getAttribute('data-group');
+      const value = tag.getAttribute('data-value');
+      const checkbox = document.querySelector(
+        `.dropdown__checkbox[name="${group}"][value="${value}"]`
+      ) as HTMLInputElement;
+      if (checkbox) {
+        checkbox.checked = false;
+        updateFilters();
+      }
+    });
+  });
+
+  // Clear all
+  document.querySelector('.filters__clear')?.addEventListener('click', () => {
+    window.location.href = '/catalog';
+  });
+
+  function updateFilters() {
+    const params = new URLSearchParams();
+    
+    document.querySelectorAll('.dropdown__checkbox:checked').forEach(cb => {
+      const input = cb as HTMLInputElement;
+      params.append(input.name, input.value);
+    });
+
+    const qs = params.toString();
+    window.location.href = qs ? `/catalog?${qs}` : '/catalog';
+  }
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .filters__row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filters__label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .filters__count {
+    margin-left: auto;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Dropdown */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown__trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .dropdown__trigger:hover {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .dropdown__badge {
+    padding: 1px 6px;
+    font-size: 11px;
+    color: white;
+    background: var(--ids__accent, #6366f1);
+    border-radius: 10px;
+  }
+
+  .dropdown__arrow {
+    transition: transform 0.2s;
+  }
+
+  .dropdown.is-open .dropdown__arrow {
+    transform: rotate(180deg);
+  }
+
+  .dropdown__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 180px;
+    padding: 8px 0;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.15s ease;
+    z-index: 100;
+  }
+
+  .dropdown.is-open .dropdown__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .dropdown__option:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .dropdown__checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--ids__accent, #6366f1);
+  }
+
+  .dropdown__text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Tags */
+  .filters__tags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tag:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tag__remove {
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.6;
+  }
+
+  .tag:hover .tag__remove {
+    opacity: 1;
+  }
+
+  .filters__clear {
+    padding: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .filters__clear:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .filters__row {
+      gap: 12px;
+    }
+
+    .filters__label {
+      display: none;
+    }
+
+    .dropdown__trigger {
+      font-size: 13px;
+    }
+  }
+</style>

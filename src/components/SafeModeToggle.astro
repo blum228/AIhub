@@ -1,0 +1,148 @@
+---
+/**
+ * SafeModeToggle — переключатель Safe Mode ("Я на работе")
+ * 
+ * Requirements: 4.1, 4.5, 10.1-10.5
+ * - Переключатель в шапке сайта
+ * - Сохранение состояния в localStorage
+ * - Добавление класса 'safe-mode' на body
+ */
+---
+
+<div class="safe-mode-toggle">
+  <label class="safe-mode-toggle__label">
+    <input 
+      type="checkbox" 
+      class="safe-mode-toggle__input" 
+      id="safe-mode-checkbox"
+      aria-label="Включить безопасный режим"
+    />
+    <span class="safe-mode-toggle__switch">
+      <span class="safe-mode-toggle__slider"></span>
+    </span>
+    <span class="safe-mode-toggle__text">
+      <span class="safe-mode-toggle__text-off">🔓</span>
+      <span class="safe-mode-toggle__text-on">🔒</span>
+    </span>
+  </label>
+</div>
+
+<style>
+  .safe-mode-toggle {
+    display: flex;
+    align-items: center;
+  }
+
+  .safe-mode-toggle__label {
+    display: flex;
+    align-items: center;
+    gap: var(--ids__space-xs);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .safe-mode-toggle__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .safe-mode-toggle__switch {
+    position: relative;
+    width: 2.5em;
+    height: 1.4em;
+    background: var(--ids__border-strong);
+    border-radius: var(--ids__radius-full);
+    transition: background var(--ids__transition-fast);
+  }
+
+  .safe-mode-toggle__slider {
+    position: absolute;
+    top: 0.15em;
+    left: 0.15em;
+    width: 1.1em;
+    height: 1.1em;
+    background: white;
+    border-radius: 50%;
+    transition: transform var(--ids__transition-fast);
+    box-shadow: var(--ids__shadow-s);
+  }
+
+  .safe-mode-toggle__input:checked + .safe-mode-toggle__switch {
+    background: var(--ids__success);
+  }
+
+  .safe-mode-toggle__input:checked + .safe-mode-toggle__switch .safe-mode-toggle__slider {
+    transform: translateX(1.1em);
+  }
+
+  .safe-mode-toggle__input:focus-visible + .safe-mode-toggle__switch {
+    outline: 2px solid var(--ids__link);
+    outline-offset: 2px;
+  }
+
+  .safe-mode-toggle__text {
+    font-size: var(--ids__font-size-body);
+    line-height: 1;
+  }
+
+  .safe-mode-toggle__text-on {
+    display: none;
+  }
+
+  .safe-mode-toggle__input:checked ~ .safe-mode-toggle__text .safe-mode-toggle__text-off {
+    display: none;
+  }
+
+  .safe-mode-toggle__input:checked ~ .safe-mode-toggle__text .safe-mode-toggle__text-on {
+    display: inline;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'aigirlshub_safe_mode';
+  const checkbox = document.getElementById('safe-mode-checkbox') as HTMLInputElement;
+
+  // Инициализация из localStorage
+  function initSafeMode() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const isEnabled = saved === 'true';
+      
+      if (checkbox) {
+        checkbox.checked = isEnabled;
+      }
+      
+      if (isEnabled) {
+        document.body.classList.add('safe-mode');
+      } else {
+        document.body.classList.remove('safe-mode');
+      }
+    } catch (e) {
+      // localStorage недоступен — используем session state
+      console.warn('localStorage unavailable, using session state');
+    }
+  }
+
+  // Обработчик переключения
+  function handleToggle() {
+    const isEnabled = checkbox?.checked ?? false;
+    
+    if (isEnabled) {
+      document.body.classList.add('safe-mode');
+    } else {
+      document.body.classList.remove('safe-mode');
+    }
+
+    try {
+      localStorage.setItem(STORAGE_KEY, String(isEnabled));
+    } catch (e) {
+      console.warn('Could not save to localStorage');
+    }
+  }
+
+  // Инициализация
+  initSafeMode();
+  checkbox?.addEventListener('change', handleToggle);
+</script>

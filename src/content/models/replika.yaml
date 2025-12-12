@@ -137,5 +137,38 @@ seo:
   title: "Replika — AI-девушка на русском: обзор 2025, цены, стоит ли?"
   description: "Полный разбор Replika: голосовые звонки, AR-режим, русский язык. Сравниваем с Candy.AI и Character.AI."
 
+# ═══════════════════════════════════════════════════════════════
+# СНГ-СПЕЦИФИКА
+# ═══════════════════════════════════════════════════════════════
+
+payment_methods:
+  - crypto
+  - foreign_card
+
+vpn_required: false
+
+platforms:
+  - web
+  - ios
+  - android
+
+status: active
+
+gif_preview: "/images/previews/replika.gif"
+
+payment_guide: |
+  ## Как оплатить Replika из России
+  
+  1. **Через App Store / Google Play**:
+     - Смените регион аккаунта на Казахстан/Армению
+     - Пополните баланс через подарочные карты
+  
+  2. **Криптовалюта** (на сайте):
+     - Купите USDT на бирже
+     - Оплатите через криптошлюз
+  
+  3. **Виртуальная карта**:
+     - Pyypl, Wise, Payoneer
+
 featured: true
 order: 3

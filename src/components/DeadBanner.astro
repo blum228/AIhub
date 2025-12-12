@@ -1,0 +1,79 @@
+---
+/**
+ * DeadBanner — баннер для закрытых сервисов
+ * 
+ * Requirements: 5.3, 10.1-10.5
+ * - Баннер с причиной закрытия и датой
+ * - Использует IDS токены
+ */
+
+interface Props {
+  status: 'dead' | 'censored';
+  reason?: string;
+  date?: string;
+}
+
+const { status, reason, date } = Astro.props;
+
+const statusText = status === 'dead' ? 'Сервис закрыт' : 'Введена жёсткая цензура';
+const statusIcon = status === 'dead' ? '⚠️' : '🚫';
+
+// Форматирование даты
+const formattedDate = date ? new Date(date).toLocaleDateString('ru-RU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}) : null;
+---
+
+<div class="dead-banner" role="alert">
+  <div class="dead-banner__icon">{statusIcon}</div>
+  <div class="dead-banner__content">
+    <h3 class="dead-banner__title">{statusText}</h3>
+    {reason && <p class="dead-banner__reason">{reason}</p>}
+    {formattedDate && <p class="dead-banner__date">Дата: {formattedDate}</p>}
+  </div>
+</div>
+
+<style>
+  .dead-banner {
+    display: flex;
+    gap: var(--ids__space-m);
+    padding: var(--ids__space-m);
+    background: rgba(var(--ids__text-RGB), 0.05);
+    border: 1px solid var(--ids__border-default);
+    border-left: 4px solid var(--ids__text-muted);
+    border-radius: var(--ids__radius-m);
+    margin-bottom: var(--ids__space-l);
+  }
+
+  .dead-banner__icon {
+    font-size: var(--ids__font-size-h2);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .dead-banner__content {
+    flex: 1;
+  }
+
+  .dead-banner__title {
+    margin: 0 0 var(--ids__space-xs);
+    font-size: var(--ids__font-size-h4);
+    font-weight: var(--ids__font-weight-semibold);
+    color: var(--ids__text-primary);
+  }
+
+  .dead-banner__reason {
+    margin: 0 0 var(--ids__space-xs);
+    font-size: var(--ids__font-size-small);
+    color: var(--ids__text-secondary);
+    line-height: var(--ids__line-height-relaxed);
+  }
+
+  .dead-banner__date {
+    margin: 0;
+    font-size: var(--ids__font-size-caption);
+    color: var(--ids__text-muted);
+  }
+</style>

@@ -11,6 +11,8 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Gallery from '../../components/Gallery.astro';
 import GalleryItem from '../../components/GalleryItem.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
+import DeadBanner from '../../components/DeadBanner.astro';
+import PaymentGuide from '../../components/PaymentGuide.astro';
 import { url } from '../../utils/url';
 
 // Генерация статических путей
@@ -106,6 +108,15 @@ const schema = {
   <Wrapper>
     <Space size="M" />
     <Breadcrumbs items={breadcrumbs} />
+    
+    <!-- Requirement 5.3: DeadBanner для закрытых сервисов -->
+    {(model.status === 'dead' || model.status === 'censored') && (
+      <DeadBanner 
+        status={model.status} 
+        reason={model.dead_reason} 
+        date={model.dead_date} 
+      />
+    )}
   </Wrapper>
 
   <!-- Hero: Позиционирование -->
@@ -343,6 +354,13 @@ const schema = {
         </a>
       </div>
     </section>
+
+    <!-- Requirement 7.1-7.3: PaymentGuide для сервисов без карт РФ -->
+    <PaymentGuide 
+      paymentMethods={model.payment_methods || []} 
+      customGuide={model.payment_guide}
+      serviceName={model.name}
+    />
 
     <!-- Финальный CTA -->
     <section class="model-section">

@@ -1,0 +1,258 @@
+---
+/**
+ * CatalogGrid — сетка карточек в стиле nsfw.tools/collections/all
+ * Превью + название + описание + теги
+ * Минималистичный дизайн без лишних рамок
+ */
+import { url } from '../utils/url';
+
+interface ModelData {
+  slug: string;
+  name: string;
+  rating: number;
+  pricing: 'free' | 'freemium' | 'paid';
+  priceFrom?: number;
+  tagline?: string;
+  description: string;
+  logo?: string;
+  gifPreview?: string;
+  status: 'active' | 'dead' | 'censored';
+  features?: {
+    voice?: boolean;
+    nsfw?: boolean;
+    russian?: boolean;
+    imageGen?: boolean;
+    roleplay?: boolean;
+  };
+  advancedFeatures?: {
+    memoryType?: 'none' | 'short' | 'long' | 'persistent';
+  };
+  paymentMethods?: ('mir' | 'sbp' | 'crypto' | 'foreign_card')[];
+  vpnRequired?: boolean;
+}
+
+interface Props {
+  models: ModelData[];
+}
+
+const { models } = Astro.props;
+
+// Собираем теги для карточки
+function getTags(m: ModelData): string[] {
+  const tags: string[] = [];
+  if (m.pricing === 'free') tags.push('Free');
+  if (m.features?.russian) tags.push('RU');
+  if (m.features?.nsfw) tags.push('NSFW');
+  if (m.features?.voice) tags.push('Voice');
+  if (m.features?.imageGen) tags.push('Images');
+  if (m.advancedFeatures?.memoryType === 'persistent') tags.push('Memory');
+  const methods = m.paymentMethods || [];
+  if (methods.includes('mir') || methods.includes('sbp')) tags.push('RU Pay');
+  if (!m.vpnRequired) tags.push('No VPN');
+  return tags.slice(0, 4);
+}
+---
+
+<div class="grid">
+  {models.map(model => {
+    const isDead = model.status === 'dead' || model.status === 'censored';
+    const tags = getTags(model);
+    
+    return (
+      <a 
+        href={url(`/models/${model.slug}`)} 
+        class:list={['card', { 'card--dead': isDead }]}
+      >
+        <div class="card__preview">
+          {model.logo ? (
+            <img 
+              src={model.logo} 
+              alt={model.name}
+              loading="lazy"
+              class="card__img"
+            />
+          ) : (
+            <div class="card__placeholder">
+              <span class="card__initial">{model.name.charAt(0)}</span>
+            </div>
+          )}
+          <span class="card__rating">{model.rating.toFixed(1)}</span>
+        </div>
+        
+        <div class="card__body">
+          <h3 class="card__title">{model.name}</h3>
+          <p class="card__desc">{model.tagline || model.description.slice(0, 80)}</p>
+          
+          {tags.length > 0 && (
+            <div class="card__tags">
+              {tags.map(tag => (
+                <span class:list={['tag', { 'tag--nsfw': tag === 'NSFW' }]}>{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </a>
+    );
+  })}
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card--dead {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .card__preview {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: rgba(var(--ids__text-RGB), 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover .card__img {
+    transform: scale(1.05);
+  }
+
+  .card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(var(--ids__accent-RGB), 0.2), rgba(var(--ids__accent-RGB), 0.05));
+  }
+
+  .card__initial {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--ids__text-tertiary);
+    text-transform: uppercase;
+  }
+
+  .card__rating {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+
+  .card__body {
+    padding: 12px 4px;
+  }
+
+  .card__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ids__text-primary);
+    line-height: 1.3;
+  }
+
+  .card__desc {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--ids__text-tertiary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ids__text-secondary);
+    background: rgba(var(--ids__text-RGB), 0.08);
+    border-radius: 4px;
+  }
+
+  .tag--nsfw {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.12);
+  }
+
+  :global(body.safe-mode) .tag--nsfw {
+    display: none;
+  }
+
+  /* Tablet */
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 500px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .card__body {
+      padding: 8px 2px;
+    }
+
+    .card__title {
+      font-size: 13px;
+    }
+
+    .card__desc {
+      display: none;
+    }
+
+    .card__tags {
+      margin-top: 6px;
+    }
+
+    .tag {
+      padding: 2px 6px;
+      font-size: 10px;
+    }
+  }
+</style>
